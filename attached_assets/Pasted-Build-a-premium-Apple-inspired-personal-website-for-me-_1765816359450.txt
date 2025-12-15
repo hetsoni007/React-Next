@@ -1,0 +1,436 @@
+Build a premium, Apple-inspired personal website for me that focuses on App & Web Development lead generation.
+The website must feel calm, professional, high-end, and relaxing — similar to Apple’s UI/UX philosophy.
+Use only black, white, and grey color combinations with strong contrast, smooth curves, realistic shadows, and depth.
+
+The primary goal is lead generation, while maintaining a professional standard that founders, CTOs, and product leaders trust.
+
+👤 PERSONAL DETAILS (AUTHORITATIVE)
+
+Name: Het Soni
+Email: het.soni@soniconsultancyservices.com
+
+Career Journey (must be shown exactly like this):
+
+2019 – Business Development Executive
+
+2022 – Senior Business Development Executive
+
+2023 – Business Development Manager
+
+2023 – Present – COO, Way To React Technologies
+
+2024 – Present – CEO & Founder, Soni Consultancy Services
+
+Use this LinkedIn profile only as a reference for tone and background (do not invent data):
+👉 https://www.linkedin.com/in/hetsoni/
+
+🎯 WEBSITE OBJECTIVES
+
+Generate qualified leads for:
+
+Mobile App Development
+
+Web Development
+
+Ensure visitors spend at least 1 minute average on the website
+
+Encourage:
+
+Portfolio exploration
+
+Blog reading
+
+Form submissions
+
+Newsletter subscriptions
+
+🎨 DESIGN SYSTEM (STRICT RULES)
+
+Colors: Black, White, Grey only
+
+High contrast typography
+
+Large readable fonts
+
+Soft rounded corners
+
+Realistic shadows and depth (no flat UI)
+
+Clear visual hierarchy
+
+Subtle blur/glass only where appropriate
+
+No bright colors
+
+No flashy or aggressive motion
+
+The UI must feel calm, premium, and confident.
+
+🧱 DEPTH, SHADOW & ELEVATION
+
+Implement a 3-level elevation system:
+
+Base layer – background
+
+Floating layer – cards, sections
+
+Focus layer – CTAs, active elements
+
+Shadows:
+
+Soft, diffused
+
+Increase slightly on hover
+
+Never harsh
+
+Depth must guide attention naturally
+
+🪄 ANIMATIONS & SCROLL EXPERIENCE
+
+Smooth scroll
+
+Fade + slight translate on section reveal
+
+No bounce or elastic motion
+
+Ease-in-out timing only
+
+Different subtle animations per section (same style family)
+
+Every scroll introduces gentle visual change
+
+Motion must reduce fatigue, not create excitement
+
+🌐 SOCIAL MEDIA ICONS (MANDATORY)
+
+Use icons, not text links:
+
+LinkedIn
+
+X (Twitter)
+
+Instagram
+
+Email
+
+Rules:
+
+Monochrome icons
+
+Subtle hover lift + opacity change
+
+Tooltips on hover
+
+Place icons in:
+
+Header
+
+Footer
+
+Contact page
+
+Blog article pages
+
+Links:
+
+X: https://x.com/CodeMak
+_
+
+Instagram: https://www.instagram.com/hetsoni_98/
+
+🏠 SITE STRUCTURE
+1️⃣ HOME
+
+Hero Section
+
+Headline (calm, confident):
+“Designing and building thoughtful mobile & web applications.”
+
+Short supporting paragraph
+
+Primary CTA: Contact Me
+
+Secondary CTA: View Portfolio
+
+Engagement Elements
+
+Scroll progress indicator
+
+Section-by-section reveal
+
+Subtle background depth changes
+
+2️⃣ SERVICES
+
+Show only real offerings:
+
+Mobile App Development
+
+Web Development
+
+UI/UX & Product Thinking
+
+Each service:
+
+Short problem → solution explanation
+
+Minimal icon
+
+CTA: “Discuss Your Project”
+
+3️⃣ PORTFOLIO (App Development Only)
+
+You currently have 4 App projects — show only these.
+
+Portfolio Listing
+
+One project per viewport
+
+Minimal card layout
+
+Smooth scroll snapping
+
+On hover:
+
+Card lifts slightly
+
+Shadow deepens
+
+Muted looping background video preview
+
+Project Detail Page
+Each project must include:
+
+Hero
+
+Muted background video (showing design/dev)
+
+Pseudo project name
+
+One-line summary
+
+Slideshow
+
+Images from project PDF
+
+Manual navigation
+
+Clean and distraction-free
+
+Roadmap / Timeline
+
+Journey map style:
+
+Discovery
+
+Design
+
+Development
+
+Testing
+
+Delivery
+
+Scroll-animated timeline
+
+Outcome
+
+Problem solved
+
+Result or impact
+
+CTA at end:
+“Let’s build something similar”
+
+4️⃣ JOURNEY MAP (CAREER)
+
+Dedicated section
+
+Timeline storytelling
+
+Use the exact career progression listed above
+
+One milestone per scroll viewport
+
+Calm narrative tone
+
+Builds trust and authority
+
+5️⃣ BLOG (MEDIUM INTEGRATION)
+
+Medium profile:
+👉 https://medium.com/@hetsoni9398
+
+Blog Listing
+
+3D grid / library-style layout
+
+3 columns desktop, 2 tablet, 1 mobile
+
+Floating cards with depth
+
+On hover:
+
+Card moves slightly forward (3D feel)
+
+Shadow deepens
+
+Blog Article Page
+
+Scroll progress bar
+
+Highlighted quotes
+
+Social share icons
+
+Sticky Subscribe button
+
+Large readable typography
+
+6️⃣ CONTACT ME
+
+Email: het.soni@soniconsultancyservices.com
+
+Form Fields
+
+Name
+
+Email
+
+Project Type (dropdown)
+
+Message
+
+UX
+
+Inline validation
+
+Smooth success animation
+
+No page reload
+
+Secondary option:
+
+Direct email CTA
+
+🪄 POP-UPS (PREMIUM ONLY)
+
+Use popups sparingly and professionally.
+
+Entrance Popup
+
+Trigger after 8–10 seconds
+
+Once per session
+
+Message:
+“Thinking about building an app or website?”
+
+CTA: “Start a conversation”
+
+Portfolio Popup
+
+Trigger at 70% scroll of a project
+
+Message:
+“Want to discuss a similar project?”
+
+CTA: “Contact Me”
+
+No spam. No stacking. No forced actions.
+
+🔍 SEO (PREMIUM IMPLEMENTATION)
+Keyword Focus
+
+Optimize for:
+
+Mobile App Development
+
+Web Development
+
+React / Next.js
+
+Flutter / React Native
+
+UI/UX Design
+
+SaaS Development
+
+MVP Development
+
+Full-Stack Development
+
+Technical SEO
+
+Semantic HTML
+
+Clean H1–H3 structure
+
+Meta titles & descriptions
+
+Open Graph tags
+
+Schema:
+
+Person
+
+Website
+
+BlogPosting
+
+Portfolio
+
+Optimized images & videos
+
+Fast loading
+
+Content Strategy
+
+Blogs = organic traffic
+
+Portfolio = conversion pages
+
+Internal linking between services, blogs, and portfolio
+
+⏱️ ENGAGEMENT STRATEGY (1+ MINUTE GOAL)
+
+Scroll-based storytelling
+
+Deep portfolio pages
+
+Blog reading experience
+
+Progressive reveal animations
+
+Clear next action on every page
+
+🧠 UX PHILOSOPHY
+
+Calm over clever
+
+Depth over decoration
+
+Trust over tactics
+
+Simplicity over noise
+
+The user must feel relaxed, focused, and confident.
+
+✅ FINAL INSTRUCTION
+
+Build this website now with:
+
+Apple-inspired UI/UX
+
+Black / white / grey contrast
+
+Proper shadows & depth
+
+Smooth animations
+
+Strong lead-generation focus
+
+Professional standard suitable for founders and enterprises
+
+🔒 END OF PROMPT
