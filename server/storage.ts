@@ -1,5 +1,12 @@
-import { type User, type InsertUser, type Contact, type InsertContact, type Newsletter, type InsertNewsletter } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { 
+  type User, type InsertUser, 
+  type Contact, type InsertContact, 
+  type Newsletter, type InsertNewsletter,
+  type AnalyticsEvent, type InsertAnalyticsEvent,
+  users, contactSubmissions, newsletterSubscriptions, analyticsEvents
+} from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, sql, gte } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -9,67 +16,112 @@ export interface IStorage {
   getContacts(): Promise<Contact[]>;
   createNewsletter(newsletter: InsertNewsletter): Promise<Newsletter>;
   getNewsletterByEmail(email: string): Promise<Newsletter | undefined>;
+  createAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent>;
+  getAnalyticsSummary(): Promise<AnalyticsSummary>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private contacts: Map<string, Contact>;
-  private newsletters: Map<string, Newsletter>;
+export interface AnalyticsSummary {
+  totalPageViews: number;
+  uniqueSessions: number;
+  avgEngagementTime: number;
+  topPages: { page: string; views: number }[];
+  contactSubmissions: number;
+  newsletterSubscriptions: number;
+  recentEvents: AnalyticsEvent[];
+}
 
-  constructor() {
-    this.users = new Map();
-    this.contacts = new Map();
-    this.newsletters = new Map();
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
-    const id = randomUUID();
-    const contact: Contact = { 
-      ...insertContact, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.contacts.set(id, contact);
+    const [contact] = await db.insert(contactSubmissions).values(insertContact).returning();
     return contact;
   }
 
   async getContacts(): Promise<Contact[]> {
-    return Array.from(this.contacts.values());
+    return db.select().from(contactSubmissions).orderBy(desc(contactSubmissions.createdAt));
   }
 
   async createNewsletter(insertNewsletter: InsertNewsletter): Promise<Newsletter> {
-    const id = randomUUID();
-    const newsletter: Newsletter = { 
-      ...insertNewsletter, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.newsletters.set(id, newsletter);
+    const [newsletter] = await db.insert(newsletterSubscriptions).values(insertNewsletter).returning();
     return newsletter;
   }
 
   async getNewsletterByEmail(email: string): Promise<Newsletter | undefined> {
-    return Array.from(this.newsletters.values()).find(
-      (newsletter) => newsletter.email === email,
-    );
+    const [newsletter] = await db.select().from(newsletterSubscriptions).where(eq(newsletterSubscriptions.email, email));
+    return newsletter || undefined;
+  }
+
+  async createAnalyticsEvent(insertEvent: InsertAnalyticsEvent): Promise<AnalyticsEvent> {
+    const [event] = await db.insert(analyticsEvents).values(insertEvent).returning();
+    return event;
+  }
+
+  async getAnalyticsSummary(): Promise<AnalyticsSummary> {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const [pageViewsResult] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(analyticsEvents)
+      .where(eq(analyticsEvents.eventType, 'page_view'));
+
+    const [uniqueSessionsResult] = await db
+      .select({ count: sql<number>`count(distinct ${analyticsEvents.sessionId})` })
+      .from(analyticsEvents);
+
+    const [avgEngagementResult] = await db
+      .select({ avg: sql<number>`coalesce(avg(${analyticsEvents.duration}), 0)` })
+      .from(analyticsEvents)
+      .where(eq(analyticsEvents.eventType, 'engagement'));
+
+    const topPagesResult = await db
+      .select({ 
+        page: analyticsEvents.page, 
+        views: sql<number>`count(*)` 
+      })
+      .from(analyticsEvents)
+      .where(eq(analyticsEvents.eventType, 'page_view'))
+      .groupBy(analyticsEvents.page)
+      .orderBy(desc(sql`count(*)`))
+      .limit(5);
+
+    const [contactsCount] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(contactSubmissions);
+
+    const [newsletterCount] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(newsletterSubscriptions);
+
+    const recentEvents = await db
+      .select()
+      .from(analyticsEvents)
+      .orderBy(desc(analyticsEvents.createdAt))
+      .limit(20);
+
+    return {
+      totalPageViews: Number(pageViewsResult?.count || 0),
+      uniqueSessions: Number(uniqueSessionsResult?.count || 0),
+      avgEngagementTime: Math.round(Number(avgEngagementResult?.avg || 0)),
+      topPages: topPagesResult.map(p => ({ page: p.page, views: Number(p.views) })),
+      contactSubmissions: Number(contactsCount?.count || 0),
+      newsletterSubscriptions: Number(newsletterCount?.count || 0),
+      recentEvents,
+    };
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

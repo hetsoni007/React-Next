@@ -11,8 +11,10 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useQuery } from "@tanstack/react-query";
 import type { BlogArticle } from "@shared/schema";
 import { socialLinks } from "@/lib/data";
+import { usePageView } from "@/hooks/use-analytics";
 
 export default function BlogPage() {
+  usePageView("/blog");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);

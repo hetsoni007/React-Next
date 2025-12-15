@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Smartphone, Globe, Palette, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { usePageView } from "@/hooks/use-analytics";
 import { services } from "@/lib/data";
 
 const iconMap: Record<string, typeof Smartphone> = {
@@ -41,6 +42,7 @@ const serviceDetails: Record<string, string[]> = {
 };
 
 export default function ServicesPage() {
+  usePageView("/services");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (

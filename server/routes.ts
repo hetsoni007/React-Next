@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertNewsletterSchema, type BlogArticle } from "@shared/schema";
+import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema, type BlogArticle } from "@shared/schema";
 import Parser from "rss-parser";
 
 const parser = new Parser({
@@ -124,6 +124,34 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Newsletter subscription error:", error);
       return res.status(500).json({ message: "Something went wrong. Please try again." });
+    }
+  });
+
+  // POST /api/analytics - Track analytics events
+  app.post("/api/analytics", async (req, res) => {
+    try {
+      const result = insertAnalyticsEventSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid event data" });
+      }
+
+      await storage.createAnalyticsEvent(result.data);
+      return res.status(201).json({ success: true });
+    } catch (error) {
+      console.error("Analytics error:", error);
+      return res.status(500).json({ message: "Failed to track event" });
+    }
+  });
+
+  // GET /api/analytics/summary - Get analytics summary for dashboard
+  app.get("/api/analytics/summary", async (_req, res) => {
+    try {
+      const summary = await storage.getAnalyticsSummary();
+      return res.json(summary);
+    } catch (error) {
+      console.error("Analytics summary error:", error);
+      return res.status(500).json({ message: "Failed to get analytics" });
     }
   });
 

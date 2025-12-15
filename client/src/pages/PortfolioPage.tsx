@@ -6,9 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { usePageView } from "@/hooks/use-analytics";
 import { portfolioProjects } from "@/lib/data";
 
 export default function PortfolioPage() {
+  usePageView("/portfolio");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (

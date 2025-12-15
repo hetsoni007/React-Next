@@ -22,9 +22,12 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertContactSchema, type InsertContact } from "@shared/schema";
 import { Mail, CheckCircle2, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { usePageView, useTrackEvent } from "@/hooks/use-analytics";
 import { socialLinks, projectTypes } from "@/lib/data";
 
 export default function ContactPage() {
+  usePageView("/contact");
+  const { trackEvent } = useTrackEvent();
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
@@ -46,6 +49,7 @@ export default function ContactPage() {
     onSuccess: () => {
       setIsSubmitted(true);
       form.reset();
+      trackEvent("form_submit", "/contact", { form: "contact" });
     },
     onError: () => {
       toast({

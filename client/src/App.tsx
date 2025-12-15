@@ -10,6 +10,7 @@ import PortfolioDetail from "@/pages/PortfolioDetail";
 import JourneyPage from "@/pages/JourneyPage";
 import BlogPage from "@/pages/BlogPage";
 import ContactPage from "@/pages/ContactPage";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/journey" component={JourneyPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/admin/analytics" component={AnalyticsDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

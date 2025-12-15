@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Briefcase, ArrowRight, Award, Users, Target, Lightbulb } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { usePageView } from "@/hooks/use-analytics";
 import { careerMilestones } from "@/lib/data";
 import { Link } from "wouter";
 
 export default function JourneyPage() {
+  usePageView("/journey");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (
