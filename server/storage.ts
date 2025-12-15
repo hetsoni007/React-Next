@@ -1,20 +1,25 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type User, type InsertUser, type Contact, type InsertContact, type Newsletter, type InsertNewsletter } from "@shared/schema";
 import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  createContact(contact: InsertContact): Promise<Contact>;
+  getContacts(): Promise<Contact[]>;
+  createNewsletter(newsletter: InsertNewsletter): Promise<Newsletter>;
+  getNewsletterByEmail(email: string): Promise<Newsletter | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
+  private contacts: Map<string, Contact>;
+  private newsletters: Map<string, Newsletter>;
 
   constructor() {
     this.users = new Map();
+    this.contacts = new Map();
+    this.newsletters = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -32,6 +37,38 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  async createContact(insertContact: InsertContact): Promise<Contact> {
+    const id = randomUUID();
+    const contact: Contact = { 
+      ...insertContact, 
+      id, 
+      createdAt: new Date() 
+    };
+    this.contacts.set(id, contact);
+    return contact;
+  }
+
+  async getContacts(): Promise<Contact[]> {
+    return Array.from(this.contacts.values());
+  }
+
+  async createNewsletter(insertNewsletter: InsertNewsletter): Promise<Newsletter> {
+    const id = randomUUID();
+    const newsletter: Newsletter = { 
+      ...insertNewsletter, 
+      id, 
+      createdAt: new Date() 
+    };
+    this.newsletters.set(id, newsletter);
+    return newsletter;
+  }
+
+  async getNewsletterByEmail(email: string): Promise<Newsletter | undefined> {
+    return Array.from(this.newsletters.values()).find(
+      (newsletter) => newsletter.email === email,
+    );
   }
 }
 

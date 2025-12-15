@@ -1,16 +1,131 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertContactSchema, insertNewsletterSchema, type BlogArticle } from "@shared/schema";
+import Parser from "rss-parser";
+
+const parser = new Parser({
+  customFields: {
+    item: [['content:encoded', 'contentEncoded']],
+  },
+});
+
+const MEDIUM_RSS_URL = "https://medium.com/feed/@hetsoni9398";
+
+let cachedBlogArticles: BlogArticle[] = [];
+let lastFetchTime = 0;
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  
+  // POST /api/contact - Handle contact form submissions
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const result = insertContactSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+      const contact = await storage.createContact(result.data);
+      return res.status(201).json({ 
+        message: "Thank you for reaching out! I'll get back to you soon.",
+        contact 
+      });
+    } catch (error) {
+      console.error("Contact form error:", error);
+      return res.status(500).json({ message: "Something went wrong. Please try again." });
+    }
+  });
+
+  // GET /api/blog - Fetch and parse Medium RSS feed
+  app.get("/api/blog", async (_req, res) => {
+    try {
+      const now = Date.now();
+      
+      // Return cached data if still valid
+      if (cachedBlogArticles.length > 0 && (now - lastFetchTime) < CACHE_DURATION) {
+        return res.json(cachedBlogArticles);
+      }
+
+      const feed = await parser.parseURL(MEDIUM_RSS_URL);
+      
+      const articles: BlogArticle[] = feed.items.map((item) => {
+        // Extract thumbnail from content
+        let thumbnail: string | undefined;
+        const contentEncoded = (item as any).contentEncoded || item.content || "";
+        const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch) {
+          thumbnail = imgMatch[1];
+        }
+
+        // Clean description - remove HTML and truncate
+        let description = item.contentSnippet || item.content || "";
+        description = description.replace(/<[^>]*>/g, "").substring(0, 200);
+        if (description.length >= 200) {
+          description = description.substring(0, description.lastIndexOf(" ")) + "...";
+        }
+
+        return {
+          title: item.title || "Untitled",
+          link: item.link || "",
+          pubDate: item.pubDate || new Date().toISOString(),
+          description,
+          thumbnail,
+          categories: item.categories || [],
+        };
+      });
+
+      cachedBlogArticles = articles;
+      lastFetchTime = now;
+
+      return res.json(articles);
+    } catch (error) {
+      console.error("Blog fetch error:", error);
+      // Return cached data even if stale, or empty array
+      if (cachedBlogArticles.length > 0) {
+        return res.json(cachedBlogArticles);
+      }
+      return res.status(500).json({ message: "Failed to fetch blog articles" });
+    }
+  });
+
+  // POST /api/newsletter - Handle newsletter subscriptions
+  app.post("/api/newsletter", async (req, res) => {
+    try {
+      const result = insertNewsletterSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      // Check if email already exists
+      const existing = await storage.getNewsletterByEmail(result.data.email);
+      if (existing) {
+        return res.status(200).json({ 
+          message: "You're already subscribed! Thank you for your continued interest." 
+        });
+      }
+
+      const newsletter = await storage.createNewsletter(result.data);
+      return res.status(201).json({ 
+        message: "Welcome aboard! You'll receive updates on new projects and insights.",
+        newsletter 
+      });
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      return res.status(500).json({ message: "Something went wrong. Please try again." });
+    }
+  });
 
   return httpServer;
 }

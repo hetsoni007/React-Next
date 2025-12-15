@@ -1,0 +1,150 @@
+import type { PortfolioProject, CareerMilestone, Service } from "@shared/schema";
+
+export const services: Service[] = [
+  {
+    id: "mobile-app",
+    title: "Mobile App Development",
+    icon: "smartphone",
+    problem: "Your business needs to reach users on-the-go, but building a quality mobile app requires specialized expertise and significant investment.",
+    solution: "I craft native and cross-platform mobile applications using Flutter and React Native that deliver exceptional user experiences while optimizing development time and cost.",
+  },
+  {
+    id: "web-development",
+    title: "Web Development",
+    icon: "globe",
+    problem: "Your web presence needs to be fast, accessible, and scalable, but achieving all three without compromise is challenging.",
+    solution: "I build modern web applications with React, Next.js, and Node.js that load instantly, rank well on search engines, and scale effortlessly with your growth.",
+  },
+  {
+    id: "ui-ux",
+    title: "UI/UX & Product Thinking",
+    icon: "palette",
+    problem: "Great products require more than just code — they need thoughtful design that solves real user problems and creates lasting engagement.",
+    solution: "I approach every project with a product mindset, combining user research, intuitive interfaces, and strategic thinking to create experiences users love.",
+  },
+];
+
+export const portfolioProjects: PortfolioProject[] = [
+  {
+    id: "project-1",
+    title: "FinTech Mobile Banking",
+    subtitle: "Reimagining personal finance management",
+    description: "A comprehensive mobile banking solution that simplifies financial management for millennials and Gen-Z users through intuitive design and smart automation.",
+    category: "Mobile App Development",
+    timeline: {
+      discovery: "User research revealed pain points in existing banking apps — complex navigation and lack of personalization.",
+      design: "Created a minimalist interface with custom animations and a unique card-based transaction view.",
+      development: "Built with Flutter for cross-platform consistency, integrated with banking APIs and biometric security.",
+      testing: "Conducted extensive user testing with 50+ beta users, iterating on feedback for optimal UX.",
+      delivery: "Launched on iOS and Android with 4.8 star ratings within the first month.",
+    },
+    outcome: {
+      problem: "Users struggled with fragmented financial tools and overwhelming banking interfaces.",
+      result: "40% increase in daily active users and 60% improvement in task completion rates.",
+    },
+    images: [],
+  },
+  {
+    id: "project-2",
+    title: "Healthcare Companion",
+    subtitle: "Connecting patients with care",
+    description: "A telehealth platform enabling seamless virtual consultations, prescription management, and health tracking for patients worldwide.",
+    category: "Mobile App Development",
+    timeline: {
+      discovery: "Identified the need for accessible healthcare during the global shift to remote services.",
+      design: "Focused on accessibility and ease of use for users of all ages and technical abilities.",
+      development: "Implemented real-time video consultations, secure messaging, and HIPAA-compliant data handling.",
+      testing: "Partnered with healthcare providers for clinical validation and compliance verification.",
+      delivery: "Successfully deployed across 3 countries with integration into existing healthcare systems.",
+    },
+    outcome: {
+      problem: "Patients faced barriers accessing healthcare due to distance, mobility, or scheduling constraints.",
+      result: "Facilitated 10,000+ virtual consultations in the first quarter post-launch.",
+    },
+    images: [],
+  },
+  {
+    id: "project-3",
+    title: "E-Commerce Marketplace",
+    subtitle: "Local businesses, global reach",
+    description: "A marketplace platform empowering local artisans and small businesses to showcase and sell their products to a global audience.",
+    category: "Mobile App Development",
+    timeline: {
+      discovery: "Research showed small businesses lacked affordable platforms with professional-grade features.",
+      design: "Created a warm, inviting interface that highlights product craftsmanship and seller stories.",
+      development: "Built with React Native, featuring real-time inventory, secure payments, and seller analytics.",
+      testing: "Onboarded 100+ pilot sellers for extensive marketplace testing and optimization.",
+      delivery: "Launched with a curated selection of 500+ products and growing seller community.",
+    },
+    outcome: {
+      problem: "Small businesses struggled to compete with large e-commerce platforms.",
+      result: "Sellers reported 150% average increase in online sales within 6 months.",
+    },
+    images: [],
+  },
+  {
+    id: "project-4",
+    title: "Fitness & Wellness Tracker",
+    subtitle: "Your personal health journey",
+    description: "A holistic wellness application combining workout tracking, nutrition planning, and mindfulness features for a balanced approach to health.",
+    category: "Mobile App Development",
+    timeline: {
+      discovery: "Users wanted a single app that addressed physical, nutritional, and mental wellness.",
+      design: "Developed a calming visual language with progress visualizations that motivate without overwhelming.",
+      development: "Integrated with wearables, built AI-powered meal suggestions, and created guided meditation features.",
+      testing: "Ran a 30-day challenge with fitness influencers to validate engagement and effectiveness.",
+      delivery: "Achieved 200,000+ downloads in the first year with strong user retention.",
+    },
+    outcome: {
+      problem: "Users juggled multiple apps for different aspects of their wellness routine.",
+      result: "85% of users reported improved consistency in their health habits.",
+    },
+    images: [],
+  },
+];
+
+export const careerMilestones: CareerMilestone[] = [
+  {
+    year: "2019",
+    title: "Business Development Executive",
+    description: "Started my journey in the tech industry, learning the foundations of client relationships and understanding market needs.",
+  },
+  {
+    year: "2022",
+    title: "Senior Business Development Executive",
+    description: "Grew into a leadership role, managing key accounts and developing strategies that drove significant revenue growth.",
+  },
+  {
+    year: "2023",
+    title: "Business Development Manager",
+    description: "Led a team of professionals, establishing processes and partnerships that expanded our market presence.",
+  },
+  {
+    year: "2023",
+    title: "COO, Way To React Technologies",
+    company: "Way To React Technologies",
+    description: "Took on operational leadership, overseeing project delivery and building a culture of excellence in software development.",
+  },
+  {
+    year: "2024",
+    title: "CEO & Founder, Soni Consultancy Services",
+    company: "Soni Consultancy Services",
+    description: "Founded my own consultancy to help businesses build exceptional digital products with a focus on quality, user experience, and measurable results.",
+  },
+];
+
+export const socialLinks = {
+  linkedin: "https://www.linkedin.com/in/hetsoni/",
+  twitter: "https://x.com/CodeMak_",
+  instagram: "https://www.instagram.com/hetsoni_98/",
+  email: "het.soni@soniconsultancyservices.com",
+  medium: "https://medium.com/@hetsoni9398",
+};
+
+export const projectTypes = [
+  { value: "mobile-app", label: "Mobile App Development" },
+  { value: "web-app", label: "Web Application" },
+  { value: "ui-ux", label: "UI/UX Design" },
+  { value: "consulting", label: "Technical Consulting" },
+  { value: "other", label: "Other" },
+];
