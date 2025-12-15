@@ -1,10 +1,11 @@
 import { useParams, Link } from "wouter";
+import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote, FileText, ExternalLink } from "lucide-react";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
 import { portfolioProjects } from "@/lib/data";
 import { PortfolioPopup } from "@/components/Popups";
@@ -126,14 +127,44 @@ function HeroSection({ project }: SectionProps) {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 rounded-3xl flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-20 h-20 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
-                <Palette className="h-10 w-10 text-foreground" />
+          {project.pdfAsset ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <FileText className="h-5 w-5" />
+                  <span className="text-sm font-medium">Project Case Study</span>
+                </div>
+                <a
+                  href={`/attached_assets/${project.pdfAsset}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="link-pdf-fullscreen"
+                >
+                  <Button variant="outline" size="sm">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Open Full Screen
+                  </Button>
+                </a>
               </div>
-              <p className="text-muted-foreground">Project Preview</p>
+              <div className="aspect-[4/3] bg-muted rounded-3xl overflow-hidden">
+                <iframe
+                  src={`/attached_assets/${project.pdfAsset}`}
+                  className="w-full h-full border-0"
+                  title={`${project.title} Case Study`}
+                  data-testid="iframe-pdf-viewer"
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 rounded-3xl flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-20 h-20 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
+                  <Palette className="h-10 w-10 text-foreground" />
+                </div>
+                <p className="text-muted-foreground">Project Preview</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

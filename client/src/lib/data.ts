@@ -43,6 +43,7 @@ export const portfolioProjects: PortfolioProject[] = [
       result: "Achieved operational efficiency through standardized store operations, enhanced staff productivity via integrated LMS, and improved customer relationship management.",
     },
     images: [],
+    pdfAsset: "POPProbe_App_Design_(1)_1765829664384.pdf",
     testimonial: {
       quote: "Het delivered a system that transformed how we manage our retail operations. The integrated approach to checklists, training, and customer logs has significantly improved our consistency across all locations.",
       author: "Retail Operations Director",

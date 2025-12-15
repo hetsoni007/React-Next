@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { testDatabaseConnection } from "./db";
+import path from "path";
 
 const app = express();
 const httpServer = createServer(app);
@@ -22,6 +23,9 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// Serve attached_assets folder for portfolio PDFs and images
+app.use('/attached_assets', express.static(path.join(process.cwd(), 'attached_assets')));
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

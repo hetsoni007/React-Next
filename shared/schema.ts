@@ -95,6 +95,7 @@ export interface PortfolioProject {
     result: string;
   };
   images: string[];
+  pdfAsset?: string;
   testimonial?: {
     quote: string;
     author: string;
