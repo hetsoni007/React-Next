@@ -5,10 +5,17 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote, FileText, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote, FileText, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
 import { portfolioProjects } from "@/lib/data";
 import { PortfolioPopup } from "@/components/Popups";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const timelineIcons = {
   discovery: Search,
@@ -127,7 +134,59 @@ function HeroSection({ project }: SectionProps) {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          {project.pdfAsset ? (
+          {project.images && project.images.length > 0 ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Palette className="h-5 w-5" />
+                  <span className="text-sm font-medium">Project Showcase</span>
+                </div>
+                {project.pdfAsset && (
+                  <a
+                    href={`/attached_assets/${project.pdfAsset}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="link-pdf-fullscreen"
+                  >
+                    <Button variant="outline" size="sm">
+                      <FileText className="h-4 w-4 mr-2" />
+                      View Case Study PDF
+                    </Button>
+                  </a>
+                )}
+              </div>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+                data-testid="carousel-project-images"
+              >
+                <CarouselContent>
+                  {project.images.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <div className="aspect-video bg-muted rounded-3xl overflow-hidden">
+                        <img
+                          src={`/attached_assets/${image}`}
+                          alt={`${project.title} - Slide ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          data-testid={`img-slide-${index}`}
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" data-testid="button-carousel-prev" />
+                <CarouselNext className="right-4" data-testid="button-carousel-next" />
+              </Carousel>
+              <div className="flex justify-center gap-2 pt-4">
+                <span className="text-sm text-muted-foreground">
+                  {project.images.length} slides - Use arrows to navigate
+                </span>
+              </div>
+            </div>
+          ) : project.pdfAsset ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
