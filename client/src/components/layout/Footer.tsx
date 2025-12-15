@@ -49,9 +49,19 @@ export function Footer() {
             <div className="mt-6">
               <h4 className="font-semibold mb-3 text-sm">Stay Updated</h4>
               {isSubscribed ? (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Thanks for subscribing!</span>
+                <div className="space-y-3" data-testid="newsletter-confirmation">
+                  <div className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-foreground" />
+                    <span className="font-medium">You're subscribed!</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    <p>Here's what to expect in your welcome sequence:</p>
+                    <ul className="list-disc list-inside pl-1 space-y-0.5">
+                      <li>Day 1: Welcome & introduction to my services</li>
+                      <li>Day 3: Featured portfolio case studies</li>
+                      <li>Day 7: Exclusive insights on app development</li>
+                    </ul>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubscribe} className="flex gap-2 max-w-sm">
