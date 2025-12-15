@@ -95,6 +95,12 @@ export interface PortfolioProject {
     result: string;
   };
   images: string[];
+  testimonial?: {
+    quote: string;
+    author: string;
+    role: string;
+    company: string;
+  };
 }
 
 // Blog article from Medium

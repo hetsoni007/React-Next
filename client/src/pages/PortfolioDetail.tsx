@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote } from "lucide-react";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
 import { portfolioProjects } from "@/lib/data";
 import { PortfolioPopup } from "@/components/Popups";
@@ -66,6 +66,7 @@ export default function PortfolioDetail() {
         <HeroSection project={project} />
         <TimelineSection project={project} />
         <OutcomeSection project={project} />
+        {project.testimonial && <TestimonialSection project={project} />}
         <CTASection />
       </main>
       
@@ -273,13 +274,52 @@ function OutcomeSection({ project }: SectionProps) {
   );
 }
 
+function TestimonialSection({ project }: SectionProps) {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+
+  if (!project.testimonial) return null;
+
+  return (
+    <section
+      ref={ref}
+      className="py-20 lg:py-32 px-6 lg:px-8 bg-card"
+      data-testid="section-testimonial"
+    >
+      <div className="max-w-4xl mx-auto">
+        <div
+          className={`text-center transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-8">
+            <Quote className="h-8 w-8 text-foreground" />
+          </div>
+          
+          <blockquote className="text-2xl sm:text-3xl font-medium leading-relaxed mb-8" data-testid="text-testimonial-quote">
+            "{project.testimonial.quote}"
+          </blockquote>
+          
+          <div className="space-y-1">
+            <p className="text-lg font-semibold" data-testid="text-testimonial-author">
+              {project.testimonial.author}
+            </p>
+            <p className="text-muted-foreground" data-testid="text-testimonial-role">
+              {project.testimonial.role}, {project.testimonial.company}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CTASection() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (
     <section
       ref={ref}
-      className="py-20 lg:py-32 px-6 lg:px-8 bg-card"
+      className="py-20 lg:py-32 px-6 lg:px-8"
     >
       <div
         className={`max-w-4xl mx-auto text-center transition-all duration-700 ${

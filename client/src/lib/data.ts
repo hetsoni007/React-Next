@@ -43,6 +43,12 @@ export const portfolioProjects: PortfolioProject[] = [
       result: "40% increase in daily active users and 60% improvement in task completion rates.",
     },
     images: [],
+    testimonial: {
+      quote: "Het transformed our vision into a banking app that our users genuinely love. The attention to detail and user-centric approach exceeded all expectations.",
+      author: "Sarah Chen",
+      role: "Chief Product Officer",
+      company: "FinFlow Technologies",
+    },
   },
   {
     id: "project-2",
@@ -62,6 +68,12 @@ export const portfolioProjects: PortfolioProject[] = [
       result: "Facilitated 10,000+ virtual consultations in the first quarter post-launch.",
     },
     images: [],
+    testimonial: {
+      quote: "The platform Het built has revolutionized how we deliver care. Patients love the simplicity, and our providers find it intuitive to use.",
+      author: "Dr. Michael Torres",
+      role: "Medical Director",
+      company: "MedConnect Health",
+    },
   },
   {
     id: "project-3",
@@ -81,6 +93,12 @@ export const portfolioProjects: PortfolioProject[] = [
       result: "Sellers reported 150% average increase in online sales within 6 months.",
     },
     images: [],
+    testimonial: {
+      quote: "Het understood our mission to empower small businesses. The marketplace he created captures the essence of handcrafted quality while being incredibly easy to use.",
+      author: "Emily Rodriguez",
+      role: "Founder",
+      company: "Artisan Collective",
+    },
   },
   {
     id: "project-4",
@@ -100,6 +118,12 @@ export const portfolioProjects: PortfolioProject[] = [
       result: "85% of users reported improved consistency in their health habits.",
     },
     images: [],
+    testimonial: {
+      quote: "Working with Het was a game-changer for our wellness platform. He brought both technical excellence and a genuine understanding of what motivates users to stay healthy.",
+      author: "James Park",
+      role: "CEO",
+      company: "Vitality Labs",
+    },
   },
 ];
 
