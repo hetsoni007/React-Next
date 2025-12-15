@@ -83,6 +83,7 @@ export interface PortfolioProject {
   subtitle: string;
   description: string;
   category: string;
+  duration?: string;
   timeline: {
     discovery: string;
     design: string;
@@ -96,6 +97,25 @@ export interface PortfolioProject {
   };
   images: string[];
   pdfAsset?: string;
+  showcaseContent?: {
+    image: string;
+    title: string;
+    description: string;
+  }[];
+  roadmap?: {
+    week: string;
+    phase: string;
+    title: string;
+    description: string;
+  }[];
+  targetAudience?: {
+    role: string;
+    description: string;
+  }[];
+  appLinks?: {
+    android?: string;
+    ios?: string;
+  };
   testimonial?: {
     quote: string;
     author: string;

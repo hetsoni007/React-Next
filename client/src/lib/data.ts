@@ -26,21 +26,22 @@ export const services: Service[] = [
 
 export const portfolioProjects: PortfolioProject[] = [
   {
-    id: "popprobe",
-    title: "POPProbe - Retail Chain Management",
-    subtitle: "Streamlining multi-store operations",
-    description: "A comprehensive retail chain management system designed to address key operational needs including modules for managing checklists, a Learning Management System (LMS), an issue log, and a customer log. The focus is to streamline store operations, enhance employee training, improve customer satisfaction, and ensure a structured approach to handling operational challenges.",
+    id: "retail-supply-chain",
+    title: "Retail Supply Chain Industry",
+    subtitle: "Comprehensive Chain Management System",
+    description: "A 32-week project delivering a comprehensive Retail Chain Management tool designed to address key operational needs. The system includes modules for managing checklists, a Learning Management System (LMS), an issue log, and a customer log. Built to streamline store operations, enhance employee training, improve customer satisfaction, and ensure a structured approach to handling operational challenges across multiple store locations.",
     category: "Mobile App Development",
+    duration: "32 weeks",
     timeline: {
-      discovery: "Understanding client requirements and pain points through stakeholder interviews. Retail chains face challenges in maintaining consistent operational quality, managing customer relationships, and ensuring employee readiness.",
-      design: "Conducted user and competitive research to identify best practices. Sketched and wireframed solutions tailored to the identified problems using Figma.",
-      development: "Built with React.js, Node.js, MongoDB for web and React Native for mobile. Integrated checklists, LMS, issue logs, and customer logs as seamless modules.",
-      testing: "Refined the design based on usability tests and stakeholder inputs. Developed interactive prototypes for user feedback before final implementation.",
-      delivery: "Provided detailed design assets and documentation to the development team. Successfully deployed with analytics dashboard providing actionable insights.",
+      discovery: "Weeks 1-2: Requirement gathering and user research through stakeholder interviews, surveys, and shadowing store employees to understand pain points in daily operations.",
+      design: "Weeks 3-6: Wireframing, low-fidelity prototypes, high-fidelity designs using Figma, and comprehensive usability testing with store managers and employees.",
+      development: "Weeks 7-24: Built with React.js, Node.js, MongoDB for web and React Native for mobile. Integrated four core modules: Checklists, LMS, Issue Logs, and Customer Logs.",
+      testing: "Weeks 25-30: Refined designs based on usability tests. Validated functionality with QA team and iterated based on stakeholder feedback.",
+      delivery: "Weeks 31-32: Final design delivery, development hand-off with detailed documentation. Deployed on iOS App Store and Google Play Store.",
     },
     outcome: {
-      problem: "Current manual or semi-automated systems led to inefficiencies, unrecorded issues, and inconsistent service delivery across retail locations.",
-      result: "Achieved operational efficiency through standardized store operations, enhanced staff productivity via integrated LMS, and improved customer relationship management.",
+      problem: "Retail chains faced challenges maintaining consistent operational quality. Manual or semi-automated systems led to inefficiencies, unrecorded issues, and inconsistent service delivery.",
+      result: "Delivered operational efficiency through standardized checklists, enhanced staff productivity via gamified LMS, improved customer relationship management, and actionable data insights through comprehensive analytics dashboard.",
     },
     images: [
       "1_1765830109261.png",
@@ -53,7 +54,72 @@ export const portfolioProjects: PortfolioProject[] = [
       "8_1765830109267.png",
       "9_1765830109267.png",
     ],
-    pdfAsset: "POPProbe_App_Design_(1)_1765829664384.pdf",
+    showcaseContent: [
+      {
+        image: "1_1765830109261.png",
+        title: "Product Overview",
+        description: "A comprehensive Retail Chain Management tool overseeing operations across multiple store locations to ensure consistency, efficiency, and profitability through inventory optimization, supply chain integration, and customer engagement."
+      },
+      {
+        image: "2_1765830109266.png",
+        title: "About the Application",
+        description: "The system includes modules for managing checklists, a Learning Management System (LMS), an issue log, and a customer log. Built to streamline store operations and enhance employee training."
+      },
+      {
+        image: "3_1765830109266.png",
+        title: "Problem Statement & Goals",
+        description: "Addressing challenges in maintaining operational quality, managing customer relationships, and ensuring employee readiness. Goals include operational efficiency, employee training, customer engagement, and data insights."
+      },
+      {
+        image: "4_1765830109266.png",
+        title: "Design Process",
+        description: "A structured 6-phase approach: Discovery Phase, Research Phase, Ideation, Prototyping, Testing and Iteration, and Development Hand-off with detailed design assets."
+      },
+      {
+        image: "5_1765830109266.png",
+        title: "Application Features",
+        description: "Integrated Modules for seamless connection, Customizable Checklists tailored to store-specific operations, Analytics Dashboard for actionable insights, and Gamified Learning to incentivize employee engagement."
+      },
+      {
+        image: "6_1765830109266.png",
+        title: "Technologies & Tools",
+        description: "Design: Figma | Development: React.js, Node.js, MongoDB, React Native | Project Management: Jira | User Research: Google Forms, Hotjar"
+      },
+      {
+        image: "7_1765830109267.png",
+        title: "Portfolio Showcase",
+        description: "Comprehensive notification system, checklist management with progress tracking, and detailed database cleaning workflows for store operations."
+      },
+      {
+        image: "8_1765830109267.png",
+        title: "User Interface Modules",
+        description: "Profile management, checklist tracking with completion status, training modules with assessment tracking, and PDF report generation capabilities."
+      },
+      {
+        image: "9_1765830109267.png",
+        title: "Multi-Device Experience",
+        description: "Seamless experience across devices with consistent UI/UX, enabling store managers and employees to access the system from anywhere."
+      }
+    ],
+    roadmap: [
+      { week: "1-2", phase: "Discovery", title: "Requirement Gathering", description: "User research through stakeholder interviews, surveys, and shadowing store employees." },
+      { week: "3-4", phase: "Ideation", title: "Wireframing", description: "Low-fidelity prototypes and initial wireframe development." },
+      { week: "5-6", phase: "Design", title: "High-Fidelity Designs", description: "Detailed UI designs in Figma and comprehensive usability testing." },
+      { week: "7-8", phase: "Iteration", title: "Design Refinement", description: "Iterations based on feedback and final design delivery." },
+      { week: "9-24", phase: "Development", title: "Core Development", description: "Building all four modules with React.js, Node.js, MongoDB, and React Native." },
+      { week: "25-30", phase: "Testing", title: "QA & Validation", description: "Functionality validation, usability tests, and stakeholder feedback incorporation." },
+      { week: "31-32", phase: "Delivery", title: "Launch", description: "App Store and Play Store deployment with full documentation." }
+    ],
+    targetAudience: [
+      { role: "Store Managers", description: "For operational checklists and issue tracking" },
+      { role: "Employees", description: "For training via the LMS and access to learning materials" },
+      { role: "Customers", description: "Indirectly benefitting from improved service quality" },
+      { role: "Head Office Teams", description: "For centralized reporting and data analysis" }
+    ],
+    appLinks: {
+      android: "https://play.google.com/store/apps/details?id=com.app.popprobe",
+      ios: "https://apps.apple.com/in/app/popprobe/id1617582763"
+    },
     testimonial: {
       quote: "Het delivered a system that transformed how we manage our retail operations. The integrated approach to checklists, training, and customer logs has significantly improved our consistency across all locations.",
       author: "Retail Operations Director",

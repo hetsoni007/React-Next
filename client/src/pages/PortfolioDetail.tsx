@@ -1,22 +1,14 @@
 import { useParams, Link } from "wouter";
-import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote, FileText, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search, Palette, Code, TestTube, Rocket, CheckCircle2, Quote, Clock, Users, Smartphone, Calendar } from "lucide-react";
+import { SiGoogleplay, SiAppstore } from "react-icons/si";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
 import { portfolioProjects } from "@/lib/data";
 import { PortfolioPopup } from "@/components/Popups";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 
 const timelineIcons = {
   discovery: Search,
@@ -62,6 +54,9 @@ export default function PortfolioDetail() {
     );
   }
 
+  const hasShowcaseContent = project.showcaseContent && project.showcaseContent.length > 0;
+  const hasRoadmap = project.roadmap && project.roadmap.length > 0;
+
   return (
     <div className="min-h-screen bg-background" data-testid={`page-portfolio-${id}`}>
       <div 
@@ -73,9 +68,12 @@ export default function PortfolioDetail() {
       
       <main className="pt-24 lg:pt-32">
         <HeroSection project={project} />
-        <TimelineSection project={project} />
+        {hasShowcaseContent && <ShowcaseSection project={project} />}
+        {hasRoadmap && <RoadmapSection project={project} />}
+        {!hasShowcaseContent && <TimelineSection project={project} />}
         <OutcomeSection project={project} />
         {project.testimonial && <TestimonialSection project={project} />}
+        {project.appLinks && <AppLinksSection project={project} />}
         <CTASection />
       </main>
       
@@ -110,9 +108,17 @@ function HeroSection({ project }: SectionProps) {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <Badge variant="secondary" className="mb-4">
-            {project.category}
-          </Badge>
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <Badge variant="secondary">
+              {project.category}
+            </Badge>
+            {project.duration && (
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {project.duration}
+              </Badge>
+            )}
+          </div>
           
           <h1
             className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-4"
@@ -130,108 +136,213 @@ function HeroSection({ project }: SectionProps) {
           </p>
         </div>
 
+        {project.targetAudience && project.targetAudience.length > 0 && (
+          <div
+            className={`mt-12 transition-all duration-700 delay-200 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+          >
+            <div className="flex items-center gap-2 text-muted-foreground mb-6">
+              <Users className="h-5 w-5" />
+              <span className="text-sm font-medium">Target Audience</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {project.targetAudience.map((audience, index) => (
+                <Card key={index} className="bg-muted/50">
+                  <CardContent className="p-4">
+                    <p className="font-semibold text-sm">{audience.role}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{audience.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ShowcaseSection({ project }: SectionProps) {
+  if (!project.showcaseContent || project.showcaseContent.length === 0) return null;
+
+  return (
+    <section className="py-20 lg:py-32 px-6 lg:px-8 bg-card">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+            Project Showcase
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Explore the key features and design decisions of this project.
+          </p>
+        </div>
+
+        <div className="space-y-32">
+          {project.showcaseContent.map((item, index) => (
+            <ShowcaseItem
+              key={index}
+              image={item.image}
+              title={item.title}
+              description={item.description}
+              index={index}
+              projectTitle={project.title}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+interface ShowcaseItemProps {
+  image: string;
+  title: string;
+  description: string;
+  index: number;
+  projectTitle: string;
+}
+
+function ShowcaseItem({ image, title, description, index, projectTitle }: ShowcaseItemProps) {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const isEven = index % 2 === 0;
+
+  return (
+    <div
+      ref={ref}
+      className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-16 ${
+        isEven ? "" : "lg:flex-row-reverse"
+      }`}
+      data-testid={`showcase-item-${index}`}
+    >
+      <div
+        className={`flex-1 transition-all duration-1000 ${
+          isVisible
+            ? "opacity-100 translate-x-0"
+            : isEven
+            ? "opacity-0 -translate-x-16"
+            : "opacity-0 translate-x-16"
+        }`}
+      >
+        <div className="aspect-video bg-muted rounded-3xl overflow-hidden shadow-2xl">
+          <img
+            src={`/attached_assets/${image}`}
+            alt={`${projectTitle} - ${title}`}
+            className="w-full h-full object-cover"
+            data-testid={`img-showcase-${index}`}
+          />
+        </div>
+      </div>
+
+      <div
+        className={`flex-1 transition-all duration-1000 delay-200 ${
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-8"
+        }`}
+      >
+        <Badge variant="outline" className="mb-4">
+          {String(index + 1).padStart(2, "0")}
+        </Badge>
+        <h3 className="text-2xl sm:text-3xl font-semibold mb-4">{title}</h3>
+        <p className="text-lg text-muted-foreground leading-relaxed">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RoadmapSection({ project }: SectionProps) {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+
+  if (!project.roadmap || project.roadmap.length === 0) return null;
+
+  const phaseColors: Record<string, string> = {
+    Discovery: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
+    Ideation: "bg-purple-500/20 text-purple-600 dark:text-purple-400",
+    Design: "bg-pink-500/20 text-pink-600 dark:text-pink-400",
+    Iteration: "bg-orange-500/20 text-orange-600 dark:text-orange-400",
+    Development: "bg-green-500/20 text-green-600 dark:text-green-400",
+    Testing: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400",
+    Delivery: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+  };
+
+  return (
+    <section
+      ref={ref}
+      className="py-20 lg:py-32 px-6 lg:px-8"
+      data-testid="section-roadmap"
+    >
+      <div className="max-w-7xl mx-auto">
         <div
-          className={`mt-16 transition-all duration-700 delay-200 ${
+          className={`text-center mb-16 transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          {project.images && project.images.length > 0 ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Palette className="h-5 w-5" />
-                  <span className="text-sm font-medium">Project Showcase</span>
-                </div>
-                {project.pdfAsset && (
-                  <a
-                    href={`/attached_assets/${project.pdfAsset}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-testid="link-pdf-fullscreen"
-                  >
-                    <Button variant="outline" size="sm">
-                      <FileText className="h-4 w-4 mr-2" />
-                      View Case Study PDF
-                    </Button>
-                  </a>
-                )}
-              </div>
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                plugins={[
-                  Autoplay({
-                    delay: 4000,
-                    stopOnInteraction: true,
-                    stopOnMouseEnter: true,
-                  }),
-                ]}
-                className="w-full"
-                data-testid="carousel-project-images"
-              >
-                <CarouselContent>
-                  {project.images.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="aspect-video bg-muted rounded-3xl overflow-hidden">
-                        <img
-                          src={`/attached_assets/${image}`}
-                          alt={`${project.title} - Slide ${index + 1}`}
-                          className="w-full h-full object-cover"
-                          data-testid={`img-slide-${index}`}
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-4" data-testid="button-carousel-prev" />
-                <CarouselNext className="right-4" data-testid="button-carousel-next" />
-              </Carousel>
-              <div className="flex justify-center gap-2 pt-4">
-                <span className="text-sm text-muted-foreground">
-                  {project.images.length} slides - Use arrows to navigate
-                </span>
-              </div>
-            </div>
-          ) : project.pdfAsset ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <FileText className="h-5 w-5" />
-                  <span className="text-sm font-medium">Project Case Study</span>
-                </div>
-                <a
-                  href={`/attached_assets/${project.pdfAsset}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-testid="link-pdf-fullscreen"
+          <div className="flex items-center justify-center gap-2 text-muted-foreground mb-4">
+            <Calendar className="h-5 w-5" />
+            <span className="text-sm font-medium uppercase tracking-wide">Development Roadmap</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+            32-Week Journey
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            From discovery to deployment, here's the complete timeline of how this project came to life.
+          </p>
+        </div>
+
+        <div className="relative">
+          <div className="absolute left-4 lg:left-1/2 lg:-translate-x-px top-0 bottom-0 w-[2px] bg-border" />
+
+          <div className="space-y-12 lg:space-y-16">
+            {project.roadmap.map((item, index) => {
+              const isEven = index % 2 === 0;
+              const colorClass = phaseColors[item.phase] || "bg-muted text-foreground";
+
+              return (
+                <div
+                  key={index}
+                  className={`relative flex items-start gap-8 lg:gap-0 transition-all duration-700 ${
+                    isVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-8"
+                  }`}
+                  style={{ transitionDelay: `${(index + 1) * 100}ms` }}
+                  data-testid={`roadmap-item-${index}`}
                 >
-                  <Button variant="outline" size="sm">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Open Full Screen
-                  </Button>
-                </a>
-              </div>
-              <div className="aspect-[4/3] bg-muted rounded-3xl overflow-hidden">
-                <iframe
-                  src={`/attached_assets/${project.pdfAsset}`}
-                  className="w-full h-full border-0"
-                  title={`${project.title} Case Study`}
-                  data-testid="iframe-pdf-viewer"
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 rounded-3xl flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-20 h-20 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
-                  <Palette className="h-10 w-10 text-foreground" />
+                  <div className="absolute left-4 lg:left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-background border-2 border-border flex items-center justify-center z-10">
+                    <span className="text-xs font-bold text-muted-foreground">
+                      W{item.week.split("-")[0]}
+                    </span>
+                  </div>
+
+                  <div
+                    className={`pl-20 lg:pl-0 lg:w-1/2 ${
+                      isEven ? "lg:pr-20 lg:text-right" : "lg:pl-20 lg:ml-auto"
+                    }`}
+                  >
+                    <div
+                      className={`inline-flex items-center gap-2 mb-2 ${
+                        isEven ? "lg:flex-row-reverse" : ""
+                      }`}
+                    >
+                      <Badge className={colorClass}>
+                        {item.phase}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">
+                        Week {item.week}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-muted-foreground">Project Preview</p>
-              </div>
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -321,7 +432,7 @@ function OutcomeSection({ project }: SectionProps) {
   return (
     <section
       ref={ref}
-      className="py-20 lg:py-32 px-6 lg:px-8"
+      className="py-20 lg:py-32 px-6 lg:px-8 bg-card"
     >
       <div className="max-w-7xl mx-auto">
         <div
@@ -380,7 +491,7 @@ function TestimonialSection({ project }: SectionProps) {
   return (
     <section
       ref={ref}
-      className="py-20 lg:py-32 px-6 lg:px-8 bg-card"
+      className="py-20 lg:py-32 px-6 lg:px-8"
       data-testid="section-testimonial"
     >
       <div className="max-w-4xl mx-auto">
@@ -404,6 +515,65 @@ function TestimonialSection({ project }: SectionProps) {
             <p className="text-muted-foreground" data-testid="text-testimonial-role">
               {project.testimonial.role}, {project.testimonial.company}
             </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AppLinksSection({ project }: SectionProps) {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+
+  if (!project.appLinks) return null;
+
+  return (
+    <section
+      ref={ref}
+      className="py-20 lg:py-32 px-6 lg:px-8 bg-card"
+      data-testid="section-app-links"
+    >
+      <div className="max-w-4xl mx-auto">
+        <div
+          className={`text-center transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="flex items-center justify-center gap-2 text-muted-foreground mb-4">
+            <Smartphone className="h-5 w-5" />
+            <span className="text-sm font-medium uppercase tracking-wide">Available On</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-8">
+            Download the App
+          </h2>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            {project.appLinks.android && (
+              <a
+                href={project.appLinks.android}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="link-android-app"
+              >
+                <Button size="lg" variant="outline" className="gap-2">
+                  <SiGoogleplay className="h-5 w-5" />
+                  Google Play
+                </Button>
+              </a>
+            )}
+            {project.appLinks.ios && (
+              <a
+                href={project.appLinks.ios}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="link-ios-app"
+              >
+                <Button size="lg" variant="outline" className="gap-2">
+                  <SiAppstore className="h-5 w-5" />
+                  App Store
+                </Button>
+              </a>
+            )}
           </div>
         </div>
       </div>
