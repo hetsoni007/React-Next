@@ -313,28 +313,112 @@ export const portfolioProjects: PortfolioProject[] = [
     },
   },
   {
-    id: "project-4",
-    title: "Fitness & Wellness Tracker",
-    subtitle: "Your personal health journey",
-    description: "A holistic wellness application combining workout tracking, nutrition planning, and mindfulness features for a balanced approach to health.",
+    id: "station-driver-chauffeurs",
+    title: "Station Driver - Chauffeurs",
+    subtitle: "Your Reliable Ride, Every Time",
+    description: "Station is a user-friendly cab booking app offering reliable rides with transparent pricing, real-time tracking, and enhanced safety features. The platform revolutionizes transportation by addressing user pain points, enhancing convenience, and enabling cost-effective mobility with user-friendly interfaces and seamless booking processes.",
     category: "Mobile App Development",
+    duration: "25 weeks",
     timeline: {
-      discovery: "Users wanted a single app that addressed physical, nutritional, and mental wellness.",
-      design: "Developed a calming visual language with progress visualizations that motivate without overwhelming.",
-      development: "Integrated with wearables, built AI-powered meal suggestions, and created guided meditation features.",
-      testing: "Ran a 30-day challenge with fitness influencers to validate engagement and effectiveness.",
-      delivery: "Achieved 200,000+ downloads in the first year with strong user retention.",
+      discovery: "Weeks 1-2: User research and competitor analysis through surveys, interviews, and field observations with 30+ participants from metropolitan cities.",
+      design: "Weeks 3-7: Define user personas, map user journeys, develop wireframes and low-fidelity prototypes. Conduct usability testing and finalize high-fidelity designs.",
+      development: "Weeks 8-22: Full-stack development using Next.js, React Native, PostgreSQL with AWS cloud services. Building driver and rider apps with real-time features.",
+      testing: "Weeks 23-24: Validate design with real users, gather feedback, and iterate on the experience based on user testing results.",
+      delivery: "Week 25: Final deployment on iOS App Store and Google Play Store with complete documentation and handover.",
     },
     outcome: {
-      problem: "Users juggled multiple apps for different aspects of their wellness routine.",
-      result: "85% of users reported improved consistency in their health habits.",
+      problem: "People face challenges in booking reliable and affordable transportation. Existing solutions often fail to address issues such as driver cancellations, lack of transparency in fare estimation, and poor app usability.",
+      result: "Created a seamless cab booking experience with minimal cancellations, transparent pricing, AI-based fare prediction, and enhanced safety features. Average booking time reduced to 3 minutes with 70% of users prioritizing safety features.",
     },
-    images: [],
+    images: [
+      "1_1765832048288.png",
+      "2_1765832048289.png",
+      "3_1765832048290.png",
+      "4_1765832048290.png",
+      "5_1765832048291.png",
+      "6_1765832048291.png",
+      "7_1765832048292.png",
+      "8_1765832048293.png",
+      "9_1765832048294.png",
+    ],
+    showcaseContent: [
+      {
+        image: "1_1765832048288.png",
+        title: "Product Introduction",
+        description: "Station Driver is a premium chauffeur service app connecting you to your destination. A user-friendly cab booking platform offering reliable rides with transparent pricing."
+      },
+      {
+        image: "2_1765832048289.png",
+        title: "About the Application",
+        description: "Whether commuting to work or catching a flight, Station ensures a seamless travel experience. Book with a few taps, choose from various vehicle options, get estimated arrival times and fare calculations upfront."
+      },
+      {
+        image: "3_1765832048290.png",
+        title: "Problem Statement & Goals",
+        description: "Addressing driver cancellations, fare transparency issues, and poor app usability. Goals: reliable booking platform, transparent pricing, intuitive interface, enhanced safety, and streamlined processes."
+      },
+      {
+        image: "4_1765832048290.png",
+        title: "Design Process",
+        description: "6-step process: Empathize through user research, Define problem statement, Ideate solutions, Prototype wireframes, Test with real users, and Implement with developers."
+      },
+      {
+        image: "5_1765832048291.png",
+        title: "Application Features",
+        description: "Driver Rating Assurance (low-rated drivers excluded), AI-Based Fare Prediction for transparent pricing, Ride Scheduling for pre-booking, and SOS Feature with real-time location sharing."
+      },
+      {
+        image: "6_1765832048291.png",
+        title: "Technologies & Tools",
+        description: "Frontend: Next.js, React Native | Database: PostgreSQL | Design: Figma | Version Control: GitLab | Cloud Services: AWS | Project Management: Trello | Time Tracking: Hubstaff"
+      },
+      {
+        image: "7_1765832048292.png",
+        title: "Driver Dashboard",
+        description: "Comprehensive driver interface featuring profile management, earnings analytics, booking history, navigation integration, and real-time trip tracking."
+      },
+      {
+        image: "8_1765832048293.png",
+        title: "Portfolio Showcase",
+        description: "Multi-screen experience showing chat interface, driver details, earnings tracking, account management, and booking history for complete platform overview."
+      },
+      {
+        image: "9_1765832048294.png",
+        title: "Complete App Ecosystem",
+        description: "Full view of the Station platform featuring driver profiles, real-time navigation, account settings, help center, and earnings analytics across different user roles."
+      }
+    ],
+    roadmap: [
+      { week: "1-2", phase: "Discovery", title: "User Research", description: "Surveys, interviews, and field observations with 30+ participants from metropolitan cities." },
+      { week: "3-4", phase: "Design", title: "User Personas", description: "Define user personas and map detailed user journeys for riders and drivers." },
+      { week: "5-6", phase: "Prototyping", title: "Wireframes", description: "Develop wireframes and low-fidelity prototypes for core booking flows." },
+      { week: "7", phase: "Testing", title: "Usability Testing", description: "Conduct usability testing and iterate on designs based on feedback." },
+      { week: "8", phase: "Design", title: "High-Fidelity Designs", description: "Finalize high-fidelity designs and handover to development team." },
+      { week: "9-22", phase: "Development", title: "Full-Stack Development", description: "Building driver and rider apps using Next.js, React Native, PostgreSQL, and AWS." },
+      { week: "23-24", phase: "Testing", title: "QA & Validation", description: "Validate functionality with real users and iterate based on testing results." },
+      { week: "25", phase: "Delivery", title: "Launch", description: "Final deployment on iOS App Store and Google Play Store." }
+    ],
+    features: [
+      { number: "01", title: "Driver Rating Assurance", description: "Drivers with low ratings are excluded from the platform" },
+      { number: "02", title: "AI-Based Fare Prediction", description: "Transparent and competitive pricing based on demand and traffic" },
+      { number: "03", title: "Ride Scheduling", description: "Pre-book rides for later with guaranteed availability" },
+      { number: "04", title: "SOS Feature", description: "Emergency assistance with real-time location sharing" }
+    ],
+    targetAudience: [
+      { role: "Urban Commuters", description: "Daily travelers aged 18-50 seeking reliable transportation" },
+      { role: "Professionals", description: "Business travelers needing punctual and comfortable rides" },
+      { role: "Students", description: "Young users looking for affordable and safe transit options" },
+      { role: "Tourists", description: "Visitors requiring easy navigation and reliable cab services" }
+    ],
+    appLinks: {
+      android: "https://play.google.com/store/apps/details?id=com.app.station.provider",
+      ios: "https://apps.apple.com/bs/app/station-driver-chauffeurs/id6449282173"
+    },
     testimonial: {
-      quote: "Working with Het was a game-changer for our wellness platform. He brought both technical excellence and a genuine understanding of what motivates users to stay healthy.",
-      author: "James Park",
-      role: "CEO",
-      company: "Vitality Labs",
+      quote: "Het's team delivered a transportation platform that exceeds industry standards. The attention to user experience, safety features, and driver management has made Station a trusted choice for urban commuters.",
+      author: "Operations Director",
+      role: "Director of Operations",
+      company: "Station Transport",
     },
   },
 ];

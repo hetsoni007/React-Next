@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "wouter";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -166,237 +167,229 @@ function HeroSection({ project }: SectionProps) {
 function ShowcaseSection({ project }: SectionProps) {
   if (!project.showcaseContent || project.showcaseContent.length === 0) return null;
 
-  const is3DMockups = project.displayType === "3d-mockups";
-
-  if (is3DMockups) {
-    return <Showcase3DSection project={project} />;
-  }
-
   return (
-    <section className="py-20 lg:py-32 px-6 lg:px-8 bg-card">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-            Project Showcase
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Explore the key features and design decisions of this project.
-          </p>
-        </div>
-
-        <div className="space-y-32">
-          {project.showcaseContent.map((item, index) => (
-            <ShowcaseItem
-              key={index}
-              image={item.image}
-              title={item.title}
-              description={item.description}
-              index={index}
-              projectTitle={project.title}
-            />
-          ))}
-        </div>
-      </div>
+    <section className="relative">
+      {project.showcaseContent.map((item, index) => (
+        <CinematicShowcaseItem
+          key={index}
+          image={item.image}
+          title={item.title}
+          description={item.description}
+          index={index}
+          totalItems={project.showcaseContent!.length}
+          projectTitle={project.title}
+        />
+      ))}
     </section>
   );
 }
 
-function Showcase3DSection({ project }: SectionProps) {
-  if (!project.showcaseContent || project.showcaseContent.length === 0) return null;
-
-  return (
-    <section className="py-20 lg:py-32 bg-gradient-to-b from-background via-card to-background overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-20">
-          <Badge variant="outline" className="mb-4">Design Showcase</Badge>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-            3D App Mockups
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Experience the design through immersive 3D device presentations.
-          </p>
-        </div>
-
-        <div className="space-y-40">
-          {project.showcaseContent.map((item, index) => (
-            <Mockup3DItem
-              key={index}
-              image={item.image}
-              title={item.title}
-              description={item.description}
-              index={index}
-              projectTitle={project.title}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-interface Mockup3DItemProps {
+interface CinematicShowcaseItemProps {
   image: string;
   title: string;
   description: string;
   index: number;
+  totalItems: number;
   projectTitle: string;
 }
 
-function Mockup3DItem({ image, title, description, index, projectTitle }: Mockup3DItemProps) {
+function CinematicShowcaseItem({ image, title, description, index, totalItems, projectTitle }: CinematicShowcaseItemProps) {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
-  const isEven = index % 2 === 0;
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
   
-  const rotations = [
-    "rotateY(-15deg) rotateX(5deg)",
-    "rotateY(15deg) rotateX(-5deg)",
-    "rotateY(-10deg) rotateX(8deg)",
-    "rotateY(12deg) rotateX(-3deg)",
-    "rotateY(-8deg) rotateX(6deg)",
-    "rotateY(10deg) rotateX(-4deg)",
-    "rotateY(-12deg) rotateX(3deg)",
-    "rotateY(8deg) rotateX(-6deg)",
+  const backgroundGradients = [
+    { light: "linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 50%, hsl(0 0% 100%) 100%)", dark: "linear-gradient(180deg, hsl(0 0% 3.9%) 0%, hsl(0 0% 6%) 50%, hsl(0 0% 3.9%) 100%)" },
+    { light: "linear-gradient(180deg, hsl(0 0% 98%) 0%, hsl(0 0% 95%) 50%, hsl(0 0% 98%) 100%)", dark: "linear-gradient(180deg, hsl(0 0% 6%) 0%, hsl(0 0% 9%) 50%, hsl(0 0% 6%) 100%)" },
+    { light: "linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 96%) 50%, hsl(0 0% 100%) 100%)", dark: "linear-gradient(180deg, hsl(0 0% 3.9%) 0%, hsl(0 0% 7%) 50%, hsl(0 0% 3.9%) 100%)" },
+    { light: "linear-gradient(180deg, hsl(0 0% 97%) 0%, hsl(0 0% 100%) 50%, hsl(0 0% 97%) 100%)", dark: "linear-gradient(180deg, hsl(0 0% 5%) 0%, hsl(0 0% 3.9%) 50%, hsl(0 0% 5%) 100%)" },
+    { light: "linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 94%) 50%, hsl(0 0% 100%) 100%)", dark: "linear-gradient(180deg, hsl(0 0% 3.9%) 0%, hsl(0 0% 8%) 50%, hsl(0 0% 3.9%) 100%)" },
+    { light: "linear-gradient(180deg, hsl(0 0% 96%) 0%, hsl(0 0% 100%) 50%, hsl(0 0% 96%) 100%)", dark: "linear-gradient(180deg, hsl(0 0% 7%) 0%, hsl(0 0% 3.9%) 50%, hsl(0 0% 7%) 100%)" },
   ];
   
-  const rotation = rotations[index % rotations.length];
-
-  return (
-    <div
-      ref={ref}
-      className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${
-        isEven ? "" : "lg:flex-row-reverse"
-      }`}
-      data-testid={`mockup-3d-item-${index}`}
-    >
-      <div
-        className={`flex-1 flex justify-center transition-all duration-1000 ${
-          isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-16"
-        }`}
-        style={{ perspective: "1500px" }}
-      >
-        <div
-          className="relative group"
-          style={{
-            transform: isVisible ? rotation : "rotateY(0deg) rotateX(0deg)",
-            transformStyle: "preserve-3d",
-            transition: "transform 1.2s cubic-bezier(0.23, 1, 0.32, 1)",
-          }}
-        >
-          <div 
-            className="absolute -inset-4 bg-gradient-to-r from-muted/50 via-transparent to-muted/50 rounded-3xl blur-2xl opacity-60"
-            style={{ transform: "translateZ(-50px)" }}
-          />
-          
-          <div
-            className="relative rounded-2xl overflow-hidden shadow-2xl"
-            style={{
-              boxShadow: `
-                0 25px 50px -12px rgba(0, 0, 0, 0.25),
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-                0 50px 100px -20px rgba(0, 0, 0, 0.4)
-              `,
-            }}
-          >
-            <img
-              src={`/attached_assets/${image}`}
-              alt={`${projectTitle} - ${title}`}
-              className="w-full max-w-xl object-contain"
-              data-testid={`img-mockup-3d-${index}`}
-            />
-            
-            <div 
-              className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/10 pointer-events-none"
-            />
-          </div>
-          
-          <div
-            className="absolute inset-0 rounded-2xl"
-            style={{
-              background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)",
-              transform: "translateZ(2px)",
-              pointerEvents: "none",
-            }}
-          />
-        </div>
-      </div>
-
-      <div
-        className={`flex-1 transition-all duration-1000 delay-300 ${
-          isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-8"
-        }`}
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center">
-            <span className="text-lg font-bold">{String(index + 1).padStart(2, "0")}</span>
-          </div>
-          <div className="h-px flex-1 bg-border" />
-        </div>
-        <h3 className="text-2xl sm:text-3xl font-semibold mb-4">{title}</h3>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          {description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-interface ShowcaseItemProps {
-  image: string;
-  title: string;
-  description: string;
-  index: number;
-  projectTitle: string;
-}
-
-function ShowcaseItem({ image, title, description, index, projectTitle }: ShowcaseItemProps) {
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const gradientIndex = index % backgroundGradients.length;
   const isEven = index % 2 === 0;
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePosition({ x, y });
+  };
+
+  const rotateX = isHovered ? (mousePosition.y - 0.5) * -20 : 0;
+  const rotateY = isHovered ? (mousePosition.x - 0.5) * 20 : 0;
+  
+  const baseRotations = [
+    { x: 5, y: -8 },
+    { x: -3, y: 10 },
+    { x: 6, y: -12 },
+    { x: -4, y: 8 },
+    { x: 4, y: -6 },
+    { x: -5, y: 12 },
+    { x: 3, y: -10 },
+    { x: -6, y: 6 },
+  ];
+  const baseRotation = baseRotations[index % baseRotations.length];
+
   return (
     <div
       ref={ref}
-      className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-16 ${
-        isEven ? "" : "lg:flex-row-reverse"
-      }`}
-      data-testid={`showcase-item-${index}`}
+      className="min-h-screen py-20 lg:py-32 px-6 lg:px-8 flex items-center relative overflow-hidden bg-background"
+      data-testid={`cinematic-showcase-${index}`}
+      data-bg-index={gradientIndex}
     >
-      <div
-        className={`flex-1 transition-all duration-1000 ${
-          isVisible
-            ? "opacity-100 translate-x-0"
-            : isEven
-            ? "opacity-0 -translate-x-16"
-            : "opacity-0 translate-x-16"
-        }`}
-      >
-        <div className="aspect-video bg-muted rounded-3xl overflow-hidden shadow-2xl">
-          <img
-            src={`/attached_assets/${image}`}
-            alt={`${projectTitle} - ${title}`}
-            className="w-full h-full object-cover"
-            data-testid={`img-showcase-${index}`}
-          />
+      <div 
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        style={{
+          background: backgroundGradients[gradientIndex].light,
+          opacity: 1,
+        }}
+      />
+      <div 
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500 dark:opacity-100 opacity-0"
+        style={{
+          background: backgroundGradients[gradientIndex].dark,
+        }}
+      />
+      <div 
+        className="absolute inset-0 opacity-30 pointer-events-none z-10"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, hsl(var(--foreground) / 0.03) 0%, transparent 50%)`,
+          transition: "background 0.3s ease-out",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto w-full relative z-20">
+        <div
+          className={`flex flex-col ${isEven ? "lg:flex-row" : "lg:flex-row-reverse"} items-center gap-12 lg:gap-20`}
+        >
+          <div
+            className={`flex-1 flex justify-center transition-all duration-1000 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
+            }`}
+            style={{ perspective: "2000px" }}
+          >
+            <div
+              className="relative cursor-pointer"
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => {
+                setIsHovered(false);
+                setMousePosition({ x: 0.5, y: 0.5 });
+              }}
+              style={{
+                transform: isVisible 
+                  ? `rotateX(${isHovered ? rotateX : baseRotation.x}deg) rotateY(${isHovered ? rotateY : baseRotation.y}deg) scale(${isHovered ? 1.02 : 1})`
+                  : "rotateX(0deg) rotateY(0deg) scale(0.9)",
+                transformStyle: "preserve-3d",
+                transition: isHovered 
+                  ? "transform 0.1s ease-out" 
+                  : "transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)",
+              }}
+            >
+              <div 
+                className="absolute -inset-8 rounded-3xl blur-3xl transition-opacity duration-500"
+                style={{
+                  background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, hsl(var(--foreground) / ${isHovered ? 0.15 : 0.08}) 0%, transparent 70%)`,
+                  transform: "translateZ(-60px)",
+                }}
+              />
+              
+              <div
+                className="relative rounded-2xl overflow-visible"
+                style={{
+                  boxShadow: isHovered
+                    ? `0 60px 120px -20px rgba(0, 0, 0, 0.5), 
+                       0 30px 60px -10px rgba(0, 0, 0, 0.3),
+                       0 0 0 1px rgba(255, 255, 255, 0.1) inset`
+                    : `0 40px 80px -15px rgba(0, 0, 0, 0.35), 
+                       0 20px 40px -8px rgba(0, 0, 0, 0.2),
+                       0 0 0 1px rgba(255, 255, 255, 0.05) inset`,
+                  transition: "box-shadow 0.3s ease-out",
+                }}
+              >
+                <img
+                  src={`/attached_assets/${image}`}
+                  alt={`${projectTitle} - ${title}`}
+                  className="w-full max-w-2xl rounded-2xl object-contain"
+                  data-testid={`img-cinematic-${index}`}
+                  style={{
+                    filter: isHovered ? "brightness(1.05) contrast(1.02)" : "brightness(1) contrast(1)",
+                    transition: "filter 0.3s ease-out",
+                  }}
+                />
+                
+                <div 
+                  className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300"
+                  style={{
+                    background: `linear-gradient(135deg, 
+                      rgba(255,255,255,${isHovered ? 0.15 : 0.08}) 0%, 
+                      transparent 40%, 
+                      transparent 60%, 
+                      rgba(0,0,0,${isHovered ? 0.1 : 0.05}) 100%)`,
+                  }}
+                />
+                
+                <div 
+                  className="absolute inset-0 rounded-2xl pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, rgba(255,255,255,${isHovered ? 0.2 : 0}) 0%, transparent 50%)`,
+                    opacity: isHovered ? 1 : 0,
+                    transition: "opacity 0.2s ease-out",
+                  }}
+                />
+              </div>
+
+              <div
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[80%] h-8 rounded-full blur-2xl bg-foreground/10"
+                style={{
+                  transform: `translateX(-50%) translateZ(-80px) scaleX(${isHovered ? 1.1 : 1})`,
+                  opacity: isHovered ? 0.6 : 0.4,
+                  transition: "all 0.3s ease-out",
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            className={`flex-1 transition-all duration-1000 delay-300 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+            }`}
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center border border-border/50">
+                  <span className="text-2xl font-bold tracking-tight">{String(index + 1).padStart(2, "0")}</span>
+                </div>
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-foreground/5 to-transparent blur-sm -z-10" />
+              </div>
+              <div className="flex-1">
+                <div className="h-px bg-gradient-to-r from-border via-border/50 to-transparent" />
+              </div>
+              <span className="text-sm text-muted-foreground font-medium">
+                {index + 1} / {totalItems}
+              </span>
+            </div>
+            
+            <h3 className="text-3xl sm:text-4xl font-semibold mb-6 tracking-tight">
+              {title}
+            </h3>
+            
+            <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
+              {description}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div
-        className={`flex-1 transition-all duration-1000 delay-200 ${
-          isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-8"
-        }`}
-      >
-        <Badge variant="outline" className="mb-4">
-          {String(index + 1).padStart(2, "0")}
-        </Badge>
-        <h3 className="text-2xl sm:text-3xl font-semibold mb-4">{title}</h3>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          {description}
-        </p>
-      </div>
+      {index < totalItems - 1 && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
+            <div className="w-1 h-2 rounded-full bg-muted-foreground/50" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -408,8 +401,10 @@ function RoadmapSection({ project }: SectionProps) {
 
   const phaseColors: Record<string, string> = {
     Discovery: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
+    Research: "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400",
     Ideation: "bg-purple-500/20 text-purple-600 dark:text-purple-400",
     Design: "bg-pink-500/20 text-pink-600 dark:text-pink-400",
+    Prototyping: "bg-violet-500/20 text-violet-600 dark:text-violet-400",
     Iteration: "bg-orange-500/20 text-orange-600 dark:text-orange-400",
     Development: "bg-green-500/20 text-green-600 dark:text-green-400",
     Testing: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400",
