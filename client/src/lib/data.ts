@@ -128,28 +128,98 @@ export const portfolioProjects: PortfolioProject[] = [
     },
   },
   {
-    id: "project-2",
-    title: "Healthcare Companion",
-    subtitle: "Connecting patients with care",
-    description: "A telehealth platform enabling seamless virtual consultations, prescription management, and health tracking for patients worldwide.",
+    id: "attendance-salary-ledger",
+    title: "Attendance & Salary Ledger System",
+    subtitle: "Streamlining Employee Management",
+    description: "A 16-week project delivering a comprehensive platform for organizations to manage employee attendance, payroll, and salary records efficiently. The system includes web and mobile applications supporting three primary user roles: Company, Branch, and Staff with real-time attendance tracking, automated salary calculations, and centralized record management.",
     category: "Mobile App Development",
+    duration: "16 weeks",
     timeline: {
-      discovery: "Identified the need for accessible healthcare during the global shift to remote services.",
-      design: "Focused on accessibility and ease of use for users of all ages and technical abilities.",
-      development: "Implemented real-time video consultations, secure messaging, and HIPAA-compliant data handling.",
-      testing: "Partnered with healthcare providers for clinical validation and compliance verification.",
-      delivery: "Successfully deployed across 3 countries with integration into existing healthcare systems.",
+      discovery: "Weeks 1-2: Stakeholder interviews to gather system requirements and research on existing attendance and payroll systems.",
+      design: "Weeks 3-7: Surveys and interviews with HR managers, branch managers, and staff. Defining user personas, creating wireframes, and designing high-fidelity mockups.",
+      development: "Weeks 8-15: Agile sprints for feature implementation using React (web), React Native (mobile), Node.js (backend), and MongoDB.",
+      testing: "Weeks 14-16: Rigorous testing for quality assurance with iterative stakeholder feedback.",
+      delivery: "Week 16: Final deployment on iOS App Store and Google Play Store with complete documentation.",
     },
     outcome: {
-      problem: "Patients faced barriers accessing healthcare due to distance, mobility, or scheduling constraints.",
-      result: "Facilitated 10,000+ virtual consultations in the first quarter post-launch.",
+      problem: "Traditional methods of managing attendance and salary ledgers using spreadsheets and manual records are prone to errors, inefficiency, and lack of transparency. This results in delayed payroll processing, staff dissatisfaction, and reduced organizational productivity.",
+      result: "New system reduces payroll processing time by 40%. Eliminated 15-20% payroll errors caused by manual tracking. 90% of users now have mobile access to attendance records, and employees receive real-time updates on attendance and salary details.",
     },
-    images: [],
+    images: [
+      "1_1765831086263.png",
+      "2_1765831086266.png",
+      "3_1765831086267.png",
+      "4_1765831086267.png",
+      "5_1765831086268.png",
+      "6_1765831086268.png",
+      "7_1765831086268.png",
+      "8_1765831086269.png",
+    ],
+    showcaseContent: [
+      {
+        image: "1_1765831086263.png",
+        title: "Product Overview",
+        description: "The Attendance and Salary Ledger System is a comprehensive platform designed for organizations to manage employee attendance, payroll, and salary records efficiently with web and mobile applications."
+      },
+      {
+        image: "2_1765831086266.png",
+        title: "About the Application",
+        description: "The system supports three primary user roles: Company, Branch, and Staff. Key features include real-time attendance tracking, automated salary calculations, and centralized record management."
+      },
+      {
+        image: "3_1765831086267.png",
+        title: "Problem Statement & Goals",
+        description: "Addressing manual errors in attendance tracking, lack of real-time visibility for branch managers, and delayed salary communication. Goals: Accuracy, Efficiency, Transparency, and Scalability."
+      },
+      {
+        image: "4_1765831086267.png",
+        title: "Design Process",
+        description: "A structured 5-phase approach: Discovery Phase with stakeholder interviews, User Research with surveys, Conceptualization with personas and wireframes, Prototyping with high-fidelity mockups, and Agile Development."
+      },
+      {
+        image: "5_1765831086268.png",
+        title: "Unique Features",
+        description: "Biometric and GPS-based attendance tracking, Customizable payroll rules for different branches, Real-time notifications for attendance irregularities, and Detailed salary breakdown with tax calculations."
+      },
+      {
+        image: "6_1765831086268.png",
+        title: "Technologies & Tools",
+        description: "Design: Figma | Development: React (web), React Native (mobile), Node.js (backend), MongoDB | Collaboration: Trello | Analytics: Google Analytics, Firebase"
+      },
+      {
+        image: "7_1765831086268.png",
+        title: "Portfolio Section",
+        description: "Salary Ledger with detailed reports, employee and branch management dashboard, subscription details, and account management features for comprehensive organizational control."
+      },
+      {
+        image: "8_1765831086269.png",
+        title: "Multi-Role Interface",
+        description: "Branch office attendance overview, staff list with attendance marking, attendance records with date range selection, salary ledger reports, and profile update capabilities across different user roles."
+      }
+    ],
+    roadmap: [
+      { week: "1-2", phase: "Discovery", title: "System Research", description: "Stakeholder interviews and research on existing attendance and payroll systems." },
+      { week: "3-5", phase: "Research", title: "User Research", description: "Surveys with 50+ HR professionals and one-on-one interviews with staff across branches." },
+      { week: "6-7", phase: "Design", title: "Wireframing", description: "Defining user personas and user journeys. Creating wireframes for core features." },
+      { week: "8-11", phase: "Prototyping", title: "High-Fidelity Mockups", description: "Designing high-fidelity mockups for web and mobile applications with iterative stakeholder testing." },
+      { week: "12-15", phase: "Development", title: "Agile Sprints", description: "Feature implementation using React, React Native, Node.js, and MongoDB." },
+      { week: "14-16", phase: "Testing", title: "QA & Launch", description: "Rigorous testing for quality assurance and final deployment." }
+    ],
+    targetAudience: [
+      { role: "HR Managers", description: "For managing attendance and payroll for 50+ employees" },
+      { role: "Payroll Officers", description: "For automated salary calculations and tax breakdowns" },
+      { role: "Branch Managers", description: "For real-time branch-level attendance monitoring" },
+      { role: "Employees", description: "For viewing attendance records and downloading salary slips" }
+    ],
+    appLinks: {
+      android: "https://play.google.com/store/apps/details?id=com.app.attled",
+      ios: "https://apps.apple.com/cn/app/attled/id6740764400"
+    },
     testimonial: {
-      quote: "The platform Het built has revolutionized how we deliver care. Patients love the simplicity, and our providers find it intuitive to use.",
-      author: "Dr. Michael Torres",
-      role: "Medical Director",
-      company: "MedConnect Health",
+      quote: "Het delivered a system that transformed our HR operations. The automated attendance tracking and salary calculations have eliminated errors and saved us countless hours every month.",
+      author: "HR Director",
+      role: "Director of Human Resources",
+      company: "Enterprise Client",
     },
   },
   {

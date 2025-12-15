@@ -285,7 +285,7 @@ function RoadmapSection({ project }: SectionProps) {
             <span className="text-sm font-medium uppercase tracking-wide">Development Roadmap</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-            32-Week Journey
+            {project.duration || "Project"} Journey
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             From discovery to deployment, here's the complete timeline of how this project came to life.
