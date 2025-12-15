@@ -26,28 +26,28 @@ export const services: Service[] = [
 
 export const portfolioProjects: PortfolioProject[] = [
   {
-    id: "project-1",
-    title: "FinTech Mobile Banking",
-    subtitle: "Reimagining personal finance management",
-    description: "A comprehensive mobile banking solution that simplifies financial management for millennials and Gen-Z users through intuitive design and smart automation.",
+    id: "popprobe",
+    title: "POPProbe - Retail Chain Management",
+    subtitle: "Streamlining multi-store operations",
+    description: "A comprehensive retail chain management system designed to address key operational needs including modules for managing checklists, a Learning Management System (LMS), an issue log, and a customer log. The focus is to streamline store operations, enhance employee training, improve customer satisfaction, and ensure a structured approach to handling operational challenges.",
     category: "Mobile App Development",
     timeline: {
-      discovery: "User research revealed pain points in existing banking apps — complex navigation and lack of personalization.",
-      design: "Created a minimalist interface with custom animations and a unique card-based transaction view.",
-      development: "Built with Flutter for cross-platform consistency, integrated with banking APIs and biometric security.",
-      testing: "Conducted extensive user testing with 50+ beta users, iterating on feedback for optimal UX.",
-      delivery: "Launched on iOS and Android with 4.8 star ratings within the first month.",
+      discovery: "Understanding client requirements and pain points through stakeholder interviews. Retail chains face challenges in maintaining consistent operational quality, managing customer relationships, and ensuring employee readiness.",
+      design: "Conducted user and competitive research to identify best practices. Sketched and wireframed solutions tailored to the identified problems using Figma.",
+      development: "Built with React.js, Node.js, MongoDB for web and React Native for mobile. Integrated checklists, LMS, issue logs, and customer logs as seamless modules.",
+      testing: "Refined the design based on usability tests and stakeholder inputs. Developed interactive prototypes for user feedback before final implementation.",
+      delivery: "Provided detailed design assets and documentation to the development team. Successfully deployed with analytics dashboard providing actionable insights.",
     },
     outcome: {
-      problem: "Users struggled with fragmented financial tools and overwhelming banking interfaces.",
-      result: "40% increase in daily active users and 60% improvement in task completion rates.",
+      problem: "Current manual or semi-automated systems led to inefficiencies, unrecorded issues, and inconsistent service delivery across retail locations.",
+      result: "Achieved operational efficiency through standardized store operations, enhanced staff productivity via integrated LMS, and improved customer relationship management.",
     },
     images: [],
     testimonial: {
-      quote: "Het transformed our vision into a banking app that our users genuinely love. The attention to detail and user-centric approach exceeded all expectations.",
-      author: "Sarah Chen",
-      role: "Chief Product Officer",
-      company: "FinFlow Technologies",
+      quote: "Het delivered a system that transformed how we manage our retail operations. The integrated approach to checklists, training, and customer logs has significantly improved our consistency across all locations.",
+      author: "Retail Operations Director",
+      role: "Director of Operations",
+      company: "Enterprise Retail Client",
     },
   },
   {
