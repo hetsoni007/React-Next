@@ -84,6 +84,7 @@ export interface PortfolioProject {
   description: string;
   category: string;
   duration?: string;
+  displayType?: "default" | "3d-mockups";
   timeline: {
     discovery: string;
     design: string;
@@ -110,6 +111,11 @@ export interface PortfolioProject {
   }[];
   targetAudience?: {
     role: string;
+    description: string;
+  }[];
+  features?: {
+    number: string;
+    title: string;
     description: string;
   }[];
   appLinks?: {

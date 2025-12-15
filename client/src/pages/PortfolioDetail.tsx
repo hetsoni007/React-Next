@@ -166,6 +166,12 @@ function HeroSection({ project }: SectionProps) {
 function ShowcaseSection({ project }: SectionProps) {
   if (!project.showcaseContent || project.showcaseContent.length === 0) return null;
 
+  const is3DMockups = project.displayType === "3d-mockups";
+
+  if (is3DMockups) {
+    return <Showcase3DSection project={project} />;
+  }
+
   return (
     <section className="py-20 lg:py-32 px-6 lg:px-8 bg-card">
       <div className="max-w-7xl mx-auto">
@@ -192,6 +198,148 @@ function ShowcaseSection({ project }: SectionProps) {
         </div>
       </div>
     </section>
+  );
+}
+
+function Showcase3DSection({ project }: SectionProps) {
+  if (!project.showcaseContent || project.showcaseContent.length === 0) return null;
+
+  return (
+    <section className="py-20 lg:py-32 bg-gradient-to-b from-background via-card to-background overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="text-center mb-20">
+          <Badge variant="outline" className="mb-4">Design Showcase</Badge>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+            3D App Mockups
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Experience the design through immersive 3D device presentations.
+          </p>
+        </div>
+
+        <div className="space-y-40">
+          {project.showcaseContent.map((item, index) => (
+            <Mockup3DItem
+              key={index}
+              image={item.image}
+              title={item.title}
+              description={item.description}
+              index={index}
+              projectTitle={project.title}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+interface Mockup3DItemProps {
+  image: string;
+  title: string;
+  description: string;
+  index: number;
+  projectTitle: string;
+}
+
+function Mockup3DItem({ image, title, description, index, projectTitle }: Mockup3DItemProps) {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const isEven = index % 2 === 0;
+  
+  const rotations = [
+    "rotateY(-15deg) rotateX(5deg)",
+    "rotateY(15deg) rotateX(-5deg)",
+    "rotateY(-10deg) rotateX(8deg)",
+    "rotateY(12deg) rotateX(-3deg)",
+    "rotateY(-8deg) rotateX(6deg)",
+    "rotateY(10deg) rotateX(-4deg)",
+    "rotateY(-12deg) rotateX(3deg)",
+    "rotateY(8deg) rotateX(-6deg)",
+  ];
+  
+  const rotation = rotations[index % rotations.length];
+
+  return (
+    <div
+      ref={ref}
+      className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${
+        isEven ? "" : "lg:flex-row-reverse"
+      }`}
+      data-testid={`mockup-3d-item-${index}`}
+    >
+      <div
+        className={`flex-1 flex justify-center transition-all duration-1000 ${
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-16"
+        }`}
+        style={{ perspective: "1500px" }}
+      >
+        <div
+          className="relative group"
+          style={{
+            transform: isVisible ? rotation : "rotateY(0deg) rotateX(0deg)",
+            transformStyle: "preserve-3d",
+            transition: "transform 1.2s cubic-bezier(0.23, 1, 0.32, 1)",
+          }}
+        >
+          <div 
+            className="absolute -inset-4 bg-gradient-to-r from-muted/50 via-transparent to-muted/50 rounded-3xl blur-2xl opacity-60"
+            style={{ transform: "translateZ(-50px)" }}
+          />
+          
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-2xl"
+            style={{
+              boxShadow: `
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+                0 50px 100px -20px rgba(0, 0, 0, 0.4)
+              `,
+            }}
+          >
+            <img
+              src={`/attached_assets/${image}`}
+              alt={`${projectTitle} - ${title}`}
+              className="w-full max-w-xl object-contain"
+              data-testid={`img-mockup-3d-${index}`}
+            />
+            
+            <div 
+              className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/10 pointer-events-none"
+            />
+          </div>
+          
+          <div
+            className="absolute inset-0 rounded-2xl"
+            style={{
+              background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)",
+              transform: "translateZ(2px)",
+              pointerEvents: "none",
+            }}
+          />
+        </div>
+      </div>
+
+      <div
+        className={`flex-1 transition-all duration-1000 delay-300 ${
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-8"
+        }`}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center">
+            <span className="text-lg font-bold">{String(index + 1).padStart(2, "0")}</span>
+          </div>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+        <h3 className="text-2xl sm:text-3xl font-semibold mb-4">{title}</h3>
+        <p className="text-lg text-muted-foreground leading-relaxed">
+          {description}
+        </p>
+      </div>
+    </div>
   );
 }
 

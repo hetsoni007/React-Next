@@ -223,28 +223,93 @@ export const portfolioProjects: PortfolioProject[] = [
     },
   },
   {
-    id: "project-3",
-    title: "E-Commerce Marketplace",
-    subtitle: "Local businesses, global reach",
-    description: "A marketplace platform empowering local artisans and small businesses to showcase and sell their products to a global audience.",
-    category: "Mobile App Development",
+    id: "claris-influencer-platform",
+    title: "Influencer Collaboration Platform",
+    subtitle: "Connecting Brands with Creators",
+    description: "A brand collaboration platform for models and influencers. Claris streamlines collaborations between influencers and models with carefully arranged 'pre-planned' partnerships, featuring dynamic slot booking, points systems, and seamless venue-influencer engagement.",
+    category: "App Design",
+    duration: "Design Project",
+    displayType: "3d-mockups",
     timeline: {
-      discovery: "Research showed small businesses lacked affordable platforms with professional-grade features.",
-      design: "Created a warm, inviting interface that highlights product craftsmanship and seller stories.",
-      development: "Built with React Native, featuring real-time inventory, secure payments, and seller analytics.",
-      testing: "Onboarded 100+ pilot sellers for extensive marketplace testing and optimization.",
-      delivery: "Launched with a curated selection of 500+ products and growing seller community.",
+      discovery: "Conducted surveys and interviews with influencers and venue managers to identify challenges in the existing collaboration process.",
+      design: "Created user personas and empathy maps, developed low-fidelity sketches progressing to high-fidelity interactive prototypes.",
+      development: "Brainstormed unique features including dynamic slot availability and in-app milestone tracking.",
+      testing: "Conducted usability tests with 10 influencers and 10 venue managers, iterating based on feedback.",
+      delivery: "Delivered complete design system with interactive prototypes ready for development.",
     },
     outcome: {
-      problem: "Small businesses struggled to compete with large e-commerce platforms.",
-      result: "Sellers reported 150% average increase in online sales within 6 months.",
+      problem: "Current collaboration between influencers and venues is fragmented, with limited platforms offering a seamless way to book slots for content creation, transparent communication, and a reward system for both influencers and venues.",
+      result: "The app partnered with local influencers to showcase unique venues through curated content, driving a 35% increase in downloads and a 20% rise in venue bookings.",
     },
-    images: [],
+    images: [
+      "1_1765831669484.png",
+      "2_1765831669503.png",
+      "3_1765831669504.png",
+      "4_1765831669504.png",
+      "5_1765831669504.png",
+      "6_1765831669505.png",
+      "7_1765831669505.png",
+      "8_1765831669505.png",
+    ],
+    showcaseContent: [
+      {
+        image: "1_1765831669484.png",
+        title: "Product Introduction",
+        description: "Brand collaboration platform for models and influencers. Claris streamlines collaborations between influencers and models with carefully arranged 'pre-planned' partnerships."
+      },
+      {
+        image: "2_1765831669503.png",
+        title: "About the Application",
+        description: "An influencer collaboration with a venues app that boosts engagement and bookings. The app partners with local influencers to showcase unique venues through curated content, such as posts, stories, and live events."
+      },
+      {
+        image: "3_1765831669504.png",
+        title: "Problem Statement & Goals",
+        description: "Addressing fragmented collaboration between influencers and venues. Goals include simplifying the collaboration process, increasing transparency, providing ROI tracking tools, and enhancing influencer experience."
+      },
+      {
+        image: "4_1765831669504.png",
+        title: "Design Process",
+        description: "Discovery Phase with user research, Competitive Analysis studying Airbnb Experiences and Gympass, Ideation Phase with unique features, Wireframing & Prototyping, and Usability Testing with real users."
+      },
+      {
+        image: "5_1765831669504.png",
+        title: "Application Features",
+        description: "Dynamic Slot Booking with real-time availability, Points System for consistent collaboration, Content Upload tools to share content directly with venues, and Chat Integration with automated templates."
+      },
+      {
+        image: "6_1765831669505.png",
+        title: "Technologies & Tools",
+        description: "Design: Figma, Sketch, Adobe XD | Collaboration: Miro, Slack, Trello | Prototyping & Testing: InVision, Maze, UsabilityHub"
+      },
+      {
+        image: "7_1765831669505.png",
+        title: "Portfolio Section",
+        description: "Publish Content, Chat-Room for venue communication, Deals booking, Date Selection for scheduling, and Archive for tracking past collaborations."
+      },
+      {
+        image: "8_1765831669505.png",
+        title: "Complete App Experience",
+        description: "Comprehensive view of the Claris app ecosystem featuring influencer profiles, booking flows, chat system, scheduling, and collaboration management."
+      }
+    ],
+    features: [
+      { number: "01", title: "Dynamic Slot Booking", description: "Real-time availability updates for venues" },
+      { number: "02", title: "Points System", description: "Rewards for consistent collaboration and engagement" },
+      { number: "03", title: "Content Upload", description: "In-app tools to share content directly with venues" },
+      { number: "04", title: "Chat Integration", description: "Seamless communication with automated templates" }
+    ],
+    targetAudience: [
+      { role: "Influencers", description: "For booking slots and showcasing content at partner venues" },
+      { role: "Models", description: "For pre-planned partnership collaborations with brands" },
+      { role: "Venue Managers", description: "For managing influencer bookings and tracking ROI" },
+      { role: "Brand Managers", description: "For coordinating influencer campaigns and content" }
+    ],
     testimonial: {
-      quote: "Het understood our mission to empower small businesses. The marketplace he created captures the essence of handcrafted quality while being incredibly easy to use.",
-      author: "Emily Rodriguez",
-      role: "Founder",
-      company: "Artisan Collective",
+      quote: "Het's design for our influencer platform was exceptional. The user flows are intuitive and the visual design perfectly captures the creative energy of our user base.",
+      author: "Product Director",
+      role: "Director of Product",
+      company: "Claris Platform",
     },
   },
   {
