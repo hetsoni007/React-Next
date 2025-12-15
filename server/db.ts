@@ -4,21 +4,40 @@ import * as schema from "@shared/schema";
 
 const { Pool } = pg;
 
-if (!process.env.DATABASE_URL) {
-  console.error("DATABASE_URL must be set. Did you forget to provision a database?");
+// Get database URL from environment
+function getDatabaseUrl(): string {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL;
+  }
+  
+  // Try to construct from individual PG* variables
+  const host = process.env.PGHOST;
+  const port = process.env.PGPORT || '5432';
+  const user = process.env.PGUSER;
+  const password = process.env.PGPASSWORD;
+  const database = process.env.PGDATABASE;
+  
+  if (host && user && password && database) {
+    return `postgresql://${user}:${password}@${host}:${port}/${database}`;
+  }
+  
+  console.error("DATABASE_URL must be set or individual PG* variables must be configured.");
   throw new Error(
     "DATABASE_URL must be set. Did you forget to provision a database?",
   );
 }
 
+const databaseUrl = getDatabaseUrl();
+console.log('Initializing database connection...');
+
 export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  connectionTimeoutMillis: 5000,
+  connectionString: databaseUrl,
+  connectionTimeoutMillis: 10000,
   idleTimeoutMillis: 30000,
   max: 10,
 });
 
-// Test database connection
+// Handle pool errors
 pool.on('error', (err) => {
   console.error('Unexpected database pool error:', err);
 });
