@@ -1,9 +1,12 @@
+import { useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, Clock, ExternalLink } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Calendar, Clock, ExternalLink, Search, X } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useQuery } from "@tanstack/react-query";
 import type { BlogArticle } from "@shared/schema";
@@ -11,10 +14,51 @@ import { socialLinks } from "@/lib/data";
 
 export default function BlogPage() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   
   const { data: articles, isLoading, error } = useQuery<BlogArticle[]>({
     queryKey: ["/api/blog"],
   });
+
+  const allTopics = useMemo(() => {
+    if (!articles) return [];
+    const topics = new Set<string>();
+    articles.forEach(article => {
+      article.categories.forEach(cat => topics.add(cat));
+    });
+    return Array.from(topics).sort();
+  }, [articles]);
+
+  const filteredArticles = useMemo(() => {
+    if (!articles) return [];
+    
+    return articles.filter(article => {
+      const matchesSearch = searchQuery === "" || 
+        article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesTopic = selectedTopic === null || 
+        article.categories.includes(selectedTopic);
+      
+      return matchesSearch && matchesTopic;
+    });
+  }, [articles, searchQuery, selectedTopic]);
+
+  const getRelatedArticles = (article: BlogArticle, count: number = 2) => {
+    if (!articles) return [];
+    return articles
+      .filter(a => a.link !== article.link && 
+        a.categories.some(cat => article.categories.includes(cat)))
+      .slice(0, count);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedTopic(null);
+  };
+
+  const hasActiveFilters = searchQuery !== "" || selectedTopic !== null;
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-blog">
@@ -27,7 +71,7 @@ export default function BlogPage() {
         >
           <div className="max-w-7xl mx-auto">
             <div
-              className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${
+              className={`text-center max-w-3xl mx-auto mb-12 transition-all duration-700 ${
                 heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
             >
@@ -49,6 +93,54 @@ export default function BlogPage() {
                   Medium
                 </a>.
               </p>
+            </div>
+
+            <div
+              className={`mb-8 transition-all duration-700 delay-100 ${
+                heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row gap-4 items-center justify-center max-w-2xl mx-auto">
+                <div className="relative flex-1 w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search articles..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                    data-testid="input-blog-search"
+                  />
+                </div>
+                {hasActiveFilters && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={clearFilters}
+                    data-testid="button-clear-filters"
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
+
+              {allTopics.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+                  <span className="text-sm text-muted-foreground mr-2">Topics:</span>
+                  {allTopics.slice(0, 8).map((topic) => (
+                    <Badge
+                      key={topic}
+                      variant={selectedTopic === topic ? "default" : "secondary"}
+                      className="cursor-pointer"
+                      onClick={() => setSelectedTopic(selectedTopic === topic ? null : topic)}
+                      data-testid={`badge-topic-${topic}`}
+                    >
+                      {topic}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
 
             {isLoading ? (
@@ -84,11 +176,25 @@ export default function BlogPage() {
                   Visit my Medium profile directly
                 </a>
               </div>
-            ) : articles && articles.length > 0 ? (
+            ) : filteredArticles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                {articles.map((article, index) => (
-                  <BlogCard key={article.link} article={article} index={index} />
+                {filteredArticles.map((article, index) => (
+                  <BlogCard 
+                    key={article.link} 
+                    article={article} 
+                    index={index}
+                    relatedArticles={getRelatedArticles(article)}
+                  />
                 ))}
+              </div>
+            ) : hasActiveFilters ? (
+              <div className="text-center py-20">
+                <p className="text-muted-foreground mb-4">
+                  No articles match your search. Try different keywords or clear filters.
+                </p>
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear Filters
+                </Button>
               </div>
             ) : (
               <div className="text-center py-20">
@@ -117,10 +223,12 @@ export default function BlogPage() {
 interface BlogCardProps {
   article: BlogArticle;
   index: number;
+  relatedArticles: BlogArticle[];
 }
 
-function BlogCard({ article, index }: BlogCardProps) {
+function BlogCard({ article, index, relatedArticles }: BlogCardProps) {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const [showRelated, setShowRelated] = useState(false);
 
   const formattedDate = new Date(article.pubDate).toLocaleDateString("en-US", {
     month: "long",
@@ -128,23 +236,26 @@ function BlogCard({ article, index }: BlogCardProps) {
     year: "numeric",
   });
 
-  const readTime = Math.max(3, Math.ceil(article.description.length / 1000));
+  const wordCount = article.description.split(/\s+/).length;
+  const readTime = Math.max(3, Math.ceil(wordCount / 200));
   const cleanDescription = article.description.replace(/<[^>]*>/g, "").slice(0, 200);
 
   return (
-    <a
-      href={article.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block"
-      data-testid={`blog-card-${index}`}
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+      style={{ transitionDelay: `${(index % 3) * 100}ms` }}
+      onMouseEnter={() => setShowRelated(true)}
+      onMouseLeave={() => setShowRelated(false)}
     >
-      <div
-        ref={ref}
-        className={`transition-all duration-700 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
-        style={{ transitionDelay: `${(index % 3) * 100}ms` }}
+      <a
+        href={article.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+        data-testid={`blog-card-${index}`}
       >
         <Card className="group h-full cursor-pointer shadow-lg overflow-visible transition-all duration-300">
           <CardContent className="p-6 flex flex-col h-full">
@@ -181,7 +292,31 @@ function BlogCard({ article, index }: BlogCardProps) {
             </div>
           </CardContent>
         </Card>
-      </div>
-    </a>
+      </a>
+      
+      {relatedArticles.length > 0 && (
+        <div 
+          className={`mt-3 p-4 bg-card rounded-lg border border-border transition-all duration-300 ${
+            showRelated ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        >
+          <p className="text-xs font-medium text-muted-foreground mb-2">Related Articles</p>
+          <div className="space-y-2">
+            {relatedArticles.map((related) => (
+              <a
+                key={related.link}
+                href={related.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-sm transition-colors line-clamp-1"
+                data-testid={`link-related-article`}
+              >
+                {related.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
