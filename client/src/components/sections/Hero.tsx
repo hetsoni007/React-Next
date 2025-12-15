@@ -2,10 +2,12 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
+import { useABTest, heroCtaTest } from "@/hooks/use-ab-test";
 
 export function Hero() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
   const scrollProgress = useScrollProgress();
+  const { variant, trackConversion, isLoading } = useABTest(heroCtaTest);
 
   const scrollToNext = () => {
     window.scrollTo({
@@ -65,8 +67,9 @@ export function Hero() {
               size="lg"
               className="min-w-[160px] text-base shadow-lg transition-all duration-300"
               data-testid="button-cta-contact"
+              onClick={() => trackConversion("hero_cta_click")}
             >
-              Contact Me
+              {isLoading ? "Contact Me" : variant.name}
             </Button>
           </Link>
           <Link href="/portfolio">

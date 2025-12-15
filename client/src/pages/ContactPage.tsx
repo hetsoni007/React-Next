@@ -20,19 +20,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { insertContactSchema, type InsertContact } from "@shared/schema";
+import { z } from "zod";
 import { Mail, CheckCircle2, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView, useTrackEvent } from "@/hooks/use-analytics";
+import { useABTest, contactFormTest } from "@/hooks/use-ab-test";
 import { socialLinks, projectTypes } from "@/lib/data";
+
+const minimalContactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type MinimalContactForm = z.infer<typeof minimalContactSchema>;
 
 export default function ContactPage() {
   usePageView("/contact");
   const { trackEvent } = useTrackEvent();
+  const { variantId, trackConversion, isLoading: variantLoading } = useABTest(contactFormTest);
+  const isMinimalForm = variantLoading || variantId === "minimal";
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<InsertContact>({
+  const standardForm = useForm<InsertContact>({
     resolver: zodResolver(insertContactSchema),
     defaultValues: {
       name: "",
@@ -42,14 +54,31 @@ export default function ContactPage() {
     },
   });
 
+  const minimalForm = useForm<MinimalContactForm>({
+    resolver: zodResolver(minimalContactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+    },
+  });
+
+  const form = isMinimalForm ? minimalForm : standardForm;
+
   const mutation = useMutation({
-    mutationFn: async (data: InsertContact) => {
-      return apiRequest("POST", "/api/contact", data);
+    mutationFn: async (data: InsertContact | MinimalContactForm) => {
+      const submitData = {
+        ...data,
+        projectType: "projectType" in data && data.projectType ? data.projectType : "general",
+      };
+      return apiRequest("POST", "/api/contact", submitData);
     },
     onSuccess: () => {
       setIsSubmitted(true);
-      form.reset();
-      trackEvent("form_submit", "/contact", { form: "contact" });
+      standardForm.reset();
+      minimalForm.reset();
+      trackEvent("form_submit", "/contact", { form: "contact", variant: variantId });
+      trackConversion("form_submit");
     },
     onError: () => {
       toast({
@@ -60,7 +89,7 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = (data: InsertContact) => {
+  const onSubmit = (data: InsertContact | MinimalContactForm) => {
     mutation.mutate(data);
   };
 
@@ -182,29 +211,31 @@ export default function ContactPage() {
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="projectType">Project Type</Label>
-                          <Select
-                            onValueChange={(value) => form.setValue("projectType", value)}
-                            defaultValue={form.getValues("projectType")}
-                          >
-                            <SelectTrigger data-testid="select-project-type">
-                              <SelectValue placeholder="Select project type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {projectTypes.map((type) => (
-                                <SelectItem key={type.value} value={type.value}>
-                                  {type.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {form.formState.errors.projectType && (
-                            <p className="text-sm text-destructive">
-                              {form.formState.errors.projectType.message}
-                            </p>
-                          )}
-                        </div>
+                        {!isMinimalForm && (
+                          <div className="space-y-2">
+                            <Label htmlFor="projectType">Project Type</Label>
+                            <Select
+                              onValueChange={(value) => standardForm.setValue("projectType", value)}
+                              defaultValue={standardForm.getValues("projectType")}
+                            >
+                              <SelectTrigger data-testid="select-project-type">
+                                <SelectValue placeholder="Select project type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {projectTypes.map((type) => (
+                                  <SelectItem key={type.value} value={type.value}>
+                                    {type.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {standardForm.formState.errors.projectType && (
+                              <p className="text-sm text-destructive">
+                                {standardForm.formState.errors.projectType.message}
+                              </p>
+                            )}
+                          </div>
+                        )}
 
                         <div className="space-y-2">
                           <Label htmlFor="message">Message</Label>
