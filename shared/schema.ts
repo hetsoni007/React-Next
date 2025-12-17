@@ -136,8 +136,10 @@ export interface BlogArticle {
   link: string;
   pubDate: string;
   description: string;
+  fullContent?: string;
   thumbnail?: string;
   categories: string[];
+  author?: string;
 }
 
 // Career milestone

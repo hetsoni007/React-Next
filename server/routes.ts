@@ -72,13 +72,32 @@ export async function registerRoutes(
           description = description.substring(0, description.lastIndexOf(" ")) + "...";
         }
 
+        // Get full content text (stripped of HTML for display)
+        const fullContent = contentEncoded
+          .replace(/<figure[^>]*>[\s\S]*?<\/figure>/g, "")
+          .replace(/<img[^>]*>/g, "")
+          .replace(/<h3>/g, "\n\n## ")
+          .replace(/<\/h3>/g, "\n")
+          .replace(/<h4>/g, "\n\n### ")
+          .replace(/<\/h4>/g, "\n")
+          .replace(/<p>/g, "\n")
+          .replace(/<\/p>/g, "\n")
+          .replace(/<br\s*\/?>/g, "\n")
+          .replace(/<li>/g, "\n- ")
+          .replace(/<\/li>/g, "")
+          .replace(/<[^>]*>/g, "")
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+
         return {
           title: item.title || "Untitled",
           link: item.link || "",
           pubDate: item.pubDate || new Date().toISOString(),
           description,
+          fullContent,
           thumbnail,
           categories: item.categories || [],
+          author: item.creator || "Het Soni",
         };
       });
 
