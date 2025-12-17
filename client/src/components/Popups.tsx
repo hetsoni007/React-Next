@@ -87,12 +87,12 @@ export function EntrancePopup() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent 
-        className="sm:max-w-lg bg-background/98 backdrop-blur-2xl border-border shadow-2xl"
+        className="sm:max-w-lg bg-background border-border shadow-2xl"
         data-testid="popup-entrance"
       >
         <DialogHeader>
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
               <Sparkles className="h-6 w-6 text-foreground" />
             </div>
           </div>
@@ -108,7 +108,7 @@ export function EntrancePopup() {
         <div className="grid grid-cols-2 gap-3 mt-6">
           <button
             onClick={handlePortfolio}
-            className="group p-4 rounded-xl border border-border bg-card/50 text-left transition-all duration-300 hover-elevate"
+            className="group p-4 rounded-xl border border-border bg-muted/50 text-left transition-all duration-300 hover-elevate"
             data-testid="button-popup-see-work"
           >
             <Eye className="h-5 w-5 text-foreground mb-2" />
@@ -118,7 +118,7 @@ export function EntrancePopup() {
           
           <button
             onClick={handleCTA}
-            className="group p-4 rounded-xl border border-border bg-card/50 text-left transition-all duration-300 hover-elevate"
+            className="group p-4 rounded-xl border border-border bg-muted/50 text-left transition-all duration-300 hover-elevate"
             data-testid="button-popup-discuss"
           >
             <MessageCircle className="h-5 w-5 text-foreground mb-2" />
@@ -164,11 +164,11 @@ export function ExitIntentPopup() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent 
-        className="sm:max-w-md bg-background/98 backdrop-blur-2xl border-border shadow-2xl"
+        className="sm:max-w-md bg-background border-border shadow-2xl"
         data-testid="popup-exit-intent"
       >
         <DialogHeader>
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center mb-4 mx-auto">
+          <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4 mx-auto">
             <HelpCircle className="h-7 w-7 text-foreground" />
           </div>
           <DialogTitle className="text-center text-xl font-semibold">
@@ -257,12 +257,12 @@ export function FloatingPortfolioAssistant() {
       data-testid="floating-assistant"
     >
       {isExpanded ? (
-        <Card className="w-72 shadow-2xl border-border/50 bg-background/98 backdrop-blur-xl overflow-hidden">
+        <Card className="w-72 shadow-2xl border-border bg-background overflow-visible">
           <CardContent className="p-0">
-            <div className="p-4 border-b border-border/50">
+            <div className="p-4 border-b border-border">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                     <Lightbulb className="h-4 w-4 text-foreground" />
                   </div>
                   <span className="font-medium text-sm">How can I help?</span>
@@ -294,15 +294,15 @@ export function FloatingPortfolioAssistant() {
                 <Link
                   key={project.id}
                   href={`/portfolio/${project.id}`}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 transition-all duration-200 hover-elevate group"
+                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 transition-all duration-200 hover-elevate group"
                   onClick={() => setIsExpanded(false)}
                   data-testid={`assistant-project-${index}`}
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                     {project.category.includes("Mobile") ? (
-                      <Smartphone className="h-5 w-5 text-foreground/70" />
+                      <Smartphone className="h-5 w-5 text-muted-foreground" />
                     ) : (
-                      <Globe className="h-5 w-5 text-foreground/70" />
+                      <Globe className="h-5 w-5 text-muted-foreground" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -384,7 +384,7 @@ export function ScrollEngagementPopup() {
       }`}
       data-testid="popup-scroll-engagement"
     >
-      <Card className="bg-background/98 backdrop-blur-xl border-border shadow-2xl overflow-hidden">
+      <Card className="bg-background border-border shadow-2xl overflow-visible">
         <CardContent className="p-4">
           <button
             onClick={() => setIsOpen(false)}
@@ -396,7 +396,7 @@ export function ScrollEngagementPopup() {
           </button>
           
           <div className="flex items-start gap-3 pr-6">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
               <Sparkles className="h-5 w-5 text-foreground" />
             </div>
             <div>
@@ -477,7 +477,7 @@ export function PortfolioPopup({ projectTitle }: PortfolioPopupProps) {
       }`}
       data-testid="popup-portfolio"
     >
-      <Card className="bg-background/98 backdrop-blur-xl border-border shadow-2xl">
+      <Card className="bg-background border-border shadow-2xl overflow-visible">
         <CardContent className="p-5">
           <button
             onClick={() => setIsOpen(false)}
@@ -489,7 +489,7 @@ export function PortfolioPopup({ projectTitle }: PortfolioPopupProps) {
           </button>
           
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
               <Rocket className="h-5 w-5 text-foreground" />
             </div>
             <div>
@@ -579,7 +579,7 @@ export function PageContextPopup() {
       }`}
       data-testid="popup-page-context"
     >
-      <Card className="bg-background/98 backdrop-blur-xl border-border shadow-xl">
+      <Card className="bg-background border-border shadow-xl overflow-visible">
         <CardContent className="p-4">
           <button
             onClick={() => setIsOpen(false)}
