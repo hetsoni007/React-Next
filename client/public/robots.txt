@@ -1,0 +1,31 @@
+# Robots.txt for Soni Consultancy Services
+# https://soniconsultancyservices.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://soniconsultancyservices.com/sitemap.xml
+
+# Disallow admin and internal pages
+Disallow: /admin/
+Disallow: /api/
+
+# Allow all major search engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /

@@ -38,7 +38,7 @@ export function Hero() {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.1]"
             data-testid="text-hero-headline"
           >
-            Designing and building thoughtful mobile & web applications.
+            Custom Software Development for Growing Businesses
           </h1>
         </div>
 
@@ -51,9 +51,9 @@ export function Hero() {
             className="mt-8 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
             data-testid="text-hero-description"
           >
-            I help founders and product teams transform ideas into exceptional 
-            digital experiences. With expertise in mobile and web development, 
-            I focus on creating products that users love and businesses trust.
+            We build scalable SaaS applications, mobile apps, and enterprise software 
+            solutions for startups and enterprises. Expert development services 
+            serving clients in the USA, UK, UAE, Europe, and Australia.
           </p>
         </div>
 

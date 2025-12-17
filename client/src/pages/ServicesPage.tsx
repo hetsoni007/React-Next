@@ -3,10 +3,11 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Smartphone, Globe, Palette, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Smartphone, Globe, Palette, ArrowRight, CheckCircle2, ChevronDown, Building2, Users, Zap } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView } from "@/hooks/use-analytics";
 import { services } from "@/lib/data";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const iconMap: Record<string, typeof Smartphone> = {
   smartphone: Smartphone,
@@ -64,13 +65,27 @@ export default function ServicesPage() {
                 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight"
                 data-testid="text-services-page-title"
               >
-                Services
+                Custom Software Development Services
               </h1>
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                I offer focused expertise in mobile and web development, 
-                combining technical excellence with product thinking to deliver 
-                solutions that create real value for your business.
+                Enterprise-grade software development services for businesses worldwide. 
+                From custom SaaS applications to mobile apps and web platforms, we deliver 
+                scalable solutions that drive growth and operational efficiency.
               </p>
+              <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4" />
+                  <span>USA, UK, UAE, Europe</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  <span>Startups to Enterprise</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  <span>Agile Development</span>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-24">
@@ -94,17 +109,83 @@ export default function ServicesPage() {
           </div>
         </section>
 
+        <section className="py-20 lg:py-32 px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-center mb-12">
+              Frequently Asked Questions
+            </h2>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger data-testid="faq-trigger-1">
+                  What custom software development services do you offer?
+                </AccordionTrigger>
+                <AccordionContent>
+                  We offer comprehensive custom software development services including SaaS application 
+                  development, mobile app development for iOS and Android, web application development, 
+                  enterprise software solutions, and API development. Our expertise spans payroll management 
+                  systems, retail chain management software, cab booking apps, and influencer marketing platforms.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger data-testid="faq-trigger-2">
+                  Which countries and regions do you serve?
+                </AccordionTrigger>
+                <AccordionContent>
+                  We serve clients globally with a focus on the United States, United Kingdom, United Arab 
+                  Emirates, Australia, Canada, Germany, and Singapore. Our team works across time zones to 
+                  ensure seamless collaboration with international clients, providing the same level of service 
+                  regardless of location.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger data-testid="faq-trigger-3">
+                  What technologies do you use for development?
+                </AccordionTrigger>
+                <AccordionContent>
+                  We use modern technology stacks including React, Next.js, and Node.js for web development, 
+                  Flutter and React Native for cross-platform mobile apps, PostgreSQL and MongoDB for databases, 
+                  and cloud services like AWS and Google Cloud for deployment and scaling. We choose the best 
+                  technology stack based on your specific project requirements.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-4">
+                <AccordionTrigger data-testid="faq-trigger-4">
+                  How long does a typical software development project take?
+                </AccordionTrigger>
+                <AccordionContent>
+                  Project timelines vary based on complexity and scope. A typical MVP takes 8-12 weeks, 
+                  medium-complexity applications take 12-20 weeks, while comprehensive enterprise solutions 
+                  can take 20-32 weeks. We follow agile methodology with regular sprints and continuous 
+                  client feedback to ensure timely delivery.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-5">
+                <AccordionTrigger data-testid="faq-trigger-5">
+                  Do you provide post-launch support and maintenance?
+                </AccordionTrigger>
+                <AccordionContent>
+                  Yes, we provide comprehensive post-launch support including bug fixes, performance 
+                  optimization, security updates, and feature enhancements. We offer flexible maintenance 
+                  packages tailored to your needs, ensuring your software remains secure, performant, and 
+                  up-to-date with the latest technologies.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </section>
+
         <section className="py-20 lg:py-32 px-6 lg:px-8 bg-card">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-              Ready to discuss your project?
+              Ready to Start Your Project?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Let's explore how I can help bring your vision to life.
+              Get a free consultation to discuss your software development needs. 
+              We work with businesses of all sizes across USA, UK, UAE, and beyond.
             </p>
             <Link href="/contact">
               <Button size="lg" className="mt-8" data-testid="button-services-cta">
-                Start a Conversation
+                Get Free Consultation
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

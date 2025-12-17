@@ -86,11 +86,11 @@ export function useABTest(config: ABTestConfig) {
 }
 
 export const heroCtaTest: ABTestConfig = {
-  testId: "hero_cta_v1",
+  testId: "hero_cta_v2",
   variants: [
-    { id: "control", name: "Contact Me", weight: 1 },
-    { id: "schedule", name: "Schedule a Call", weight: 1 },
-    { id: "discuss", name: "Let's Discuss", weight: 1 },
+    { id: "consultation", name: "Get Free Consultation", weight: 2 },
+    { id: "quote", name: "Get a Quote", weight: 1 },
+    { id: "discuss", name: "Start Your Project", weight: 1 },
   ],
 };
 
