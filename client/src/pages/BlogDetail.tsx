@@ -118,9 +118,15 @@ export default function BlogDetail() {
   const wordCount = (article.fullContent || article.description).split(/\s+/).length;
   const readTime = Math.max(3, Math.ceil(wordCount / 200));
 
-  const contentParagraphs = (article.fullContent || article.description)
+  const rawContent = article.fullContent || article.description;
+  const hasLimitedMarker = rawContent.includes("Continue reading on Medium");
+  const isLimitedContent = hasLimitedMarker || rawContent.length < 200;
+  
+  const contentParagraphs = rawContent
     .split("\n\n")
-    .filter(p => p.trim());
+    .filter(p => p.trim())
+    .map(p => p.replace(/Continue reading on Medium »?/g, "").trim())
+    .filter(p => p.length > 0);
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-blog-detail">
@@ -203,13 +209,13 @@ export default function BlogDetail() {
             </div>
 
             <h1 
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6 sm:mb-8 leading-tight"
               data-testid="text-article-title"
             >
               {article.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-muted-foreground mb-8">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-muted-foreground mb-6 sm:mb-8 text-sm sm:text-base">
               <span className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 {article.author || "Het Soni"}
@@ -270,44 +276,70 @@ export default function BlogDetail() {
             )}
 
             <article className="prose prose-lg dark:prose-invert max-w-none" data-testid="article-content">
-              {contentParagraphs.map((paragraph, index) => {
-                const trimmed = paragraph.trim();
-                
-                if (trimmed.startsWith("## ")) {
+              {contentParagraphs.length > 0 ? (
+                contentParagraphs.map((paragraph, index) => {
+                  const trimmed = paragraph.trim();
+                  
+                  if (trimmed.startsWith("## ")) {
+                    return (
+                      <h2 key={index} className="text-xl sm:text-2xl font-bold mt-8 sm:mt-10 mb-4">
+                        {trimmed.replace("## ", "")}
+                      </h2>
+                    );
+                  }
+                  
+                  if (trimmed.startsWith("### ")) {
+                    return (
+                      <h3 key={index} className="text-lg sm:text-xl font-semibold mt-6 sm:mt-8 mb-3">
+                        {trimmed.replace("### ", "")}
+                      </h3>
+                    );
+                  }
+                  
+                  if (trimmed.startsWith("- ")) {
+                    const items = trimmed.split("\n").filter(l => l.startsWith("- "));
+                    return (
+                      <ul key={index} className="list-disc pl-4 sm:pl-6 space-y-2 my-4">
+                        {items.map((item, i) => (
+                          <li key={i} className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+                            {item.replace("- ", "")}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  }
+                  
                   return (
-                    <h2 key={index} className="text-2xl font-bold mt-10 mb-4">
-                      {trimmed.replace("## ", "")}
-                    </h2>
+                    <p key={index} className="text-muted-foreground leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base">
+                      {trimmed}
+                    </p>
                   );
-                }
-                
-                if (trimmed.startsWith("### ")) {
-                  return (
-                    <h3 key={index} className="text-xl font-semibold mt-8 mb-3">
-                      {trimmed.replace("### ", "")}
-                    </h3>
-                  );
-                }
-                
-                if (trimmed.startsWith("- ")) {
-                  const items = trimmed.split("\n").filter(l => l.startsWith("- "));
-                  return (
-                    <ul key={index} className="list-disc pl-6 space-y-2 my-4">
-                      {items.map((item, i) => (
-                        <li key={i} className="text-muted-foreground leading-relaxed">
-                          {item.replace("- ", "")}
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                }
-                
-                return (
-                  <p key={index} className="text-muted-foreground leading-relaxed mb-6">
-                    {trimmed}
-                  </p>
-                );
-              })}
+                })
+              ) : null}
+              
+              {isLimitedContent && (
+                <Card className="my-8 bg-gradient-to-br from-muted/50 to-muted/30 border-2">
+                  <CardContent className="p-6 sm:p-8 text-center">
+                    <BookOpen className="h-10 w-10 mx-auto mb-4 text-foreground/70" />
+                    <h3 className="text-lg font-semibold mb-2">Continue Reading</h3>
+                    <p className="text-muted-foreground mb-6 max-w-md mx-auto text-sm sm:text-base">
+                      This is a preview of the article. Read the full version on Medium for 
+                      the complete content, comments, and more.
+                    </p>
+                    <a
+                      href={article.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button size="lg" data-testid="button-read-full-on-medium">
+                        <BookOpen className="mr-2 h-5 w-5" />
+                        Read Full Article on Medium
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </Button>
+                    </a>
+                  </CardContent>
+                </Card>
+              )}
             </article>
 
             <Card className="mt-16 bg-muted/30 border-2">

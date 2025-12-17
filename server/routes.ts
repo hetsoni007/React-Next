@@ -72,22 +72,52 @@ export async function registerRoutes(
           description = description.substring(0, description.lastIndexOf(" ")) + "...";
         }
 
+        // Helper function to decode HTML entities
+        const decodeHtmlEntities = (text: string): string => {
+          return text
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&#x27;/g, "'")
+            .replace(/&#x2019;/g, "'")
+            .replace(/&#x2018;/g, "'")
+            .replace(/&#x201C;/g, '"')
+            .replace(/&#x201D;/g, '"')
+            .replace(/&#x2014;/g, "—")
+            .replace(/&#x2013;/g, "–")
+            .replace(/&#x2026;/g, "...")
+            .replace(/&ndash;/g, "–")
+            .replace(/&mdash;/g, "—")
+            .replace(/&hellip;/g, "...")
+            .replace(/&lsquo;/g, "'")
+            .replace(/&rsquo;/g, "'")
+            .replace(/&ldquo;/g, '"')
+            .replace(/&rdquo;/g, '"')
+            .replace(/&nbsp;/g, " ")
+            .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
+            .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)));
+        };
+
         // Get full content text (stripped of HTML for display)
-        const fullContent = contentEncoded
-          .replace(/<figure[^>]*>[\s\S]*?<\/figure>/g, "")
-          .replace(/<img[^>]*>/g, "")
-          .replace(/<h3>/g, "\n\n## ")
-          .replace(/<\/h3>/g, "\n")
-          .replace(/<h4>/g, "\n\n### ")
-          .replace(/<\/h4>/g, "\n")
-          .replace(/<p>/g, "\n")
-          .replace(/<\/p>/g, "\n")
-          .replace(/<br\s*\/?>/g, "\n")
-          .replace(/<li>/g, "\n- ")
-          .replace(/<\/li>/g, "")
-          .replace(/<[^>]*>/g, "")
-          .replace(/\n{3,}/g, "\n\n")
-          .trim();
+        const fullContent = decodeHtmlEntities(
+          contentEncoded
+            .replace(/<figure[^>]*>[\s\S]*?<\/figure>/g, "")
+            .replace(/<img[^>]*>/g, "")
+            .replace(/<h3>/g, "\n\n## ")
+            .replace(/<\/h3>/g, "\n")
+            .replace(/<h4>/g, "\n\n### ")
+            .replace(/<\/h4>/g, "\n")
+            .replace(/<p>/g, "\n")
+            .replace(/<\/p>/g, "\n")
+            .replace(/<br\s*\/?>/g, "\n")
+            .replace(/<li>/g, "\n- ")
+            .replace(/<\/li>/g, "")
+            .replace(/<[^>]*>/g, "")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim()
+        );
 
         return {
           title: item.title || "Untitled",

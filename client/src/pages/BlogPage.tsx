@@ -114,30 +114,30 @@ export default function BlogPage() {
               </div>
 
               <h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6"
+                className="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white mb-4 sm:mb-6"
                 data-testid="text-blog-page-title"
               >
                 Knowledge
                 <span className="block text-white/60">Library</span>
               </h1>
 
-              <p className="text-lg lg:text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-white/70 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-4 sm:px-0">
                 Deep dives into technology, product strategy, and the art of building 
                 digital products that scale. Learn from real experiences.
               </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-6 mb-12">
+              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-8 sm:mb-12">
                 <div className="flex items-center gap-2 text-white/60">
-                  <BookOpen className="h-5 w-5" />
-                  <span className="text-sm">{articles?.length || 0}+ Articles</span>
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-xs sm:text-sm">{articles?.length || 0}+ Articles</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/60">
-                  <TrendingUp className="h-5 w-5" />
-                  <span className="text-sm">{allTopics.length} Topics</span>
+                  <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-xs sm:text-sm">{allTopics.length} Topics</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/60">
-                  <Users className="h-5 w-5" />
-                  <span className="text-sm">For Founders & CTOs</span>
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-xs sm:text-sm">For Founders & CTOs</span>
                 </div>
               </div>
 
@@ -384,14 +384,14 @@ function TopicCarousel({ topic, articles, sectionIndex }: TopicCarouselProps) {
       style={{ transitionDelay: `${sectionIndex * 150}ms` }}
       data-testid={`topic-carousel-${topic.toLowerCase().replace(/\s+/g, "-")}`}
     >
-      <div className="flex items-center justify-between mb-8 gap-4">
-        <div className="flex items-center gap-4">
-          <div className="h-10 w-1.5 bg-foreground rounded-full" />
-          <div>
-            <h2 className="text-2xl lg:text-3xl font-bold" data-testid={`text-topic-${topic}`}>
+      <div className="flex items-center justify-between mb-6 sm:mb-8 gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+          <div className="h-8 sm:h-10 w-1 sm:w-1.5 bg-foreground rounded-full flex-shrink-0" />
+          <div className="min-w-0">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold truncate" data-testid={`text-topic-${topic}`}>
               {topic}
             </h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               {articles.length} {articles.length === 1 ? "article" : "articles"} available
             </p>
           </div>
@@ -528,7 +528,7 @@ function LibraryCard({ article, index, topicSlug }: LibraryCardProps) {
 
   return (
     <div
-      className="flex-shrink-0 w-80 snap-start group"
+      className="flex-shrink-0 w-72 sm:w-80 snap-start group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
