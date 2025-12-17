@@ -270,6 +270,30 @@ export default function BlogPage() {
           </div>
         </section>
 
+        <section className="py-20 lg:py-32 px-6 lg:px-8 bg-muted/30">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-4 mb-10">
+              <div className="h-10 w-1.5 bg-foreground rounded-full" />
+              <div>
+                <h2 className="text-2xl lg:text-3xl font-bold">All Articles</h2>
+                <p className="text-sm text-muted-foreground mt-1">Complete reading list</p>
+              </div>
+            </div>
+
+            {filteredArticles.length > 0 ? (
+              <div className="space-y-6">
+                {filteredArticles.map((article, index) => (
+                  <TextArticleRow key={article.link} article={article} index={index} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-12">
+                No articles found. Check back soon!
+              </p>
+            )}
+          </div>
+        </section>
+
         <section className="py-20 lg:py-32 px-6 lg:px-8 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-muted/50 via-background to-muted/30" />
           <div className="absolute inset-0 opacity-30">
@@ -417,6 +441,60 @@ interface LibraryCardProps {
   article: BlogArticle;
   index: number;
   topicSlug: string;
+}
+
+interface TextArticleRowProps {
+  article: BlogArticle;
+  index: number;
+}
+
+function TextArticleRow({ article, index }: TextArticleRowProps) {
+  const formattedDate = new Date(article.pubDate).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const wordCount = article.description.split(/\s+/).length;
+  const readTime = Math.max(3, Math.ceil(wordCount / 200));
+  const cleanDescription = article.description.replace(/<[^>]*>/g, "");
+
+  return (
+    <a
+      href={article.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block group"
+      data-testid={`text-article-row-${index}`}
+    >
+      <div className="py-6 border-b border-border hover-elevate rounded-md px-4 -mx-4 transition-all">
+        <div className="flex flex-wrap items-center gap-3 mb-3">
+          {article.categories.slice(0, 2).map((cat) => (
+            <Badge key={cat} variant="secondary" className="text-xs">
+              {cat}
+            </Badge>
+          ))}
+          <span className="text-xs text-muted-foreground flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            {formattedDate}
+          </span>
+          <span className="text-xs text-muted-foreground flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {readTime} min read
+          </span>
+        </div>
+        
+        <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground/80 transition-colors flex items-start gap-2">
+          {article.title}
+          <ExternalLink className="h-4 w-4 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-60 transition-opacity" />
+        </h3>
+        
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+          {cleanDescription}
+        </p>
+      </div>
+    </a>
+  );
 }
 
 function LibraryCard({ article, index, topicSlug }: LibraryCardProps) {
