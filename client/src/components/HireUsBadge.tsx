@@ -59,7 +59,7 @@ export function HireUsBadge() {
 
   return (
     <div
-      className="fixed bottom-6 left-6 z-40 transition-all duration-300"
+      className="fixed bottom-24 right-6 z-40 transition-all duration-300"
       data-testid="hire-us-badge"
     >
       {isExpanded ? (
@@ -72,8 +72,8 @@ export function HireUsBadge() {
                     <Users className="h-4 w-4 text-background" />
                   </div>
                   <div>
-                    <span className="font-semibold text-sm">Hire Our Developers</span>
-                    <p className="text-xs text-muted-foreground">Connect on your preferred platform</p>
+                    <span className="font-semibold text-sm">Talk with Tech Experts</span>
+                    <p className="text-xs text-muted-foreground">Hire our developers directly</p>
                   </div>
                 </div>
                 <button
@@ -163,7 +163,7 @@ export function HireUsBadge() {
           data-testid="button-hire-expand"
         >
           <Users className="h-5 w-5" />
-          <span className="font-medium text-sm">Hire Us</span>
+          <span className="font-medium text-sm">Hire a Developer</span>
           <ChevronUp className="h-4 w-4 opacity-70" />
         </button>
       )}
