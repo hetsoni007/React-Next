@@ -6,7 +6,6 @@ import { PortfolioPreview } from "@/components/sections/PortfolioPreview";
 import { JourneyPreview } from "@/components/sections/JourneyPreview";
 import { BlogPreview } from "@/components/sections/BlogPreview";
 import { ContactCTA } from "@/components/sections/ContactCTA";
-import { EntrancePopup } from "@/components/Popups";
 import { usePageView } from "@/hooks/use-analytics";
 
 export default function Home() {
@@ -23,7 +22,6 @@ export default function Home() {
         <ContactCTA />
       </main>
       <Footer />
-      <EntrancePopup />
     </div>
   );
 }
