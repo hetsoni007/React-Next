@@ -8,6 +8,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView } from "@/hooks/use-analytics";
 import { portfolioProjects } from "@/lib/data";
+import { HireUsBadge } from "@/components/HireUsBadge";
 
 export default function PortfolioPage() {
   usePageView("/portfolio");
@@ -66,6 +67,7 @@ export default function PortfolioPage() {
       </main>
       
       <Footer />
+      <HireUsBadge />
     </div>
   );
 }

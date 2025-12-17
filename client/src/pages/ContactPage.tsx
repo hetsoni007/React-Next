@@ -26,6 +26,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView, useTrackEvent } from "@/hooks/use-analytics";
 import { useABTest, contactFormTest } from "@/hooks/use-ab-test";
 import { socialLinks, projectTypes } from "@/lib/data";
+import { HireUsBadge } from "@/components/HireUsBadge";
 
 const minimalContactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -282,6 +283,7 @@ export default function ContactPage() {
       </main>
       
       <Footer />
+      <HireUsBadge />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView } from "@/hooks/use-analytics";
 import { services } from "@/lib/data";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { HireUsBadge } from "@/components/HireUsBadge";
 
 const iconMap: Record<string, typeof Smartphone> = {
   smartphone: Smartphone,
@@ -194,6 +195,7 @@ export default function ServicesPage() {
       </main>
       
       <Footer />
+      <HireUsBadge />
     </div>
   );
 }
