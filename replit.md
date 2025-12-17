@@ -1,13 +1,35 @@
-# Het Soni - Personal Portfolio Website
+# Soni Consultancy Services - Custom Software Development Company
 
 ## Overview
 
-A premium, Apple-inspired personal portfolio website for Het Soni focused on lead generation for mobile app and web development services. The site targets founders, CTOs, and product leaders with a calm, professional, high-end aesthetic using a strict black, white, and grey color palette.
+A premium, Apple-inspired portfolio website for Soni Consultancy Services (CEO: Het Soni) focused on B2B lead generation for custom software development services. The site targets founders, CTOs, and product leaders in USA, UK, UAE, Europe, and Australia with a professional, high-end aesthetic.
 
 The primary goals are:
-- Generate qualified leads for mobile and web development services
+- Generate qualified leads for custom software development services
+- Rank for B2B software development keywords (SaaS, mobile apps, enterprise software)
 - Encourage portfolio exploration, blog reading, form submissions, and newsletter subscriptions
 - Maintain a professional standard that inspires trust
+
+## SEO Configuration
+
+### Target Keywords
+Primary: Custom SaaS Application Development, Custom Software Development Company, Web and Mobile App Development Services, Enterprise Software Development
+Secondary: Payroll Management Software, Retail Chain Management Software, Cab Booking App Development, Influencer Marketing Platform
+
+### Schema Markup (index.html)
+- Organization schema with international areaServed
+- SoftwareApplication schema for enterprise solutions
+- Service schema with OfferCatalog
+- FAQPage schema with 4 targeted questions
+
+### Technical SEO Files
+- `client/public/sitemap.xml` - All main routes
+- `client/public/robots.txt` - Crawl directives with sitemap reference
+
+### International Markets
+- USA, UK, UAE, Europe, Australia targeting
+- Neutral English (international tone)
+- hreflang tags for en and x-default
 
 ## User Preferences
 
