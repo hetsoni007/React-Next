@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
+import { Link } from "wouter";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -459,11 +460,14 @@ function TextArticleRow({ article, index }: TextArticleRowProps) {
   const readTime = Math.max(3, Math.ceil(wordCount / 200));
   const cleanDescription = article.description.replace(/<[^>]*>/g, "");
 
+  const slug = article.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
   return (
-    <a
-      href={article.link}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      href={`/blog/${slug}`}
       className="block group"
       data-testid={`text-article-row-${index}`}
     >
@@ -493,7 +497,7 @@ function TextArticleRow({ article, index }: TextArticleRowProps) {
           {cleanDescription}
         </p>
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -510,6 +514,11 @@ function LibraryCard({ article, index, topicSlug }: LibraryCardProps) {
   const readTime = Math.max(3, Math.ceil(wordCount / 200));
   const cleanDescription = article.description.replace(/<[^>]*>/g, "");
 
+  const slug = article.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
   const accentColors = [
     "from-neutral-700 to-neutral-800",
     "from-neutral-600 to-neutral-700",
@@ -523,10 +532,8 @@ function LibraryCard({ article, index, topicSlug }: LibraryCardProps) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <a
-        href={article.link}
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
+        href={`/blog/${slug}`}
         className="block h-full"
         data-testid={`blog-card-${topicSlug}-${index}`}
       >
@@ -600,7 +607,7 @@ function LibraryCard({ article, index, topicSlug }: LibraryCardProps) {
             </CardContent>
           </Card>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }

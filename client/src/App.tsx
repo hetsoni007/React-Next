@@ -9,6 +9,7 @@ import PortfolioPage from "@/pages/PortfolioPage";
 import PortfolioDetail from "@/pages/PortfolioDetail";
 import JourneyPage from "@/pages/JourneyPage";
 import BlogPage from "@/pages/BlogPage";
+import BlogDetail from "@/pages/BlogDetail";
 import ContactPage from "@/pages/ContactPage";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import NotFound from "@/pages/not-found";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/portfolio/:id" component={PortfolioDetail} />
       <Route path="/journey" component={JourneyPage} />
       <Route path="/blog" component={BlogPage} />
+      <Route path="/blog/:slug" component={BlogDetail} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/admin/analytics" component={AnalyticsDashboard} />
       <Route component={NotFound} />
