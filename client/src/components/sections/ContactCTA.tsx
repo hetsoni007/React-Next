@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import Analytics from "@/lib/analytics";
 
 export function ContactCTA() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
@@ -43,7 +44,7 @@ export function ContactCTA() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <Link href="/contact">
+          <Link href="/contact" onClick={() => Analytics.CTA.contactUs('Homepage CTA Section')}>
             <Button
               size="lg"
               className="text-base shadow-lg transition-all duration-300"

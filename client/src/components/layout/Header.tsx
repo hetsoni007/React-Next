@@ -6,6 +6,7 @@ import { Menu, X, Linkedin, Mail } from "lucide-react";
 import { SiX, SiInstagram } from "react-icons/si";
 import { socialLinks } from "@/lib/data";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Analytics from "@/lib/analytics";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -45,7 +46,7 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link href="/">
+          <Link href="/" onClick={() => Analytics.Navigation.logoClick()}>
             <span 
               className="text-xl font-semibold tracking-tight cursor-pointer"
               data-testid="link-logo"
@@ -56,7 +57,7 @@ export function Header() {
 
           <nav className="hidden lg:flex items-center gap-1" data-testid="nav-desktop">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} onClick={() => Analytics.Navigation.menuClick(item.label)}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -76,7 +77,7 @@ export function Header() {
           <div className="hidden lg:flex items-center gap-2">
             <SocialIcons size="sm" />
             <ThemeToggle />
-            <Link href="/contact">
+            <Link href="/contact" onClick={() => Analytics.CTA.contactUs('Header')}>
               <Button size="sm" data-testid="button-cta-header">
                 Get in Touch
               </Button>
@@ -105,7 +106,7 @@ export function Header() {
         >
           <nav className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} onClick={() => Analytics.Navigation.menuClick(`Mobile: ${item.label}`)}>
                 <Button
                   variant="ghost"
                   className={`w-full justify-start text-base font-medium ${
@@ -174,6 +175,7 @@ export function SocialIcons({ size = "default" }: SocialIconsProps) {
               target={item.href.startsWith("mailto") ? undefined : "_blank"}
               rel="noopener noreferrer"
               data-testid={item.testId}
+              onClick={() => Analytics.Social.linkClick(item.label)}
             >
               <Button
                 variant="ghost"

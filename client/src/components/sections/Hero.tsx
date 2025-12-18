@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
 import { useABTest, heroCtaTest } from "@/hooks/use-ab-test";
+import Analytics from "@/lib/analytics";
 
 export function Hero() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
@@ -67,7 +68,10 @@ export function Hero() {
               size="lg"
               className="min-w-[160px] text-base shadow-lg transition-all duration-300"
               data-testid="button-cta-contact"
-              onClick={() => trackConversion("hero_cta_click")}
+              onClick={() => {
+                trackConversion("hero_cta_click");
+                Analytics.CTA.heroButton(variant.name);
+              }}
             >
               {isLoading ? "Contact Me" : variant.name}
             </Button>
@@ -78,6 +82,7 @@ export function Hero() {
               size="lg"
               className="min-w-[160px] text-base transition-all duration-300"
               data-testid="button-cta-portfolio"
+              onClick={() => Analytics.CTA.viewPortfolio('Hero')}
             >
               View Portfolio
             </Button>

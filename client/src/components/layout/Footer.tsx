@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import Analytics from "@/lib/analytics";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -20,6 +21,10 @@ export function Footer() {
     onSuccess: () => {
       setIsSubscribed(true);
       setEmail("");
+      Analytics.Forms.newsletterSubscribe();
+    },
+    onError: (error) => {
+      Analytics.Forms.newsletterError(error instanceof Error ? error.message : 'Unknown error');
     },
   });
 
@@ -105,7 +110,7 @@ export function Footer() {
             <ul className="space-y-3">
               {["Home", "Services", "Portfolio", "Journey", "Blog", "Contact"].map((item) => (
                 <li key={item}>
-                  <Link href={item === "Home" ? "/" : `/${item.toLowerCase()}`}>
+                  <Link href={item === "Home" ? "/" : `/${item.toLowerCase()}`} onClick={() => Analytics.Navigation.footerLink(item)}>
                     <span 
                       className="text-muted-foreground transition-colors cursor-pointer"
                       data-testid={`link-footer-${item.toLowerCase()}`}
@@ -126,6 +131,7 @@ export function Footer() {
                   href={`mailto:${socialLinks.email}`}
                   className="transition-colors break-all"
                   data-testid="link-footer-email"
+                  onClick={() => Analytics.Social.linkClick('Footer Email')}
                 >
                   {socialLinks.email}
                 </a>
@@ -137,6 +143,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="transition-colors"
                   data-testid="link-footer-linkedin"
+                  onClick={() => Analytics.Social.linkClick('Footer LinkedIn')}
                 >
                   LinkedIn Profile
                 </a>
@@ -148,6 +155,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="transition-colors"
                   data-testid="link-footer-medium"
+                  onClick={() => Analytics.Social.linkClick('Footer Medium')}
                 >
                   Read on Medium
                 </a>

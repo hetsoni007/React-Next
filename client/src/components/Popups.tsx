@@ -26,6 +26,7 @@ import {
   Send
 } from "lucide-react";
 import { portfolioProjects } from "@/lib/data";
+import Analytics from "@/lib/analytics";
 
 interface PopupState {
   hasSeenEntrance: boolean;
@@ -69,6 +70,7 @@ export function EntrancePopup() {
     const timer = setTimeout(() => {
       setIsOpen(true);
       setPopupState({ hasSeenEntrance: true });
+      Analytics.Popups.entrance.show();
     }, 8000);
 
     return () => clearTimeout(timer);
@@ -76,11 +78,13 @@ export function EntrancePopup() {
 
   const handleCTA = () => {
     setIsOpen(false);
+    Analytics.Popups.entrance.ctaClick();
     navigate("/contact");
   };
 
   const handlePortfolio = () => {
     setIsOpen(false);
+    Analytics.Popups.entrance.ctaClick();
     navigate("/portfolio");
   };
 
@@ -154,6 +158,7 @@ export function ExitIntentPopup() {
         hasTriggeredRef.current = true;
         setIsOpen(true);
         setPopupState({ hasSeenExit: true });
+        Analytics.Popups.exit.show();
       }
     };
 
@@ -183,6 +188,7 @@ export function ExitIntentPopup() {
           <Button 
             onClick={() => {
               setIsOpen(false);
+              Analytics.Popups.exit.ctaClick();
               navigate("/contact");
             }}
             className="w-full"
@@ -195,6 +201,7 @@ export function ExitIntentPopup() {
             variant="outline"
             onClick={() => {
               setIsOpen(false);
+              Analytics.Popups.exit.ctaClick();
               navigate("/portfolio");
             }}
             className="w-full"
@@ -205,7 +212,10 @@ export function ExitIntentPopup() {
           </Button>
           <Button 
             variant="ghost" 
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              setIsOpen(false);
+              Analytics.Popups.exit.dismiss();
+            }}
             className="w-full text-muted-foreground text-sm"
             data-testid="button-exit-dismiss"
           >
@@ -268,7 +278,10 @@ export function FloatingPortfolioAssistant() {
                   <span className="font-medium text-sm">How can I help?</span>
                 </div>
                 <button 
-                  onClick={() => setIsExpanded(false)}
+                  onClick={() => {
+                    setIsExpanded(false);
+                    Analytics.Popups.floatingAssistant.close();
+                  }}
                   className="text-muted-foreground p-1"
                   data-testid="button-assistant-close"
                 >
@@ -277,7 +290,10 @@ export function FloatingPortfolioAssistant() {
               </div>
               <Link 
                 href={tips[currentTip].link}
-                onClick={() => setIsExpanded(false)}
+                onClick={() => {
+                  setIsExpanded(false);
+                  Analytics.Popups.floatingAssistant.actionClick(tips[currentTip].text);
+                }}
                 className="flex items-center gap-2 text-xs text-muted-foreground transition-all duration-500 hover:text-foreground"
               >
                 {(() => {
@@ -331,7 +347,10 @@ export function FloatingPortfolioAssistant() {
         </Card>
       ) : (
         <button
-          onClick={() => setIsExpanded(true)}
+          onClick={() => {
+            setIsExpanded(true);
+            Analytics.Popups.floatingAssistant.open();
+          }}
           className="group flex items-center gap-3 px-4 py-3 rounded-full bg-foreground text-background shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105"
           data-testid="button-assistant-expand"
         >

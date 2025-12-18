@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Smartphone, Globe, Palette, ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { services } from "@/lib/data";
+import Analytics from "@/lib/analytics";
 
 const iconMap: Record<string, typeof Smartphone> = {
   smartphone: Smartphone,
@@ -70,7 +71,7 @@ export function Services() {
                     </p>
                   </div>
 
-                  <Link href="/contact">
+                  <Link href="/contact" onClick={() => Analytics.Services.serviceClick(service.title)}>
                     <Button
                       variant="ghost"
                       className="mt-6 p-0 h-auto font-medium group/btn"

@@ -11,6 +11,7 @@ import {
   Users
 } from "lucide-react";
 import { SiBehance, SiUpwork, SiFiverr, SiFreelancer } from "react-icons/si";
+import Analytics from "@/lib/analytics";
 
 interface PlatformLink {
   name: string;
@@ -77,7 +78,10 @@ export function HireUsBadge() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setIsVisible(false)}
+                  onClick={() => {
+                    setIsVisible(false);
+                    Analytics.HireBadge.close();
+                  }}
                   className="text-muted-foreground p-1"
                   data-testid="button-hire-close"
                 >
@@ -91,6 +95,7 @@ export function HireUsBadge() {
                 href="mailto:het.soni@soniconsultacyservices.com?subject=Project%20Inquiry%20-%20Hire%20Developer"
                 className="flex items-center gap-3 p-3 rounded-lg bg-foreground text-background transition-all duration-200 hover:opacity-90"
                 data-testid="link-hire-email"
+                onClick={() => Analytics.HireBadge.emailClick()}
               >
                 <div className="w-10 h-10 rounded-lg bg-background/20 flex items-center justify-center flex-shrink-0">
                   <Mail className="h-5 w-5" />
@@ -110,6 +115,7 @@ export function HireUsBadge() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 transition-all duration-200 hover-elevate group"
                   data-testid={`link-hire-${platform.name.toLowerCase()}`}
+                  onClick={() => Analytics.HireBadge.platformClick(platform.name)}
                 >
                   <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                     <platform.icon className="h-5 w-5 text-muted-foreground" />
@@ -133,6 +139,7 @@ export function HireUsBadge() {
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg bg-muted/50 transition-all duration-200 hover-elevate"
                       data-testid={`link-behance-${index}`}
+                      onClick={() => Analytics.HireBadge.platformClick(`Behance: ${profile.name}`)}
                     >
                       <SiBehance className="h-4 w-4 text-muted-foreground" />
                       <span className="text-xs font-medium truncate">{profile.name}</span>
@@ -158,7 +165,10 @@ export function HireUsBadge() {
         </Card>
       ) : (
         <button
-          onClick={() => setIsExpanded(true)}
+          onClick={() => {
+            setIsExpanded(true);
+            Analytics.HireBadge.open();
+          }}
           className="group flex items-center gap-2 px-4 py-3 rounded-full bg-foreground text-background shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105"
           data-testid="button-hire-expand"
         >

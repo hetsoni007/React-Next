@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { portfolioProjects } from "@/lib/data";
+import Analytics from "@/lib/analytics";
 
 export function PortfolioPreview() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
@@ -32,7 +33,7 @@ export function PortfolioPreview() {
               A collection of mobile applications I've designed and built.
             </p>
           </div>
-          <Link href="/portfolio">
+          <Link href="/portfolio" onClick={() => Analytics.Portfolio.viewAllProjects()}>
             <Button variant="outline" data-testid="button-view-all-portfolio">
               View All Projects
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -42,7 +43,7 @@ export function PortfolioPreview() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {portfolioProjects.slice(0, 4).map((project, index) => (
-            <Link key={project.id} href={`/portfolio/${project.id}`}>
+            <Link key={project.id} href={`/portfolio/${project.id}`} onClick={() => Analytics.Portfolio.projectClick(project.title)}>
               <Card
                 className={`group cursor-pointer transition-all duration-500 shadow-lg overflow-visible ${
                   isVisible
