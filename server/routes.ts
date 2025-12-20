@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema, type BlogArticle } from "@shared/schema";
 import Parser from "rss-parser";
+import { sendContactNotification } from "./email";
 
 const parser = new Parser({
   customFields: {
@@ -34,6 +35,15 @@ export async function registerRoutes(
       }
 
       const contact = await storage.createContact(result.data);
+      
+      // Send email notification
+      sendContactNotification({
+        name: result.data.name,
+        email: result.data.email,
+        projectType: result.data.projectType,
+        message: result.data.message
+      }).catch(err => console.error('Email notification failed:', err));
+      
       return res.status(201).json({ 
         message: "Thank you for reaching out! I'll get back to you soon.",
         contact 
