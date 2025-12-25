@@ -70,26 +70,26 @@ export function EntrancePopup() {
 
     let timeoutId: ReturnType<typeof setTimeout>;
     
-    const triggerPopup = () => {
+    function cleanup() {
+      clearTimeout(timeoutId);
+      window.removeEventListener('scroll', handleScroll);
+    }
+    
+    function triggerPopup() {
       if (hasTriggeredRef.current) return;
       hasTriggeredRef.current = true;
       setIsOpen(true);
       setPopupState({ hasSeenEntrance: true });
       Analytics.Popups.entrance.show();
       cleanup();
-    };
+    }
 
-    const handleScroll = () => {
+    function handleScroll() {
       const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
       if (scrollPercentage >= 40) {
         triggerPopup();
       }
-    };
-
-    const cleanup = () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('scroll', handleScroll);
-    };
+    }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     
