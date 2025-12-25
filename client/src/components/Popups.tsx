@@ -62,18 +62,40 @@ function setPopupState(state: Partial<PopupState>) {
 export function EntrancePopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [, navigate] = useLocation();
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     const state = getPopupState();
     if (state.hasSeenEntrance) return;
 
-    const timer = setTimeout(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    
+    const triggerPopup = () => {
+      if (hasTriggeredRef.current) return;
+      hasTriggeredRef.current = true;
       setIsOpen(true);
       setPopupState({ hasSeenEntrance: true });
       Analytics.Popups.entrance.show();
-    }, 8000);
+      cleanup();
+    };
 
-    return () => clearTimeout(timer);
+    const handleScroll = () => {
+      const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      if (scrollPercentage >= 40) {
+        triggerPopup();
+      }
+    };
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('scroll', handleScroll);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    timeoutId = setTimeout(triggerPopup, 28000);
+
+    return cleanup;
   }, []);
 
   const handleCTA = () => {

@@ -17,21 +17,31 @@ import ContactPage from "@/pages/ContactPage";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import NotFound from "@/pages/not-found";
 
-const PAGE_TITLES: Record<string, string> = {
-  '/': 'Home - Soni Consultancy Services',
-  '/services': 'Services - Custom Software Development',
-  '/portfolio': 'Portfolio - Our Work',
-  '/journey': 'Our Journey - Company Story',
-  '/blog': 'Blog - Insights & Articles',
-  '/contact': 'Contact Us - Get in Touch',
+const PAGE_LABELS: Record<string, string> = {
+  '/': 'Home – Primary Entry',
+  '/services': 'Services – Overview',
+  '/portfolio': 'Portfolio – Overview',
+  '/journey': 'Journey – Company Story',
+  '/blog': 'Blog – Overview',
+  '/contact': 'Contact – Intent',
+  '/admin/analytics': 'Admin – Analytics Dashboard',
+};
+
+const getPageLabel = (path: string): string => {
+  if (PAGE_LABELS[path]) return PAGE_LABELS[path];
+  
+  if (path.startsWith('/portfolio/')) return 'Portfolio – Case Study';
+  if (path.startsWith('/blog/')) return 'Blog – Article';
+  
+  return 'Page – Not Found';
 };
 
 function Router() {
   const [location] = useLocation();
 
   useEffect(() => {
-    const title = PAGE_TITLES[location] || document.title;
-    trackPageView(location, title);
+    const pageLabel = getPageLabel(location);
+    trackPageView(location, pageLabel);
   }, [location]);
 
   return (

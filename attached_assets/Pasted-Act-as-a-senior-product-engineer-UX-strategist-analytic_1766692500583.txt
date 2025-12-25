@@ -1,0 +1,158 @@
+Act as a senior product engineer, UX strategist, analytics specialist, and high-ticket services sales consultant.
+
+THIS IS A MICRO-LEVEL OPTIMIZATION TASK.
+DO NOT redesign, rebuild, or rewrite the website.
+
+------------------------------------------------
+ABSOLUTE RULES (DO NOT VIOLATE)
+------------------------------------------------
+- Do NOT change layout
+- Do NOT change colors, fonts, spacing, or visual style
+- Do NOT rewrite or replace existing text content
+- Do NOT add new pages or remove pages
+- Do NOT add new UI components
+- Do NOT add aggressive CTAs or sales copy
+- Do NOT change the tech stack
+- Do NOT break existing animations
+- Make ONLY subtle behavioral, pacing, comfort, and analytics improvements
+
+------------------------------------------------
+PROJECT CONTEXT
+------------------------------------------------
+- Website is built with React / Next.js on Replit
+- Design is Apple-inspired, calm, premium
+- Traffic mainly comes from email campaigns (cold / semi-warm)
+- Users currently stay ~1 minute and leave
+- Conversions are low
+- Analytics page names are unclear or messy
+- Goal is validation, comfort, clarity, and conversation initiation
+- NOT forcing sales, NOT forcing long sessions
+
+------------------------------------------------
+PRIMARY OBJECTIVES
+------------------------------------------------
+1. Improve perceived comfort and trust at a micro level
+2. Increase average engagement slightly (+15–40 seconds)
+3. Reduce subconscious decision pressure
+4. Fix analytics page naming so data becomes readable
+5. Align website behavior with email-driven traffic
+6. Achieve all of this WITHOUT changing the site’s look
+
+------------------------------------------------
+TASK GROUP 1: MICRO ENGAGEMENT & COMFORT TUNING
+------------------------------------------------
+- Subtly reduce perceived scroll speed so content feels calmer
+- Add very small delays between section reveals to avoid rushing
+- Smooth transitions so sections feel intentional, not abrupt
+- Ensure animations feel slower, deliberate, and reassuring
+- Do not add new animations; only tune timing and pacing
+
+GOAL:
+Scrolling should feel like a guided experience, not a fast feed.
+
+------------------------------------------------
+TASK GROUP 2: MICRO INTERACTION FEEDBACK
+------------------------------------------------
+- Improve hover, focus, and click feedback on existing interactive elements
+- Feedback must be subtle and professional
+- Users should feel interactions are acknowledged
+- No flashy effects, no visual noise
+
+GOAL:
+Reduce friction and hesitation without drawing attention.
+
+------------------------------------------------
+TASK GROUP 3: POPUP BEHAVIOR REFINEMENT (NO DESIGN CHANGE)
+------------------------------------------------
+- Keep popup design exactly the same
+- Remove popup on immediate page load
+- Trigger popup ONLY after meaningful engagement:
+  - After ~40–50% scroll
+  - OR after portfolio section is reached
+  - OR after ~25–30 seconds on site
+- Popup should feel like a helpful suggestion, not an interruption
+- Do not increase frequency or aggressiveness
+
+GOAL:
+Popup appears when interest exists, not before.
+
+------------------------------------------------
+TASK GROUP 4: USER FLOW GUIDANCE (NO COPY CHANGE)
+------------------------------------------------
+- Subtly guide attention toward the primary action (conversation/contact)
+- Reduce equal-weight competition between actions
+- Do not make CTAs bigger, louder, or more colorful
+- Make one action feel naturally “next” without forcing it
+
+GOAL:
+User feels guided, not asked to decide.
+
+------------------------------------------------
+TASK GROUP 5: AUTHORITY & TRUST EMPHASIS (WITHOUT ADDING TEXT)
+------------------------------------------------
+- Ensure existing authority signals feel slightly more prominent
+- Use spacing, timing, visual emphasis, or reveal order
+- Do NOT add or rewrite text
+
+GOAL:
+Site should feel led by a responsible decision-maker.
+
+------------------------------------------------
+TASK GROUP 6: CONTACT COMFORT IMPROVEMENT
+------------------------------------------------
+- Reduce perceived pressure around contact actions
+- Make contact interactions feel conversational and low-commitment
+- Avoid urgency, scarcity, or pushy behavior
+
+GOAL:
+User feels safe initiating a conversation.
+
+------------------------------------------------
+TASK GROUP 7: ANALYTICS PAGE LABELING FIX (CRITICAL)
+------------------------------------------------
+Fix page naming issues so analytics data becomes readable and useful.
+
+Ensure every page sends a clear, stable, human-readable page label.
+
+Use BUSINESS-INTENT labels, NOT URLs.
+
+Use labels such as:
+- "Home – Primary Entry"
+- "Portfolio – Overview"
+- "Portfolio – Case Study"
+- "Blog – Overview"
+- "Blog – Article"
+- "Services – Overview"
+- "Contact – Intent"
+
+Rules:
+- Do NOT expose raw routes, slugs, or dynamic filenames
+- Dynamic routes must map to consistent parent labels
+- Page labels must remain stable across navigation and refresh
+- Avoid "(not set)" and duplicate naming issues
+
+GOAL:
+Analytics clearly shows which page types users visit and how long they stay.
+
+------------------------------------------------
+TASK GROUP 8: ANALYTICS NOISE REDUCTION
+------------------------------------------------
+- Do NOT add excessive tracking events
+- Do NOT track scroll depth here
+- Do NOT add experimental metrics
+- Focus ONLY on clean page identification and session clarity
+
+GOAL:
+Readable, actionable analytics without clutter.
+
+------------------------------------------------
+FINAL OUTCOME EXPECTATION
+------------------------------------------------
+- Website looks exactly the same
+- Website feels calmer and more confident
+- Users stay slightly longer without feeling pushed
+- Email traffic feels validated instead of overwhelmed
+- Analytics page names are clean and understandable
+- Lead initiation feels safer and more natural
+
+END OF TASK.
