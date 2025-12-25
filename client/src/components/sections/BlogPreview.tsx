@@ -23,8 +23,8 @@ export function BlogPreview() {
     >
       <div className="max-w-7xl mx-auto">
         <div
-          className={`flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12 transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12 transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <div>
@@ -106,10 +106,10 @@ function BlogCard({ article, index, isVisible }: BlogCardProps) {
       data-testid={`card-blog-${index}`}
     >
       <Card
-        className={`group cursor-pointer h-full transition-all duration-500 shadow-lg overflow-visible ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        className={`group cursor-pointer h-full transition-all duration-700 ease-out shadow-lg overflow-visible ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
         }`}
-        style={{ transitionDelay: `${(index + 1) * 100}ms` }}
+        style={{ transitionDelay: `${(index + 1) * 150}ms` }}
       >
         <CardContent className="p-6">
           {article.categories.length > 0 && (

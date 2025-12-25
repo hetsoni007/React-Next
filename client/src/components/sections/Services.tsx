@@ -23,8 +23,8 @@ export function Services() {
     >
       <div className="max-w-7xl mx-auto">
         <div
-          className={`text-center mb-16 transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`text-center mb-16 transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <h2
@@ -45,12 +45,12 @@ export function Services() {
             return (
               <Card
                 key={service.id}
-                className={`group transition-all duration-500 shadow-lg ${
+                className={`group transition-all duration-700 ease-out shadow-lg ${
                   isVisible
                     ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
+                    : "opacity-0 translate-y-6"
                 }`}
-                style={{ transitionDelay: `${(index + 1) * 100}ms` }}
+                style={{ transitionDelay: `${(index + 1) * 150}ms` }}
                 data-testid={`card-service-${service.id}`}
               >
                 <CardContent className="p-8">

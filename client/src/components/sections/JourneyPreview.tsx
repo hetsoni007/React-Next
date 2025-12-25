@@ -15,8 +15,8 @@ export function JourneyPreview() {
     >
       <div className="max-w-7xl mx-auto">
         <div
-          className={`text-center mb-16 transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`text-center mb-16 transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <h2
@@ -40,12 +40,12 @@ export function JourneyPreview() {
               return (
                 <div
                   key={`${milestone.year}-${index}`}
-                  className={`relative flex items-start gap-8 lg:gap-0 transition-all duration-700 ${
+                  className={`relative flex items-start gap-8 lg:gap-0 transition-all duration-800 ease-out ${
                     isVisible
                       ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8"
+                      : "opacity-0 translate-y-6"
                   }`}
-                  style={{ transitionDelay: `${(index + 1) * 150}ms` }}
+                  style={{ transitionDelay: `${(index + 1) * 180}ms` }}
                   data-testid={`timeline-item-${index}`}
                 >
                   <div className="absolute left-4 lg:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-foreground border-4 border-background shadow-md z-10" />
@@ -80,8 +80,8 @@ export function JourneyPreview() {
         </div>
 
         <div
-          className={`text-center mt-16 transition-all duration-700 delay-500 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`text-center mt-16 transition-all duration-1000 ease-out delay-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <Link href="/journey">

@@ -31,8 +31,8 @@ export function Hero() {
 
       <div className="max-w-4xl mx-auto text-center">
         <div
-          className={`transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <h1
@@ -44,8 +44,8 @@ export function Hero() {
         </div>
 
         <div
-          className={`transition-all duration-700 delay-200 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`transition-all duration-1000 ease-out delay-300 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <p
@@ -59,8 +59,8 @@ export function Hero() {
         </div>
 
         <div
-          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 transition-all duration-700 delay-300 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 transition-all duration-1000 ease-out delay-500 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <Link href="/contact">

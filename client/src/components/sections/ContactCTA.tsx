@@ -15,8 +15,8 @@ export function ContactCTA() {
     >
       <div className="max-w-4xl mx-auto text-center">
         <div
-          className={`transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <h2
@@ -28,8 +28,8 @@ export function ContactCTA() {
         </div>
 
         <div
-          className={`transition-all duration-700 delay-100 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`transition-all duration-1000 ease-out delay-200 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -40,8 +40,8 @@ export function ContactCTA() {
         </div>
 
         <div
-          className={`mt-10 transition-all duration-700 delay-200 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`mt-10 transition-all duration-1000 ease-out delay-400 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <Link href="/contact" onClick={() => Analytics.CTA.contactUs('Homepage CTA Section')}>

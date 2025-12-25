@@ -9,7 +9,7 @@ interface UseScrollAnimationOptions {
 export function useScrollAnimation<T extends HTMLElement>(
   options: UseScrollAnimationOptions = {}
 ) {
-  const { threshold = 0.2, rootMargin = "0px", triggerOnce = true } = options;
+  const { threshold = 0.1, rootMargin = "50px", triggerOnce = true } = options;
   const ref = useRef<T>(null);
   const [isVisible, setIsVisible] = useState(false);
 
