@@ -14,6 +14,7 @@ import {
   Globe,
   Smartphone,
   Layers,
+  LayoutTemplate,
   Check,
   ArrowRight,
   ArrowLeft,
@@ -56,6 +57,7 @@ import {
 import type { EstimationResult } from "@shared/schema";
 
 const projectTypeIcons: Record<string, typeof Globe> = {
+  layout: LayoutTemplate,
   globe: Globe,
   smartphone: Smartphone,
   layers: Layers,
@@ -340,7 +342,7 @@ export default function EstimatePage() {
                 title="What are you building?"
                 subtitle="This helps us understand your vision. There's no wrong choice here."
               />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {projectTypes.map((type) => {
                   const Icon = projectTypeIcons[type.icon];
                   return (

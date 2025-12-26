@@ -1,6 +1,7 @@
 import type { EstimationFeature } from "@shared/schema";
 
 export const projectTypes = [
+  { id: 'simple_website', name: 'Simple Website', description: 'Marketing site, portfolio, or landing page using WordPress or Webflow', icon: 'layout' },
   { id: 'web', name: 'Web Application', description: 'Browser-based application accessible from any device', icon: 'globe' },
   { id: 'mobile', name: 'Mobile Application', description: 'Native or cross-platform app for iOS and Android', icon: 'smartphone' },
   { id: 'web_mobile', name: 'Web + Mobile App', description: 'Complete solution with both web and mobile apps', icon: 'layers' },
@@ -89,7 +90,8 @@ export function getComplexityMultiplier(complexity: string, projectType: string)
   if (complexity === 'moderate') base = 1.5;
   if (complexity === 'complex') base = 2.2;
   
-  if (projectType === 'web_mobile') base *= 1.6;
+  if (projectType === 'simple_website') base *= 0.5;
+  else if (projectType === 'web_mobile') base *= 1.6;
   else if (projectType === 'mobile') base *= 1.2;
   
   return base;

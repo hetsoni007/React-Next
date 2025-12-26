@@ -397,23 +397,36 @@ export function ScrollEngagementPopup() {
     if (state.hasSeenScrollEngagement || hasTriggered) return;
     if (location !== "/") return;
 
+    let timeoutId: ReturnType<typeof setTimeout>;
+    
     const handleScroll = () => {
       const scrollPercent =
         (window.scrollY /
           (document.documentElement.scrollHeight - window.innerHeight)) *
         100;
 
-      if (scrollPercent >= 50 && !hasTriggered) {
+      if (scrollPercent >= 55 && !hasTriggered) {
         setHasTriggered(true);
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           setIsOpen(true);
           setPopupState({ hasSeenScrollEngagement: true });
         }, 1000);
       }
     };
 
+    timeoutId = setTimeout(() => {
+      if (!hasTriggered && location === "/") {
+        setHasTriggered(true);
+        setIsOpen(true);
+        setPopupState({ hasSeenScrollEngagement: true });
+      }
+    }, 35000);
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, [hasTriggered, location]);
 
   if (location !== "/") return null;
@@ -657,11 +670,8 @@ export function PageContextPopup() {
 export function GlobalPopups() {
   return (
     <>
-      <EntrancePopup />
-      <ExitIntentPopup />
-      <FloatingPortfolioAssistant />
       <ScrollEngagementPopup />
-      <PageContextPopup />
+      <ExitIntentPopup />
     </>
   );
 }
