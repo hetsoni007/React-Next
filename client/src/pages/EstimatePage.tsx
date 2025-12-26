@@ -50,16 +50,16 @@ import {
   simpleWebsitePurposes,
   features,
   simpleWebsiteFeatures,
-  techStackOptions,
-  planningDepths,
+  mobileFeatures,
   timelinePreferences,
   regionPricing,
   calculateComplexityLevel,
-  generateRoadmap,
-  featureCategoryLabels,
-  type FeatureCategory,
+  generateRequirementsSummary,
+  getFeaturesByProjectType,
+  getFeatureCategoryLabels,
+  getTechStackByProjectType,
+  type RequirementsSummary,
 } from "@/lib/estimation-data";
-import type { RoadmapResult, FeatureCategoryType } from "@shared/schema";
 import { Upload, FileCheck, Loader2, Lightbulb, Code, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -115,12 +115,11 @@ const featureIcons: Record<string, typeof User> = {
 
 interface WizardState {
   projectType: string;
+  preferredTechStack: string[];
   projectPurpose: string;
   selectedFeatures: string[];
-  planningDepth: string;
   preferredTimeline: string;
   manualRequirements: string;
-  preferredTechStack: string[];
   additionalNotes: string;
   name: string;
   email: string;
@@ -138,23 +137,22 @@ interface QuestionAnswer {
   [questionId: string]: string;
 }
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 7;
 
 export default function EstimatePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [roadmap, setRoadmap] = useState<RoadmapResult | null>(null);
+  const [requirementsSummary, setRequirementsSummary] = useState<RequirementsSummary | null>(null);
   const [regionData, setRegionData] = useState(regionPricing.find(r => r.region === 'DEFAULT')!);
   const { toast } = useToast();
 
   const [wizardState, setWizardState] = useState<WizardState>({
     projectType: '',
+    preferredTechStack: [],
     projectPurpose: '',
     selectedFeatures: [],
-    planningDepth: '',
     preferredTimeline: '',
     manualRequirements: '',
-    preferredTechStack: [],
     additionalNotes: '',
     name: '',
     email: '',
@@ -212,7 +210,6 @@ export default function EstimatePage() {
     projectType: string;
     projectPurpose: string;
     features: string;
-    planningDepth: string;
     preferredTimeline: string;
     complexityLevel: string;
     estimationData: string;
@@ -306,7 +303,7 @@ export default function EstimatePage() {
       
       // Auto-select suggested features that exist in current feature set
       if (data.analysis.suggestedFeatures?.length > 0) {
-        const validFeatureIds = [...features, ...simpleWebsiteFeatures].map(f => f.id);
+        const validFeatureIds = [...features, ...simpleWebsiteFeatures, ...mobileFeatures].map(f => f.id);
         const validSuggestions = data.analysis.suggestedFeatures.filter((f: string) => validFeatureIds.includes(f));
         if (validSuggestions.length > 0) {
           setWizardState(prev => ({
@@ -362,7 +359,7 @@ export default function EstimatePage() {
       
       // Auto-select suggested features that exist in current feature set
       if (data.analysis.suggestedFeatures?.length > 0) {
-        const validFeatureIds = [...features, ...simpleWebsiteFeatures].map(f => f.id);
+        const validFeatureIds = [...features, ...simpleWebsiteFeatures, ...mobileFeatures].map(f => f.id);
         const validSuggestions = data.analysis.suggestedFeatures.filter((f: string) => validFeatureIds.includes(f));
         if (validSuggestions.length > 0) {
           setWizardState(prev => ({
@@ -390,18 +387,20 @@ export default function EstimatePage() {
 
   // Get the appropriate purposes and features based on project type
   const currentPurposes = wizardState.projectType === 'simple_website' ? simpleWebsitePurposes : projectPurposes;
-  const currentFeatures = wizardState.projectType === 'simple_website' ? simpleWebsiteFeatures : features;
+  const currentFeatures = getFeaturesByProjectType(wizardState.projectType);
+  const currentTechStack = getTechStackByProjectType(wizardState.projectType);
+  const currentCategoryLabels = getFeatureCategoryLabels(wizardState.projectType);
 
+  // New flow: 1. Project Type → 2. Tech Preferences → 3. Purpose → 4. Features → 5. Deadline → 6. Requirements Summary → 7. Contact
   const canProceed = (): boolean => {
     switch (currentStep) {
       case 1: return !!wizardState.projectType;
-      case 2: return !!wizardState.projectPurpose;
-      case 3: return wizardState.selectedFeatures.length > 0;
-      case 4: return !!wizardState.planningDepth;
+      case 2: return true; // Tech preferences optional
+      case 3: return !!wizardState.projectPurpose;
+      case 4: return wizardState.selectedFeatures.length > 0;
       case 5: return !!wizardState.preferredTimeline;
-      case 6: return true;
-      case 7: return true;
-      case 8: return !!wizardState.name && !!wizardState.email && wizardState.email.includes('@');
+      case 6: return true; // Summary preview
+      case 7: return !!wizardState.name && !!wizardState.email && wizardState.email.includes('@');
       default: return false;
     }
   };
@@ -411,8 +410,9 @@ export default function EstimatePage() {
     
     trackEvent('Estimation', 'Step Completed', `Step ${currentStep}`);
     
+    // Generate requirements summary before showing preview (step 6)
     if (currentStep === 5) {
-      generateEstimation();
+      generateRequirements();
     }
     
     if (currentStep < TOTAL_STEPS) {
@@ -426,44 +426,34 @@ export default function EstimatePage() {
     }
   };
 
-  const generateEstimation = () => {
+  const generateRequirements = () => {
     setIsLoading(true);
     
     setTimeout(() => {
-      const complexity = calculateComplexityLevel(wizardState.selectedFeatures);
-      const { milestones, totalDuration, techStackRecommendations } = generateRoadmap(
+      const clientDeadline = timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || wizardState.preferredTimeline;
+      
+      const summary = generateRequirementsSummary(
         wizardState.projectType,
         wizardState.projectPurpose,
         wizardState.selectedFeatures,
-        wizardState.planningDepth,
+        clientDeadline,
         wizardState.preferredTechStack
       );
       
-      setRoadmap({
-        projectType: projectTypes.find(p => p.id === wizardState.projectType)?.name || '',
-        projectPurpose: currentPurposes.find(p => p.id === wizardState.projectPurpose)?.name || '',
-        features: wizardState.selectedFeatures.map(f => currentFeatures.find(feat => feat.id === f)?.name || f),
-        complexityLevel: complexity,
-        planningDepth: planningDepths.find(d => d.id === wizardState.planningDepth)?.name || wizardState.planningDepth,
-        preferredTimeline: timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || '',
-        milestones,
-        totalDuration,
-        techStackRecommendations,
-        manualRequirements: wizardState.manualRequirements,
-        preferredTechStack: wizardState.preferredTechStack,
-      });
+      summary.manualRequirements = wizardState.manualRequirements;
       
+      setRequirementsSummary(summary);
       setIsLoading(false);
-    }, 2000);
+    }, 1500);
   };
 
   const handleSubmit = () => {
-    if (!roadmap) return;
+    if (!requirementsSummary) return;
     
     if (!wizardState.name.trim() || wizardState.name.length < 2) {
       toast({
         title: "Please enter your name",
-        description: "Your name is required to generate the roadmap.",
+        description: "Your name is required to send the requirements.",
         variant: "destructive",
       });
       return;
@@ -473,7 +463,7 @@ export default function EstimatePage() {
     if (!emailRegex.test(wizardState.email)) {
       toast({
         title: "Please enter a valid email",
-        description: "A valid email address is required to receive your roadmap.",
+        description: "A valid email address is required to receive your requirements summary.",
         variant: "destructive",
       });
       return;
@@ -483,10 +473,9 @@ export default function EstimatePage() {
       projectType: wizardState.projectType,
       projectPurpose: wizardState.projectPurpose,
       features: JSON.stringify(wizardState.selectedFeatures),
-      planningDepth: wizardState.planningDepth,
       preferredTimeline: timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || wizardState.preferredTimeline,
-      complexityLevel: roadmap.complexityLevel,
-      estimationData: JSON.stringify(roadmap),
+      complexityLevel: requirementsSummary.complexityLevel,
+      estimationData: JSON.stringify(requirementsSummary),
       region: regionData.region,
       currency: regionData.currency,
       name: wizardState.name.trim(),
@@ -546,6 +535,52 @@ export default function EstimatePage() {
           {currentStep === 2 && (
             <StepContainer key="step2">
               <StepHeader
+                title="Any technology preferences?"
+                subtitle="If you have existing systems or preferences, let us know. Otherwise, skip this step."
+              />
+              <div className="space-y-6">
+                {Object.entries(
+                  currentTechStack.reduce((acc, tech) => {
+                    if (!acc[tech.category]) acc[tech.category] = [];
+                    acc[tech.category].push(tech);
+                    return acc;
+                  }, {} as Record<string, typeof currentTechStack>)
+                ).map(([category, techs]) => (
+                  <div key={category}>
+                    <h4 className="text-sm font-medium text-foreground mb-3 capitalize">{category}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {techs.map((tech) => (
+                        <Badge
+                          key={tech.id}
+                          variant={wizardState.preferredTechStack.includes(tech.id) ? "default" : "outline"}
+                          className="cursor-pointer px-3 py-1.5"
+                          onClick={() => {
+                            setWizardState(prev => ({
+                              ...prev,
+                              preferredTechStack: prev.preferredTechStack.includes(tech.id)
+                                ? prev.preferredTechStack.filter(t => t !== tech.id)
+                                : [...prev.preferredTechStack, tech.id]
+                            }));
+                          }}
+                          data-testid={`badge-tech-${tech.id}`}
+                        >
+                          {wizardState.preferredTechStack.includes(tech.id) && <Check className="h-3 w-3 mr-1" />}
+                          {tech.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-center text-xs text-muted-foreground mt-8">
+                No preference? That's perfectly fine. We'll recommend the best technologies for your project.
+              </p>
+            </StepContainer>
+          )}
+
+          {currentStep === 3 && (
+            <StepContainer key="step3">
+              <StepHeader
                 title="What's the purpose?"
                 subtitle={wizardState.projectType === 'simple_website' 
                   ? "Select the type of website that best describes your needs." 
@@ -571,15 +606,15 @@ export default function EstimatePage() {
             </StepContainer>
           )}
 
-          {currentStep === 3 && (
-            <StepContainer key="step3">
+          {currentStep === 4 && (
+            <StepContainer key="step4">
               <StepHeader
-                title="Which features matter most?"
+                title="Which features do you need?"
                 subtitle="Select the features that are important to you. We can always refine these later."
               />
               
               <div className="space-y-8">
-                {Object.entries(featureCategoryLabels).map(([categoryKey, categoryInfo]) => {
+                {Object.entries(currentCategoryLabels).map(([categoryKey, categoryInfo]) => {
                   const categoryFeatures = currentFeatures.filter(f => f.category === categoryKey);
                   if (categoryFeatures.length === 0) return null;
                   
@@ -619,7 +654,7 @@ export default function EstimatePage() {
                   
                   <div className="space-y-4">
                     <Textarea
-                      placeholder="Describe your specific requirements, features, or tech preferences..."
+                      placeholder="Describe your specific requirements, features, or goals..."
                       value={wizardState.manualRequirements}
                       onChange={(e) => updateState('manualRequirements', e.target.value)}
                       className="min-h-[100px]"
@@ -658,23 +693,6 @@ export default function EstimatePage() {
                         </Button>
                       </label>
                       
-                      {wizardState.manualRequirements.length >= 20 && !uploadedFile && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={analyzeManualRequirements}
-                          disabled={isAnalyzing}
-                          data-testid="button-analyze-requirements"
-                        >
-                          {isAnalyzing ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <Sparkles className="h-4 w-4 mr-2" />
-                          )}
-                          Get Smart Suggestions
-                        </Button>
-                      )}
-                      
                       {uploadedFile && (
                         <Button
                           variant="ghost"
@@ -689,72 +707,8 @@ export default function EstimatePage() {
                         </Button>
                       )}
                     </div>
-                    
-                    {/* AI Analysis Results */}
-                    {aiAnalysis && (
-                      <Card className="mt-4 border-primary/20 bg-primary/5">
-                        <CardContent className="p-4">
-                          <div className="flex items-start gap-3">
-                            <Sparkles className="h-5 w-5 text-primary mt-0.5" />
-                            <div className="flex-1 space-y-3">
-                              <p className="text-sm font-medium">Smart Analysis</p>
-                              <p className="text-sm text-muted-foreground">{aiAnalysis.summary}</p>
-                              
-                              {aiAnalysis.techStackSuggestions.length > 0 && (
-                                <div>
-                                  <p className="text-xs text-muted-foreground mb-2">Recommended technologies:</p>
-                                  <div className="flex flex-wrap gap-2">
-                                    {aiAnalysis.techStackSuggestions.map((tech, i) => (
-                                      <Badge key={i} variant="secondary" className="text-xs">
-                                        {tech}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
                   </div>
                 </div>
-              </div>
-            </StepContainer>
-          )}
-
-          {currentStep === 4 && (
-            <StepContainer key="step4">
-              <StepHeader
-                title="How detailed should we plan?"
-                subtitle="Choose what feels right for you. We'll guide you if anything is unclear."
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {planningDepths.map((depth) => (
-                  <SelectionCard
-                    key={depth.id}
-                    selected={wizardState.planningDepth === depth.id}
-                    onClick={() => updateState('planningDepth', depth.id)}
-                    testId={`card-planning-${depth.id}`}
-                    className="p-8"
-                  >
-                    {depth.id === 'quick' ? (
-                      <Zap className="h-8 w-8 mb-4 text-foreground" />
-                    ) : (
-                      <Target className="h-8 w-8 mb-4 text-foreground" />
-                    )}
-                    <h3 className="text-xl font-semibold mb-2">{depth.name}</h3>
-                    <p className="text-muted-foreground mb-4">{depth.description}</p>
-                    <ul className="space-y-2">
-                      {depth.details.map((detail, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Check className="h-4 w-4 text-foreground" />
-                          {detail}
-                        </li>
-                      ))}
-                    </ul>
-                  </SelectionCard>
-                ))}
               </div>
             </StepContainer>
           )}
@@ -762,8 +716,8 @@ export default function EstimatePage() {
           {currentStep === 5 && (
             <StepContainer key="step5">
               <StepHeader
-                title="When would you like to start?"
-                subtitle="This helps us plan resources and priorities. You can change this later."
+                title="What's your ideal deadline?"
+                subtitle="Share your timeline expectations so we can plan accordingly."
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {timelinePreferences.map((timeline) => (
@@ -780,7 +734,7 @@ export default function EstimatePage() {
                 ))}
               </div>
               <p className="text-center text-xs text-muted-foreground mt-6">
-                This is your preference, not a commitment. Final timelines are discussed during our initial call.
+                We'll discuss feasibility and the best approach during our call.
               </p>
             </StepContainer>
           )}
@@ -794,169 +748,112 @@ export default function EstimatePage() {
                   </div>
                   <LoadingMessages />
                 </div>
-              ) : roadmap && (
+              ) : requirementsSummary && (
                 <>
                   <StepHeader
-                    title="We understood your vision"
-                    subtitle="Here's what we captured. This gives us a clear direction."
+                    title="Your Requirements Summary"
+                    subtitle="Here's what we captured. Review and continue to receive your requirements via email."
                   />
-                  <Card className="mb-8">
-                    <CardContent className="p-8">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  
+                  {/* Overview Card */}
+                  <Card className="mb-6">
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Project Type</p>
-                          <p className="font-semibold">{roadmap.projectType}</p>
+                          <p className="font-semibold">{requirementsSummary.projectType}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Purpose</p>
-                          <p className="font-semibold">{roadmap.projectPurpose}</p>
+                          <p className="font-semibold">{requirementsSummary.projectPurpose}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground mb-1">Preferred Timeline</p>
-                          <p className="font-semibold">{roadmap.preferredTimeline}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground mb-1">Complexity</p>
-                          <Badge variant={roadmap.complexityLevel === 'complex' ? 'default' : 'secondary'}>
-                            {roadmap.complexityLevel.charAt(0).toUpperCase() + roadmap.complexityLevel.slice(1)}
-                          </Badge>
+                          <p className="text-sm text-muted-foreground mb-1">Your Deadline</p>
+                          <p className="font-semibold">{requirementsSummary.clientDeadline}</p>
                         </div>
                       </div>
-                      
-                      <div className="mt-6 pt-6 border-t border-border">
-                        <p className="text-sm text-muted-foreground mb-3">Selected Features</p>
-                        <div className="flex flex-wrap gap-2">
-                          {roadmap.features.map((feature: string) => (
-                            <Badge key={feature} variant="outline">{feature}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {wizardState.manualRequirements && (
-                        <div className="mt-6 pt-6 border-t border-border">
-                          <p className="text-sm text-muted-foreground mb-3">Your Requirements</p>
-                          <p className="text-sm">{wizardState.manualRequirements}</p>
-                        </div>
-                      )}
                     </CardContent>
                   </Card>
-                  <p className="text-center text-muted-foreground">
-                    That's helpful for planning. Continue to see your technical roadmap.
+                  
+                  {/* Features */}
+                  <Card className="mb-6">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold mb-4">Selected Features</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {requirementsSummary.features.map((feature) => (
+                          <Badge key={feature} variant="outline">{feature}</Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Tech Stack Recommendations */}
+                  {requirementsSummary.techStackRecommendations && requirementsSummary.techStackRecommendations.length > 0 && (
+                    <Card className="mb-6">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <Server className="h-5 w-5 text-muted-foreground" />
+                          <h4 className="font-semibold">Recommended Technologies</h4>
+                        </div>
+                        <div className="space-y-4">
+                          {requirementsSummary.techStackRecommendations.map((rec) => (
+                            <div key={rec.category}>
+                              <p className="text-xs font-medium text-muted-foreground mb-2">{rec.category}</p>
+                              <div className="flex flex-wrap gap-2">
+                                {rec.technologies.map((tech) => (
+                                  <Badge key={tech} variant="secondary">{tech}</Badge>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  {/* Phases Overview */}
+                  <Card className="mb-6">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold mb-4">Our Development Process</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {requirementsSummary.phases.map((phase, index) => (
+                          <div key={phase.name} className="p-4 bg-muted/50 rounded-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-foreground text-background text-xs font-medium">
+                                {index + 1}
+                              </span>
+                              <h5 className="font-medium">{phase.name}</h5>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{phase.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Custom Requirements */}
+                  {wizardState.manualRequirements && (
+                    <Card className="mb-6">
+                      <CardContent className="p-6">
+                        <h4 className="font-semibold mb-3">Additional Requirements</h4>
+                        <p className="text-sm text-muted-foreground">{wizardState.manualRequirements}</p>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  <p className="text-center text-sm text-muted-foreground">
+                    Continue to receive this summary via email.
                   </p>
                 </>
               )}
             </StepContainer>
           )}
 
-          {currentStep === 7 && roadmap && (
+          {currentStep === 7 && (
             <StepContainer key="step7">
               <StepHeader
-                title="Your Technical Roadmap"
-                subtitle="A milestone-based development plan tailored to your requirements"
-              />
-              
-              <div className="space-y-6">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Calendar className="h-5 w-5 text-muted-foreground" />
-                      <h4 className="font-semibold">Timeline Overview</h4>
-                    </div>
-                    <p className="text-2xl font-bold">
-                      {roadmap.totalDuration.min} - {roadmap.totalDuration.max} weeks
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">Estimated project duration</p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-0">
-                    <div className="divide-y divide-border">
-                      {roadmap.milestones.map((milestone, index) => (
-                        <div key={milestone.name} className="p-6">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium">
-                                  {index + 1}
-                                </span>
-                                <div>
-                                  <h4 className="font-semibold">{milestone.name}</h4>
-                                  <p className="text-xs text-muted-foreground">
-                                    {milestone.durationWeeks.min}-{milestone.durationWeeks.max} weeks
-                                  </p>
-                                </div>
-                              </div>
-                              
-                              <div className="ml-11 space-y-3">
-                                <div>
-                                  <p className="text-xs font-medium text-muted-foreground mb-1">Deliverables</p>
-                                  <ul className="text-sm space-y-1">
-                                    {milestone.deliverables.map((deliverable, i) => (
-                                      <li key={i} className="flex items-start gap-2">
-                                        <CheckCircle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                                        <span>{deliverable}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                                
-                                <div>
-                                  <p className="text-xs font-medium text-muted-foreground mb-1">Key Activities</p>
-                                  <ul className="text-sm space-y-1">
-                                    {milestone.activities.map((activity, i) => (
-                                      <li key={i} className="flex items-start gap-2">
-                                        <ArrowRight className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                                        <span className="text-muted-foreground">{activity}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {roadmap.techStackRecommendations && roadmap.techStackRecommendations.length > 0 && (
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <Server className="h-5 w-5 text-muted-foreground" />
-                        <h4 className="font-semibold">Recommended Tech Stack</h4>
-                      </div>
-                      <div className="space-y-6">
-                        {roadmap.techStackRecommendations.map((rec) => (
-                          <div key={rec.category}>
-                            <p className="text-xs font-medium text-muted-foreground mb-2">{rec.category}</p>
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {rec.technologies.map((tech) => (
-                                <Badge key={tech} variant="secondary">{tech}</Badge>
-                              ))}
-                            </div>
-                            <p className="text-sm text-muted-foreground">{rec.reasoning}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-                
-                <p className="text-center text-sm text-muted-foreground">
-                  This roadmap is a starting point. We'll refine the timeline and approach during our discovery call.
-                </p>
-              </div>
-            </StepContainer>
-          )}
-
-          {currentStep === 8 && (
-            <StepContainer key="step8">
-              <StepHeader
-                title="Receive Your Project Roadmap"
-                subtitle="Share your details and we'll send you a comprehensive development plan"
+                title="Get Your Requirements Summary"
+                subtitle="Share your details and we'll send you a copy of your requirements"
               />
               <Card className="max-w-md mx-auto">
                 <CardContent className="p-8">
@@ -991,14 +888,14 @@ export default function EstimatePage() {
                     size="lg"
                     onClick={handleSubmit}
                     disabled={!canProceed() || submitMutation.isPending}
-                    data-testid="button-submit-roadmap"
+                    data-testid="button-submit-requirements"
                   >
                     {submitMutation.isPending ? (
-                      <>Preparing your roadmap...</>
+                      <>Sending your requirements...</>
                     ) : (
                       <>
                         <Mail className="h-4 w-4 mr-2" />
-                        Send My Roadmap
+                        Send Requirements Summary
                       </>
                     )}
                   </Button>
