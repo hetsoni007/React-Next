@@ -416,14 +416,14 @@ export function generateRoadmap(
   };
   
   // Generate tech stack recommendations
-  const recommendedTechStack = generateTechStackRecommendations(
+  const techStackRecommendations = generateTechStackRecommendations(
     projectType,
     projectPurpose,
     selectedFeatures,
     preferredTechStack
   );
   
-  return { milestones, totalDuration, recommendedTechStack };
+  return { milestones, totalDuration, techStackRecommendations };
 }
 
 function generateTechStackRecommendations(

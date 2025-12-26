@@ -431,7 +431,7 @@ export default function EstimatePage() {
     
     setTimeout(() => {
       const complexity = calculateComplexityLevel(wizardState.selectedFeatures);
-      const { milestones, totalDuration, recommendedTechStack } = generateRoadmap(
+      const { milestones, totalDuration, techStackRecommendations } = generateRoadmap(
         wizardState.projectType,
         wizardState.projectPurpose,
         wizardState.selectedFeatures,
@@ -444,11 +444,11 @@ export default function EstimatePage() {
         projectPurpose: currentPurposes.find(p => p.id === wizardState.projectPurpose)?.name || '',
         features: wizardState.selectedFeatures.map(f => currentFeatures.find(feat => feat.id === f)?.name || f),
         complexityLevel: complexity,
-        planningDepth: wizardState.planningDepth,
+        planningDepth: planningDepths.find(d => d.id === wizardState.planningDepth)?.name || wizardState.planningDepth,
         preferredTimeline: timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || '',
         milestones,
         totalDuration,
-        techStackRecommendations: recommendedTechStack,
+        techStackRecommendations,
         manualRequirements: wizardState.manualRequirements,
         preferredTechStack: wizardState.preferredTechStack,
       });
@@ -928,11 +928,16 @@ export default function EstimatePage() {
                         <Server className="h-5 w-5 text-muted-foreground" />
                         <h4 className="font-semibold">Recommended Tech Stack</h4>
                       </div>
-                      <div className="space-y-4">
+                      <div className="space-y-6">
                         {roadmap.techStackRecommendations.map((rec) => (
-                          <div key={rec.technology} className="flex items-start gap-3">
-                            <Badge variant="secondary" className="shrink-0">{rec.technology}</Badge>
-                            <p className="text-sm text-muted-foreground">{rec.reason}</p>
+                          <div key={rec.category}>
+                            <p className="text-xs font-medium text-muted-foreground mb-2">{rec.category}</p>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {rec.technologies.map((tech) => (
+                                <Badge key={tech} variant="secondary">{tech}</Badge>
+                              ))}
+                            </div>
+                            <p className="text-sm text-muted-foreground">{rec.reasoning}</p>
                           </div>
                         ))}
                       </div>

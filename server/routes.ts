@@ -272,47 +272,47 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Invalid features format." });
       }
 
-      // Parse and validate estimation data structure
-      let estimationData;
+      // Parse and validate roadmap data structure
+      let roadmapData;
       try {
-        estimationData = JSON.parse(result.data.estimationData);
+        roadmapData = JSON.parse(result.data.estimationData);
         
-        // Validate required estimation fields
-        if (!estimationData.projectType || !estimationData.projectPurpose) {
-          return res.status(400).json({ message: "Incomplete estimation data." });
+        // Validate required roadmap fields
+        if (!roadmapData.projectType || !roadmapData.projectPurpose) {
+          return res.status(400).json({ message: "Incomplete roadmap data." });
         }
-        if (!Array.isArray(estimationData.milestones) || estimationData.milestones.length === 0 || estimationData.milestones.length > 10) {
+        if (!Array.isArray(roadmapData.milestones) || roadmapData.milestones.length === 0 || roadmapData.milestones.length > 10) {
           return res.status(400).json({ message: "Invalid milestones data." });
         }
-        if (!estimationData.totalCost || typeof estimationData.totalCost.min !== 'number') {
-          return res.status(400).json({ message: "Invalid cost estimation data." });
+        if (!roadmapData.totalDuration || typeof roadmapData.totalDuration.min !== 'number') {
+          return res.status(400).json({ message: "Invalid timeline data." });
         }
       } catch (parseError) {
-        console.error("Failed to parse estimation data:", parseError);
-        return res.status(400).json({ message: "Invalid estimation data format." });
+        console.error("Failed to parse roadmap data:", parseError);
+        return res.status(400).json({ message: "Invalid roadmap data format." });
       }
 
       // Persist the estimate to database
       const estimate = await storage.createProjectEstimate(result.data);
 
-      // Send estimation email
+      // Send roadmap email to user (with BCC to admin)
       try {
         await sendEstimationEmail({
           name: result.data.name,
           email: result.data.email,
-          estimation: estimationData,
+          roadmap: roadmapData,
         });
       } catch (emailError) {
-        console.error('Estimation email failed:', emailError);
+        console.error('Roadmap email failed:', emailError);
         return res.status(201).json({ 
-          message: "Your estimation has been saved. You should receive an email shortly.",
+          message: "Your roadmap has been saved. You should receive an email shortly.",
           estimate,
           emailSent: false
         });
       }
       
       return res.status(201).json({ 
-        message: "Your professional estimation has been sent to your email!",
+        message: "Your project roadmap has been sent to your email!",
         estimate,
         emailSent: true
       });
