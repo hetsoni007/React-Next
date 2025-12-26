@@ -1,0 +1,259 @@
+DO NOT rebuild the website.
+DO NOT recreate the planner or existing logic.
+
+Act as a senior CRO strategist, Apple-style UX refiner,
+SEO content architect, and frontend engineer.
+
+I have ALREADY IMPLEMENTED:
+• A Project Planning / Requirement Tool
+• Website content pages
+• Blog pages
+
+Your task is to IMPROVE, CONNECT, and POLISH
+the existing implementation for higher CRO, SEO, and UX.
+
+––––––––––––––––––––
+CORE OBJECTIVE
+––––––––––––––––––––
+
+• Make the Project Planner highly visible without navigation
+• Improve homepage SEO & engagement
+• Add Simple Website (WordPress / Webflow) option
+• Clean up and restructure popups
+• Refine UX using Apple-style psychology
+• Restructure Blog page into creative visual grids
+• Ensure all blog content is PUBLIC and readable by everyone
+
+––––––––––––––––––––
+TASK 1: ADD SIMPLE WEBSITE OPTION
+––––––––––––––––––––
+
+Update EXISTING planner Step 1:
+
+Add option:
+• “Simple Website”
+
+When selected:
+• Show platform options:
+  - WordPress
+  - Webflow
+  - Not sure (we’ll recommend)
+
+Show calm pricing note:
+“Small Website — Starting at $499 USD.
+Custom features, plugins, integrations, or animations are scoped separately.”
+
+Keep this path separate from:
+• Mobile apps
+• Custom web apps
+• AI products
+
+NO random pricing.
+NO estimator logic for simple websites.
+
+––––––––––––––––––––
+TASK 2: HOMEPAGE CONTENT (SEO + UX)
+––––––––––––––––––––
+
+Improve homepage structure and copy for:
+• Better SEO ranking
+• Clear user guidance
+• Higher engagement
+
+Update homepage sections:
+
+1) HERO SECTION
+• SEO-optimized H1 (Mobile App Development, React Native, Web Development)
+• Clear value proposition
+• PRIMARY CTA:
+  “Plan Your Project”
+• SECONDARY CTA:
+  “Contact Us”
+
+2) SERVICES OVERVIEW
+Include clean, keyword-aware blocks:
+• Mobile App Development (React Native)
+• Web Development
+• WordPress & Webflow Websites
+• UI/UX Design
+• AI Development
+
+Each block includes:
+“Plan this project →” (links to planner)
+
+3) PROJECT PLANNER INTRO SECTION (MID-PAGE)
+Explain:
+• What the planner does
+• Why it helps users
+• 24-hour response promise
+
+CTA:
+“Start Project Planning”
+
+4) PROCESS / ROADMAP
+Display:
+• Planning
+• Design
+• Development
+• Testing
+• Deployment
+• Support
+
+Simple, non-technical language.
+
+––––––––––––––––––––
+TASK 3: PLANNER VISIBILITY (NO NAVIGATION)
+––––––––––––––––––––
+
+• Do NOT add planner to navigation
+• Do NOT rely only on popups
+
+Use instead:
+• Homepage hero CTA
+• Mid-page homepage CTA
+• Contact page top CTA
+• Service page bottom CTA
+• Footer quick link
+
+Planner must feel like a CORE PRODUCT.
+
+––––––––––––––––––––
+TASK 4: CONTACT PAGE INTEGRATION
+––––––––––––––––––––
+
+At the TOP of Contact page:
+
+Add a short section:
+“Want faster and more accurate help?
+Use our Project Planner to share your requirements clearly.
+Our team will review it carefully.”
+
+Button:
+“Use Project Planner”
+
+Keep the existing contact form below.
+
+––––––––––––––––––––
+TASK 5: POPUP CLEANUP & RESTRUCTURE
+––––––––––––––––––––
+
+Remove ALL existing popups except TWO.
+
+POPUP #1 – Intent-Based Helper Popup
+• Trigger: 50–60% scroll OR 30–40 seconds
+• Show once per session
+• Do NOT ask for email
+• Do NOT show on:
+  - Planner page
+  - Contact page
+  - Privacy / Terms pages
+
+Content:
+Title:
+“Planning a Website or App?”
+
+Text:
+“Use our guided Project Planner to share your requirements clearly.
+We’ll review everything and get back to you within 24 hours.”
+
+CTA:
+“Plan Your Project”
+
+Secondary:
+“Not now”
+
+POPUP #2 – Exit Intent Popup
+
+Content:
+Title:
+“Not sure where to start?”
+
+Text:
+“Our Project Planner helps you define features,
+scope, and roadmap — before talking to anyone.”
+
+CTA:
+“Start Planning”
+
+NO other popups should exist.
+
+––––––––––––––––––––
+TASK 6: BLOG PAGE RESTRUCTURE (NEW)
+––––––––––––––––––––
+
+Restructure the existing Blog page into a CREATIVE VISUAL GRID layout.
+
+Requirements:
+• Use card-based grid layout (2–3 columns desktop, responsive on mobile)
+• Each blog card must include:
+  - Featured image
+  - Blog title
+  - Short excerpt
+  - Read time or category (optional)
+• Entire card should be clickable
+
+UX Rules:
+• Clean spacing
+• Rounded corners
+• Soft hover animation (lift or fade)
+• Apple-style minimal design
+• No clutter
+
+IMPORTANT:
+• ALL blogs must be PUBLIC
+• No login or membership restriction
+• Anyone can read full blog content
+
+Add optional filters:
+• By category
+• By topic (optional, if already exists)
+
+––––––––––––––––––––
+TASK 7: CRO & PSYCHOLOGY REFINEMENTS
+––––––––––––––––––––
+
+Refine existing copy to reinforce:
+• “We care about your idea”
+• “We guide you step-by-step”
+
+Inject subtle micro-copy:
+• “This helps us understand your vision”
+• “You can change this later”
+• “There’s no right or wrong choice”
+• “We’ll guide you if anything is unclear”
+
+Avoid:
+• Sales hype
+• Urgency
+• Discounts
+• Aggressive CTAs
+
+––––––––––––––––––––
+TASK 8: DATA TRUST & COMPLIANCE
+––––––––––––––––––––
+
+Ensure this text appears near final submission:
+“We follow GDPR and HIPAA-aligned practices to protect your data.”
+
+• Small font
+• Neutral color
+• Also include in PDF footer
+
+––––––––––––––––––––
+IMPORTANT CONSTRAINTS
+––––––––––––––––––––
+
+• Do NOT rebuild the planner
+• Do NOT change backend logic
+• Do NOT add new planner steps
+• Do NOT add navigation links
+• Only refine visibility, content, UX, CRO, and blog layout
+
+––––––––––––––––––––
+SUCCESS CRITERIA
+––––––––––––––––––––
+
+After updates:
+• Users clearly see where to start
+• Homepage feels engaging & SEO-optimized
+• P
