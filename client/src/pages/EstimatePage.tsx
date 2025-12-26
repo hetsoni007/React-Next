@@ -48,6 +48,7 @@ import {
   projectPurposes,
   features,
   planningDepths,
+  timelinePreferences,
   regionPricing,
   hostingTiers,
   calculateComplexityLevel,
@@ -89,11 +90,12 @@ interface WizardState {
   projectPurpose: string;
   selectedFeatures: string[];
   planningDepth: string;
+  preferredTimeline: string;
   name: string;
   email: string;
 }
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export default function EstimatePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -107,6 +109,7 @@ export default function EstimatePage() {
     projectPurpose: '',
     selectedFeatures: [],
     planningDepth: '',
+    preferredTimeline: '',
     name: '',
     email: '',
   });
@@ -159,6 +162,7 @@ export default function EstimatePage() {
     projectPurpose: string;
     features: string;
     planningDepth: string;
+    preferredTimeline: string;
     complexityLevel: string;
     estimationData: string;
     region: string;
@@ -207,9 +211,10 @@ export default function EstimatePage() {
       case 2: return !!wizardState.projectPurpose;
       case 3: return wizardState.selectedFeatures.length > 0;
       case 4: return !!wizardState.planningDepth;
-      case 5: return true;
+      case 5: return !!wizardState.preferredTimeline;
       case 6: return true;
-      case 7: return !!wizardState.name && !!wizardState.email && wizardState.email.includes('@');
+      case 7: return true;
+      case 8: return !!wizardState.name && !!wizardState.email && wizardState.email.includes('@');
       default: return false;
     }
   };
@@ -219,7 +224,7 @@ export default function EstimatePage() {
     
     trackEvent('Estimation', 'Step Completed', `Step ${currentStep}`);
     
-    if (currentStep === 4) {
+    if (currentStep === 5) {
       generateEstimation();
     }
     
@@ -304,6 +309,7 @@ export default function EstimatePage() {
       projectPurpose: wizardState.projectPurpose,
       features: JSON.stringify(wizardState.selectedFeatures),
       planningDepth: wizardState.planningDepth,
+      preferredTimeline: timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || wizardState.preferredTimeline,
       complexityLevel: estimation.complexityLevel,
       estimationData: JSON.stringify(estimation),
       region: regionData.region,
@@ -473,6 +479,32 @@ export default function EstimatePage() {
 
           {currentStep === 5 && (
             <StepContainer key="step5">
+              <StepHeader
+                title="When would you like to start?"
+                subtitle="This helps us plan resources and priorities. You can change this later."
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {timelinePreferences.map((timeline) => (
+                  <SelectionCard
+                    key={timeline.id}
+                    selected={wizardState.preferredTimeline === timeline.id}
+                    onClick={() => updateState('preferredTimeline', timeline.id)}
+                    testId={`card-timeline-${timeline.id}`}
+                  >
+                    <Clock className="h-6 w-6 mb-3 text-foreground" />
+                    <h3 className="font-semibold mb-1">{timeline.name}</h3>
+                    <p className="text-sm text-muted-foreground">{timeline.description}</p>
+                  </SelectionCard>
+                ))}
+              </div>
+              <p className="text-center text-xs text-muted-foreground mt-6">
+                This is your preference, not a commitment. Final timelines are discussed during our initial call.
+              </p>
+            </StepContainer>
+          )}
+
+          {currentStep === 6 && (
+            <StepContainer key="step6">
               {isLoading ? (
                 <div className="text-center py-20">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-6">
@@ -488,7 +520,7 @@ export default function EstimatePage() {
                   />
                   <Card className="mb-8">
                     <CardContent className="p-8">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Project Type</p>
                           <p className="font-semibold">{estimation.projectType}</p>
@@ -496,6 +528,10 @@ export default function EstimatePage() {
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Purpose</p>
                           <p className="font-semibold">{estimation.projectPurpose}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Preferred Timeline</p>
+                          <p className="font-semibold">{timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || wizardState.preferredTimeline}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Complexity</p>
@@ -523,8 +559,8 @@ export default function EstimatePage() {
             </StepContainer>
           )}
 
-          {currentStep === 6 && estimation && (
-            <StepContainer key="step6">
+          {currentStep === 7 && estimation && (
+            <StepContainer key="step7">
               <StepHeader
                 title="Your Personalized Estimation"
                 subtitle="A milestone-based overview tailored to your requirements"
@@ -626,8 +662,8 @@ export default function EstimatePage() {
             </StepContainer>
           )}
 
-          {currentStep === 7 && (
-            <StepContainer key="step7">
+          {currentStep === 8 && (
+            <StepContainer key="step8">
               <StepHeader
                 title="Receive Your Detailed Estimation"
                 subtitle="Share your details and we'll send you a comprehensive overview"

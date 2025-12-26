@@ -43,6 +43,29 @@ export const planningDepths = [
   },
 ];
 
+export const timelinePreferences = [
+  { 
+    id: 'immediate', 
+    name: 'Immediate', 
+    description: 'High priority. We will review feasibility and suggest the best approach.',
+  },
+  { 
+    id: '1_3_weeks', 
+    name: '1-3 weeks', 
+    description: 'Suitable for small scope or MVP projects.',
+  },
+  { 
+    id: '1_month', 
+    name: '1 month', 
+    description: 'Balanced timeline for planning and execution.',
+  },
+  { 
+    id: '1_3_months', 
+    name: '1-3 months', 
+    description: 'Ideal for larger or phased projects.',
+  },
+];
+
 export interface RegionPricing {
   region: string;
   currency: string;

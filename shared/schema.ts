@@ -164,10 +164,11 @@ export const projectEstimates = pgTable("project_estimates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  projectType: text("project_type").notNull(), // 'web', 'mobile', 'web_mobile'
+  projectType: text("project_type").notNull(), // 'web', 'mobile', 'web_mobile', 'simple_website'
   projectPurpose: text("project_purpose").notNull(),
   features: text("features").notNull(), // JSON array of selected features
   planningDepth: text("planning_depth").notNull(), // 'quick' or 'detailed'
+  preferredTimeline: text("preferred_timeline"), // client-preferred timeline (user intent only)
   uploadedDocument: text("uploaded_document"), // filename if uploaded
   extractedScope: text("extracted_scope"), // AI-extracted scope from PDF
   complexityLevel: text("complexity_level").notNull(), // 'simple', 'moderate', 'complex'
