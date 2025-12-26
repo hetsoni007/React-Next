@@ -44,6 +44,7 @@ import {
   Languages,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { usePageView, useTrackEvent } from "@/hooks/use-analytics";
 import {
   projectTypes,
   projectPurposes,
@@ -140,6 +141,7 @@ interface QuestionAnswer {
 const TOTAL_STEPS = 7;
 
 export default function EstimatePage() {
+  usePageView("/estimate");
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [requirementsSummary, setRequirementsSummary] = useState<RequirementsSummary | null>(null);
