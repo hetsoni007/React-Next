@@ -116,13 +116,31 @@ export default function EstimatePage() {
 
   const detectRegion = async () => {
     try {
-      const response = await fetch('https://ipapi.co/json/');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('https://ipapi.co/json/', {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        console.log('Region detection failed, using default USD pricing');
+        return;
+      }
+      
       const data = await response.json();
       const countryCode = data.country_code;
       
+      if (!countryCode) {
+        console.log('No country code returned, using default USD pricing');
+        return;
+      }
+      
       let region = regionPricing.find(r => r.region === countryCode);
       if (!region) {
-        if (['DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'CH', 'PL', 'SE', 'NO', 'DK', 'FI'].includes(countryCode)) {
+        const euCountries = ['DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'CH', 'PL', 'SE', 'NO', 'DK', 'FI', 'IE', 'PT'];
+        if (euCountries.includes(countryCode)) {
           region = regionPricing.find(r => r.region === 'EU');
         }
       }
@@ -130,25 +148,39 @@ export default function EstimatePage() {
         setRegionData(region);
       }
     } catch (error) {
-      console.log('Region detection failed, using default');
+      console.log('Region detection failed, using default USD pricing');
     }
   };
 
+  interface EstimateSubmission {
+    projectType: string;
+    projectPurpose: string;
+    features: string;
+    planningDepth: string;
+    complexityLevel: string;
+    estimationData: string;
+    region: string;
+    currency: string;
+    name: string;
+    email: string;
+  }
+
   const submitMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: EstimateSubmission) => {
       return apiRequest('POST', '/api/estimate', data);
     },
     onSuccess: () => {
       toast({
         title: "Estimation sent!",
-        description: "Check your email for the professional PDF estimation.",
+        description: "Check your email for the detailed estimation document.",
       });
       trackEvent('Estimation', 'Completed', wizardState.projectType);
     },
-    onError: () => {
+    onError: (error: Error) => {
+      console.error('Estimation submission error:', error);
       toast({
         title: "Something went wrong",
-        description: "Please try again or contact us directly.",
+        description: error.message || "Please try again or contact us directly.",
         variant: "destructive",
       });
     },
@@ -246,13 +278,36 @@ export default function EstimatePage() {
   const handleSubmit = () => {
     if (!estimation) return;
     
+    if (!wizardState.name.trim() || wizardState.name.length < 2) {
+      toast({
+        title: "Please enter your name",
+        description: "Your name is required to generate the estimation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(wizardState.email)) {
+      toast({
+        title: "Please enter a valid email",
+        description: "A valid email address is required to receive your estimation.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     submitMutation.mutate({
-      ...wizardState,
+      projectType: wizardState.projectType,
+      projectPurpose: wizardState.projectPurpose,
       features: JSON.stringify(wizardState.selectedFeatures),
+      planningDepth: wizardState.planningDepth,
       complexityLevel: estimation.complexityLevel,
       estimationData: JSON.stringify(estimation),
       region: regionData.region,
       currency: regionData.currency,
+      name: wizardState.name.trim(),
+      email: wizardState.email.trim().toLowerCase(),
     });
   };
 

@@ -217,28 +217,86 @@ export async function registerRoutes(
   // POST /api/estimate - Handle project estimation submissions
   app.post("/api/estimate", async (req, res) => {
     try {
+      // Validate payload size limits first
+      const bodySize = JSON.stringify(req.body).length;
+      if (bodySize > 50000) { // 50KB max payload
+        return res.status(400).json({ message: "Request too large. Please simplify your submission." });
+      }
+
       const result = insertProjectEstimateSchema.safeParse(req.body);
       
       if (!result.success) {
+        console.error("Estimation validation failed:", result.error.flatten());
         return res.status(400).json({ 
-          message: "Validation failed", 
+          message: "Please fill in all required fields correctly.", 
           errors: result.error.flatten().fieldErrors 
         });
       }
 
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(result.data.email)) {
+        return res.status(400).json({ message: "Please provide a valid email address." });
+      }
+
+      // Validate name length
+      if (result.data.name.length < 2 || result.data.name.length > 100) {
+        return res.status(400).json({ message: "Please provide a valid name." });
+      }
+
+      // Validate features array size
+      try {
+        const features = JSON.parse(result.data.features);
+        if (!Array.isArray(features) || features.length > 20) {
+          return res.status(400).json({ message: "Invalid features selection." });
+        }
+      } catch {
+        return res.status(400).json({ message: "Invalid features format." });
+      }
+
+      // Parse and validate estimation data structure
+      let estimationData;
+      try {
+        estimationData = JSON.parse(result.data.estimationData);
+        
+        // Validate required estimation fields
+        if (!estimationData.projectType || !estimationData.projectPurpose) {
+          return res.status(400).json({ message: "Incomplete estimation data." });
+        }
+        if (!Array.isArray(estimationData.milestones) || estimationData.milestones.length === 0 || estimationData.milestones.length > 10) {
+          return res.status(400).json({ message: "Invalid milestones data." });
+        }
+        if (!estimationData.totalCost || typeof estimationData.totalCost.min !== 'number') {
+          return res.status(400).json({ message: "Invalid cost estimation data." });
+        }
+      } catch (parseError) {
+        console.error("Failed to parse estimation data:", parseError);
+        return res.status(400).json({ message: "Invalid estimation data format." });
+      }
+
+      // Persist the estimate to database
       const estimate = await storage.createProjectEstimate(result.data);
-      
-      // Send estimation PDF email
-      const estimationData = JSON.parse(result.data.estimationData);
-      sendEstimationEmail({
-        name: result.data.name,
-        email: result.data.email,
-        estimation: estimationData,
-      }).catch(err => console.error('Estimation email failed:', err));
+
+      // Send estimation email
+      try {
+        await sendEstimationEmail({
+          name: result.data.name,
+          email: result.data.email,
+          estimation: estimationData,
+        });
+      } catch (emailError) {
+        console.error('Estimation email failed:', emailError);
+        return res.status(201).json({ 
+          message: "Your estimation has been saved. You should receive an email shortly.",
+          estimate,
+          emailSent: false
+        });
+      }
       
       return res.status(201).json({ 
         message: "Your professional estimation has been sent to your email!",
-        estimate 
+        estimate,
+        emailSent: true
       });
     } catch (error) {
       console.error("Estimation submission error:", error);

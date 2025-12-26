@@ -23,7 +23,9 @@ import {
   Smartphone,
   Globe,
   HelpCircle,
-  Send
+  Send,
+  Calculator,
+  FileText
 } from "lucide-react";
 import { portfolioProjects } from "@/lib/data";
 import Analytics from "@/lib/analytics";
@@ -98,10 +100,10 @@ export function EntrancePopup() {
     return cleanup;
   }, []);
 
-  const handleCTA = () => {
+  const handleEstimate = () => {
     setIsOpen(false);
     Analytics.Popups.entrance.ctaClick();
-    navigate("/contact");
+    navigate("/estimate");
   };
 
   const handlePortfolio = () => {
@@ -119,19 +121,28 @@ export function EntrancePopup() {
         <DialogHeader>
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
-              <Sparkles className="h-6 w-6 text-foreground" />
+              <Calculator className="h-6 w-6 text-foreground" />
             </div>
           </div>
           <DialogTitle className="text-center text-2xl font-semibold">
-            Welcome to Soni Consultancy
+            Get a Free Project Estimate
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground mt-3 text-base">
-            Looking to build custom software, a mobile app, or a SaaS platform? 
-            Let me help you find the right solution for your business.
+            Use our interactive tool to get a ball-park cost and timeline estimate for your web or mobile app project in minutes.
           </DialogDescription>
         </DialogHeader>
         
         <div className="grid grid-cols-2 gap-3 mt-6">
+          <button
+            onClick={handleEstimate}
+            className="group p-4 rounded-xl border border-border bg-foreground text-background text-left transition-all duration-300"
+            data-testid="button-popup-estimate"
+          >
+            <FileText className="h-5 w-5 text-background mb-2" />
+            <p className="font-medium text-sm">Get Free Estimate</p>
+            <p className="text-xs text-background/70 mt-1">Interactive planning tool</p>
+          </button>
+          
           <button
             onClick={handlePortfolio}
             className="group p-4 rounded-xl border border-border bg-muted/50 text-left transition-all duration-300 hover-elevate"
@@ -140,16 +151,6 @@ export function EntrancePopup() {
             <Eye className="h-5 w-5 text-foreground mb-2" />
             <p className="font-medium text-sm">See Our Work</p>
             <p className="text-xs text-muted-foreground mt-1">View portfolio projects</p>
-          </button>
-          
-          <button
-            onClick={handleCTA}
-            className="group p-4 rounded-xl border border-border bg-muted/50 text-left transition-all duration-300 hover-elevate"
-            data-testid="button-popup-discuss"
-          >
-            <MessageCircle className="h-5 w-5 text-foreground mb-2" />
-            <p className="font-medium text-sm">Start a Project</p>
-            <p className="text-xs text-muted-foreground mt-1">Get free consultation</p>
           </button>
         </div>
         
@@ -211,13 +212,13 @@ export function ExitIntentPopup() {
             onClick={() => {
               setIsOpen(false);
               Analytics.Popups.exit.ctaClick();
-              navigate("/contact");
+              navigate("/estimate");
             }}
             className="w-full"
             data-testid="button-exit-cta"
           >
-            <Send className="h-4 w-4 mr-2" />
-            Get Free Project Assessment
+            <Calculator className="h-4 w-4 mr-2" />
+            Get Free Project Estimate
           </Button>
           <Button 
             variant="outline"
@@ -256,6 +257,7 @@ export function FloatingPortfolioAssistant() {
   const [location] = useLocation();
 
   const tips = [
+    { icon: Calculator, text: "Get a free estimate", link: "/estimate" },
     { icon: Briefcase, text: "Explore our portfolio", link: "/portfolio" },
     { icon: Code, text: "See our services", link: "/services" },
     { icon: MessageCircle, text: "Start a conversation", link: "/contact" },
@@ -438,12 +440,12 @@ export function ScrollEngagementPopup() {
           
           <div className="flex items-start gap-3 pr-6">
             <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-              <Sparkles className="h-5 w-5 text-foreground" />
+              <Calculator className="h-5 w-5 text-foreground" />
             </div>
             <div>
-              <p className="font-medium text-sm">Enjoying what you see?</p>
+              <p className="font-medium text-sm">Plan your project</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Check out our latest projects and see how we've helped businesses like yours.
+                Get a free ball-park estimate for your web or mobile app in just 2 minutes.
               </p>
             </div>
           </div>
@@ -453,12 +455,12 @@ export function ScrollEngagementPopup() {
               size="sm"
               onClick={() => {
                 setIsOpen(false);
-                navigate("/portfolio");
+                navigate("/estimate");
               }}
               className="flex-1"
-              data-testid="button-scroll-portfolio"
+              data-testid="button-scroll-estimate"
             >
-              See Projects
+              Get Estimate
             </Button>
             <Button 
               size="sm"

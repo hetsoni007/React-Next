@@ -101,19 +101,37 @@ interface EstimationEmailData {
   };
 }
 
+function escapeHtml(text: string): string {
+  const htmlEntities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  };
+  return text.replace(/[&<>"']/g, char => htmlEntities[char] || char);
+}
+
 export async function sendEstimationEmail(data: EstimationEmailData): Promise<boolean> {
   try {
     const { client, fromEmail } = await getResendClient();
     const { estimation } = data;
     
+    const safeName = escapeHtml(data.name);
+    const safeProjectType = escapeHtml(estimation.projectType);
+    const safeProjectPurpose = escapeHtml(estimation.projectPurpose);
+    const safeFeatures = estimation.features.map(f => escapeHtml(f));
+    const safeComplexity = escapeHtml(estimation.complexityLevel);
+    const safeTechStack = estimation.techStackRecommendation?.map(t => escapeHtml(t)) || [];
+    
     const milestonesHtml = estimation.milestones.map((m, i) => `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #e5e5e5;">
-          <strong>${i + 1}. ${m.name}</strong><br/>
-          <span style="color: #666; font-size: 13px;">${m.description}</span>
+          <strong>${i + 1}. ${escapeHtml(m.name)}</strong><br/>
+          <span style="color: #666; font-size: 13px;">${escapeHtml(m.description)}</span>
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e5e5; text-align: right;">
-          ${estimation.currencySymbol}${m.costRange.min.toLocaleString()} - ${estimation.currencySymbol}${m.costRange.max.toLocaleString()}
+          ${escapeHtml(estimation.currencySymbol)}${m.costRange.min.toLocaleString()} - ${escapeHtml(estimation.currencySymbol)}${m.costRange.max.toLocaleString()}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e5e5; text-align: right;">
           ${m.durationWeeks.min}-${m.durationWeeks.max} weeks
@@ -134,7 +152,7 @@ export async function sendEstimationEmail(data: EstimationEmailData): Promise<bo
           </div>
           
           <div style="background-color: #f9f9f9; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
-            <h2 style="color: #1a1a1a; font-size: 20px; margin: 0 0 20px 0;">Hello ${data.name},</h2>
+            <h2 style="color: #1a1a1a; font-size: 20px; margin: 0 0 20px 0;">Hello ${safeName},</h2>
             <p style="color: #444; line-height: 1.6; margin: 0;">
               Thank you for using our Project Estimation Tool. Below is your personalized ball-park estimation based on your project requirements.
             </p>
@@ -142,10 +160,10 @@ export async function sendEstimationEmail(data: EstimationEmailData): Promise<bo
           
           <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Project Overview</h3>
           <div style="background-color: #f9f9f9; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
-            <p style="margin: 0 0 10px 0;"><strong>Type:</strong> ${estimation.projectType}</p>
-            <p style="margin: 0 0 10px 0;"><strong>Purpose:</strong> ${estimation.projectPurpose}</p>
-            <p style="margin: 0 0 10px 0;"><strong>Complexity:</strong> ${estimation.complexityLevel.charAt(0).toUpperCase() + estimation.complexityLevel.slice(1)}</p>
-            <p style="margin: 0;"><strong>Features:</strong> ${estimation.features.join(', ')}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Type:</strong> ${safeProjectType}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Purpose:</strong> ${safeProjectPurpose}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Complexity:</strong> ${safeComplexity.charAt(0).toUpperCase() + safeComplexity.slice(1)}</p>
+            <p style="margin: 0;"><strong>Features:</strong> ${safeFeatures.join(', ')}</p>
           </div>
           
           <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Milestone-Based Estimation</h3>
@@ -173,9 +191,9 @@ export async function sendEstimationEmail(data: EstimationEmailData): Promise<bo
             </tfoot>
           </table>
           
-          ${estimation.techStackRecommendation && estimation.techStackRecommendation.length > 0 ? `
+          ${safeTechStack.length > 0 ? `
             <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Recommended Tech Stack</h3>
-            <p style="color: #444; margin-bottom: 30px;">${estimation.techStackRecommendation.join(' • ')}</p>
+            <p style="color: #444; margin-bottom: 30px;">${safeTechStack.join(' • ')}</p>
           ` : ''}
           
           <div style="background-color: #f9f9f9; border-radius: 8px; padding: 25px; margin: 30px 0; text-align: center;">
