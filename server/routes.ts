@@ -1,9 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema, type BlogArticle } from "@shared/schema";
+import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema, insertProjectEstimateSchema, type BlogArticle } from "@shared/schema";
 import Parser from "rss-parser";
-import { sendContactNotification } from "./email";
+import { sendContactNotification, sendEstimationEmail } from "./email";
 
 const parser = new Parser({
   customFields: {
@@ -211,6 +211,38 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Analytics summary error:", error);
       return res.status(500).json({ message: "Failed to get analytics" });
+    }
+  });
+
+  // POST /api/estimate - Handle project estimation submissions
+  app.post("/api/estimate", async (req, res) => {
+    try {
+      const result = insertProjectEstimateSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      const estimate = await storage.createProjectEstimate(result.data);
+      
+      // Send estimation PDF email
+      const estimationData = JSON.parse(result.data.estimationData);
+      sendEstimationEmail({
+        name: result.data.name,
+        email: result.data.email,
+        estimation: estimationData,
+      }).catch(err => console.error('Estimation email failed:', err));
+      
+      return res.status(201).json({ 
+        message: "Your professional estimation has been sent to your email!",
+        estimate 
+      });
+    } catch (error) {
+      console.error("Estimation submission error:", error);
+      return res.status(500).json({ message: "Something went wrong. Please try again." });
     }
   });
 

@@ -3,7 +3,8 @@ import {
   type Contact, type InsertContact, 
   type Newsletter, type InsertNewsletter,
   type AnalyticsEvent, type InsertAnalyticsEvent,
-  users, contactSubmissions, newsletterSubscriptions, analyticsEvents
+  type ProjectEstimate, type InsertProjectEstimate,
+  users, contactSubmissions, newsletterSubscriptions, analyticsEvents, projectEstimates
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, gte } from "drizzle-orm";
@@ -18,6 +19,8 @@ export interface IStorage {
   getNewsletterByEmail(email: string): Promise<Newsletter | undefined>;
   createAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent>;
   getAnalyticsSummary(): Promise<AnalyticsSummary>;
+  createProjectEstimate(estimate: InsertProjectEstimate): Promise<ProjectEstimate>;
+  getProjectEstimate(id: string): Promise<ProjectEstimate | undefined>;
 }
 
 export interface AnalyticsSummary {
@@ -121,6 +124,16 @@ export class DatabaseStorage implements IStorage {
       newsletterSubscriptions: Number(newsletterCount?.count || 0),
       recentEvents,
     };
+  }
+
+  async createProjectEstimate(insertEstimate: InsertProjectEstimate): Promise<ProjectEstimate> {
+    const [estimate] = await db.insert(projectEstimates).values(insertEstimate).returning();
+    return estimate;
+  }
+
+  async getProjectEstimate(id: string): Promise<ProjectEstimate | undefined> {
+    const [estimate] = await db.select().from(projectEstimates).where(eq(projectEstimates.id, id));
+    return estimate || undefined;
   }
 }
 

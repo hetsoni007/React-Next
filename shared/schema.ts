@@ -158,3 +158,68 @@ export interface Service {
   problem: string;
   solution: string;
 }
+
+// Project Estimation Tool
+export const projectEstimates = pgTable("project_estimates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  projectType: text("project_type").notNull(), // 'web', 'mobile', 'web_mobile'
+  projectPurpose: text("project_purpose").notNull(),
+  features: text("features").notNull(), // JSON array of selected features
+  planningDepth: text("planning_depth").notNull(), // 'quick' or 'detailed'
+  uploadedDocument: text("uploaded_document"), // filename if uploaded
+  extractedScope: text("extracted_scope"), // AI-extracted scope from PDF
+  complexityLevel: text("complexity_level").notNull(), // 'simple', 'moderate', 'complex'
+  estimationData: text("estimation_data").notNull(), // JSON with full estimation
+  region: text("region"), // detected region for pricing
+  currency: text("currency").notNull(),
+  pdfSent: text("pdf_sent"), // whether PDF was emailed
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertProjectEstimateSchema = createInsertSchema(projectEstimates).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+});
+
+export type InsertProjectEstimate = z.infer<typeof insertProjectEstimateSchema>;
+export type ProjectEstimate = typeof projectEstimates.$inferSelect;
+
+// Estimation wizard types
+export interface EstimationFeature {
+  id: string;
+  name: string;
+  category: 'common' | 'advanced';
+  helperText: string;
+  complexityWeight: number; // 1-3
+}
+
+export interface MilestoneEstimate {
+  name: string;
+  description: string;
+  durationWeeks: { min: number; max: number };
+  costRange: { min: number; max: number };
+}
+
+export interface EstimationResult {
+  projectType: string;
+  projectPurpose: string;
+  features: string[];
+  complexityLevel: string;
+  planningDepth: string;
+  milestones: MilestoneEstimate[];
+  totalDuration: { min: number; max: number };
+  totalCost: { min: number; max: number };
+  hostingCosts: {
+    tier: string;
+    monthly: { min: number; max: number };
+    description: string;
+  }[];
+  techStackRecommendation?: string[];
+  currency: string;
+  currencySymbol: string;
+}

@@ -1,0 +1,233 @@
+Act as a senior product architect, marketing strategist, UX designer,
+and full-stack engineer.
+
+I want to build a HIGH-ENGAGEMENT, STEP-BY-STEP PROJECT ESTIMATION &
+PLANNING TOOL for my software services website:
+soniconsultancyservices.com
+
+This tool must feel PROFESSIONAL, SIMPLE, TRUST-BUILDING,
+and must work equally well for:
+• Non-technical clients (founders, business owners)
+• Technical clients (CTOs, engineers)
+
+The goal is NOT just to calculate cost, but to:
+• Help clients understand their project concept
+• Guide them step-by-step
+• Generate a milestone-based ball-park estimation
+• Increase engagement & conversions
+• Collect structured lead data
+• Deliver a branded professional PDF in minutes
+
+––––––––––––––––––––
+SCOPE (STRICT)
+––––––––––––––––––––
+
+This tool is ONLY for:
+• Web Application Development
+• Mobile Application Development (Android / iOS / Both)
+
+––––––––––––––––––––
+CORE EXPERIENCE PRINCIPLES
+––––––––––––––––––––
+
+• Step-by-step wizard flow (multi-step)
+• Each step must increase clarity & engagement
+• No email until the FINAL step
+• Mostly click-based inputs (no heavy typing)
+• Optional shortcuts for complex projects
+• Minimal, aesthetic, professional UI
+• Smooth animations, micro-interactions & loaders
+• Avoid flashy UI, aggressive sales language, or gimmicks
+
+––––––––––––––––––––
+ADAPTIVE USER EXPERIENCE
+––––––––––––––––––––
+
+DO NOT ask users if they are technical.
+
+Instead:
+• Adapt the experience based on behavior
+• Expand or simplify automatically
+
+Include a key step:
+“How detailed do you want this plan to be?”
+
+Options:
+• Quick Planning
+  - Fast ball-park estimation
+  - AI fills gaps automatically
+  - Beginner-friendly language
+• Detailed Planning
+  - For complex & long-term projects
+  - Expanded milestones
+  - Architecture & tech stack reasoning
+  - Optional advanced inputs
+
+––––––––––––––––––––
+STEP FLOW (MANDATORY)
+––––––––––––––––––––
+
+STEP 1: Project Type
+• Web App
+• Mobile App
+• Web + Mobile App
+
+STEP 2: Project Purpose
+• Business / Internal Tool
+• SaaS Product
+• Marketplace
+• Booking / Management System
+• Not sure yet
+
+STEP 3: Feature Selection (Toggle Cards)
+Common:
+• Login / Signup
+• Admin Panel
+• Payments
+• Notifications
+• Search & Filters
+• Reports / Analytics
+
+Advanced:
+• Chat / Messaging
+• Third-party APIs
+• AI Feature
+• Multi-language Support
+
+Each feature shows helper text like:
+“Common in SaaS apps” or “Adds moderate complexity”.
+
+STEP 4: Planning Depth
+• Quick Planning
+• Detailed Planning
+
+STEP 5: OPTIONAL PDF UPLOAD
+• Allow upload of SOW / PRD / requirement PDF
+• AI must extract scope, features, assumptions
+• Auto-select relevant features
+• Show confirmation:
+  “We’ve understood your scope. You can adjust anything.”
+
+Show a calm professional loader:
+• “Reviewing your requirements…”
+• “Mapping scope & features…”
+• “Preparing estimation…”
+
+STEP 6: PROJECT UNDERSTANDING SUMMARY (NO PRICE YET)
+• App type
+• Feature scope
+• Complexity level
+This step builds trust & alignment.
+
+STEP 7: BALL-PARK ESTIMATION (CORE OUTPUT)
+• Milestone-based cost ranges:
+  1. Discovery & Planning
+  2. UI/UX Design
+  3. Development
+  4. Testing & Deployment
+
+• Timeline overview
+• Hosting / server cost (monthly tiers):
+  - Small / MVP
+  - Medium / Growth
+  - Large / Scalable
+
+IMPORTANT:
+• Cost must be REGION-AWARE based on IP location
+• IP logic is INTERNAL ONLY (never shown to user)
+• Currency auto-adjusts
+• Use “Ball-Park Estimation” language only
+• No exact pricing
+
+STEP 8: EMAIL CAPTURE & DELIVERY
+Ask:
+• Name
+• Email
+
+Button text:
+“Send My Professional Estimation PDF”
+
+On submit:
+• Save all selections + AI interpretations
+• Store uploaded PDF (if any)
+• Generate branded professional PDF
+• Email PDF to client
+• Save lead to database
+
+––––––––––––––––––––
+BRANDING & POSITIONING
+––––––––––––––––––––
+
+• Include subtle branding:
+  “Prepared by Soni Consultancy Services”
+• Avoid word “discount”
+• Use value-based language:
+  “Planning Advantage” (20% internal adjustment)
+• Estimation must feel advisory, not salesy
+
+––––––––––––––––––––
+PDF REQUIREMENTS
+––––––––––––––––––––
+
+Professional consulting-style PDF including:
+• Cover page with brand name
+• Project summary
+• Feature scope
+• Recommended tech stack
+• Milestone-based ball-park estimation
+• Hosting/server cost consideration
+• Timeline overview
+• Footer branding on every page
+
+––––––––––––––––––––
+POP-UP PROMOTION (MANDATORY)
+––––––––––––––––––––
+
+Implement non-intrusive popups to promote this tool:
+
+• Scroll/time-based popup (after 40–50% scroll or 25s)
+• Exit-intent popup
+
+Popup copy example:
+“Planning a Web or Mobile App?
+Plan your project in minutes and get a realistic ball-park estimate.”
+
+CTA:
+“Plan My App (2 mins)”
+
+• No email in popup
+• Show once per session
+• Match website theme
+
+––––––––––––––––––––
+TECH REQUIREMENTS
+––––––––––––––––––––
+
+• Frontend: React / Next.js
+• Animations: Framer Motion + CSS transitions
+• Backend: Node.js API
+• AI:
+  - Interpret rough inputs
+  - Extract scope from PDFs
+  - Recommend tech stack & milestones
+• PDF generation: clean, professional layout
+• Database:
+  - Leads
+  - Selections
+  - Uploaded PDFs
+• Must be embeddable into existing website
+
+––––––––––––––––––––
+OUTPUT EXPECTATION
+––––––––––––––––––––
+
+Generate:
+• Full component structure
+• Step flow logic
+• AI prompt logic
+• IP-based pricing logic (internal)
+• Milestone estimation logic
+• Popup logic
+• PDF generation logic
+• UX micro-copy
+• Production-ready scalable implementation

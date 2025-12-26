@@ -82,3 +82,123 @@ export async function sendContactNotification(data: ContactEmailData): Promise<b
     return false;
   }
 }
+
+interface EstimationEmailData {
+  name: string;
+  email: string;
+  estimation: {
+    projectType: string;
+    projectPurpose: string;
+    features: string[];
+    complexityLevel: string;
+    milestones: { name: string; description: string; durationWeeks: { min: number; max: number }; costRange: { min: number; max: number } }[];
+    totalDuration: { min: number; max: number };
+    totalCost: { min: number; max: number };
+    hostingCosts: { tier: string; monthly: { min: number; max: number }; description: string }[];
+    techStackRecommendation?: string[];
+    currency: string;
+    currencySymbol: string;
+  };
+}
+
+export async function sendEstimationEmail(data: EstimationEmailData): Promise<boolean> {
+  try {
+    const { client, fromEmail } = await getResendClient();
+    const { estimation } = data;
+    
+    const milestonesHtml = estimation.milestones.map((m, i) => `
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e5e5;">
+          <strong>${i + 1}. ${m.name}</strong><br/>
+          <span style="color: #666; font-size: 13px;">${m.description}</span>
+        </td>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e5e5; text-align: right;">
+          ${estimation.currencySymbol}${m.costRange.min.toLocaleString()} - ${estimation.currencySymbol}${m.costRange.max.toLocaleString()}
+        </td>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e5e5; text-align: right;">
+          ${m.durationWeeks.min}-${m.durationWeeks.max} weeks
+        </td>
+      </tr>
+    `).join('');
+    
+    const result = await client.emails.send({
+      from: fromEmail,
+      to: data.email,
+      bcc: 'het.soni@soniconsultancyservices.com',
+      subject: `Your Project Estimation - Soni Consultancy Services`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 700px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: #1a1a1a; font-size: 28px; margin: 0;">Soni Consultancy Services</h1>
+            <p style="color: #666; margin: 10px 0 0 0;">Professional Project Estimation</p>
+          </div>
+          
+          <div style="background-color: #f9f9f9; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+            <h2 style="color: #1a1a1a; font-size: 20px; margin: 0 0 20px 0;">Hello ${data.name},</h2>
+            <p style="color: #444; line-height: 1.6; margin: 0;">
+              Thank you for using our Project Estimation Tool. Below is your personalized ball-park estimation based on your project requirements.
+            </p>
+          </div>
+          
+          <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Project Overview</h3>
+          <div style="background-color: #f9f9f9; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <p style="margin: 0 0 10px 0;"><strong>Type:</strong> ${estimation.projectType}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Purpose:</strong> ${estimation.projectPurpose}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Complexity:</strong> ${estimation.complexityLevel.charAt(0).toUpperCase() + estimation.complexityLevel.slice(1)}</p>
+            <p style="margin: 0;"><strong>Features:</strong> ${estimation.features.join(', ')}</p>
+          </div>
+          
+          <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Milestone-Based Estimation</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+            <thead>
+              <tr style="background-color: #f0f0f0;">
+                <th style="padding: 12px; text-align: left;">Phase</th>
+                <th style="padding: 12px; text-align: right;">Cost Range</th>
+                <th style="padding: 12px; text-align: right;">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${milestonesHtml}
+            </tbody>
+            <tfoot>
+              <tr style="background-color: #1a1a1a; color: #ffffff;">
+                <td style="padding: 15px;"><strong>Total Investment</strong></td>
+                <td style="padding: 15px; text-align: right;">
+                  <strong>${estimation.currencySymbol}${estimation.totalCost.min.toLocaleString()} - ${estimation.currencySymbol}${estimation.totalCost.max.toLocaleString()}</strong>
+                </td>
+                <td style="padding: 15px; text-align: right;">
+                  <strong>${estimation.totalDuration.min}-${estimation.totalDuration.max} weeks</strong>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+          
+          ${estimation.techStackRecommendation && estimation.techStackRecommendation.length > 0 ? `
+            <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Recommended Tech Stack</h3>
+            <p style="color: #444; margin-bottom: 30px;">${estimation.techStackRecommendation.join(' • ')}</p>
+          ` : ''}
+          
+          <div style="background-color: #f9f9f9; border-radius: 8px; padding: 25px; margin: 30px 0; text-align: center;">
+            <p style="color: #444; margin: 0 0 15px 0;">Ready to discuss your project in detail?</p>
+            <a href="https://soniconsultancyservices.com/contact" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 500;">Schedule a Consultation</a>
+          </div>
+          
+          <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e5e5;">
+            <p style="color: #999; font-size: 12px; margin: 0;">
+              This is a ball-park estimation based on the information provided. Final pricing may vary based on detailed requirements analysis.
+            </p>
+            <p style="color: #999; font-size: 12px; margin: 10px 0 0 0;">
+              Prepared by Soni Consultancy Services
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.log('Estimation email sent:', result);
+    return true;
+  } catch (error) {
+    console.error('Failed to send estimation email:', error);
+    return false;
+  }
+}

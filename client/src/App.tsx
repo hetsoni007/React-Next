@@ -15,6 +15,7 @@ import BlogPage from "@/pages/BlogPage";
 import BlogDetail from "@/pages/BlogDetail";
 import ContactPage from "@/pages/ContactPage";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import EstimatePage from "@/pages/EstimatePage";
 import NotFound from "@/pages/not-found";
 
 const PAGE_LABELS: Record<string, string> = {
@@ -24,6 +25,7 @@ const PAGE_LABELS: Record<string, string> = {
   '/journey': 'Journey – Company Story',
   '/blog': 'Blog – Overview',
   '/contact': 'Contact – Intent',
+  '/estimate': 'Estimate – Planning Tool',
   '/admin/analytics': 'Admin – Analytics Dashboard',
 };
 
@@ -54,6 +56,7 @@ function Router() {
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:slug" component={BlogDetail} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/estimate" component={EstimatePage} />
       <Route path="/admin/analytics" component={AnalyticsDashboard} />
       <Route component={NotFound} />
     </Switch>
