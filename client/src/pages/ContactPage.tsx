@@ -124,8 +124,38 @@ export default function ContactPage() {
           </div>
         </section>
 
+        <section className="py-12 lg:py-16 px-6 lg:px-8 bg-muted/30">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+              Not ready to talk yet?
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
+              If you're still figuring things out, that's okay. 
+              We help people at the idea stage too.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link href="/services">
+                <Button variant="outline" data-testid="button-contact-explore-options">
+                  Explore options
+                </Button>
+              </Link>
+              <Link href="/estimate">
+                <Button data-testid="button-contact-plan-project">
+                  Plan a project
+                </Button>
+              </Link>
+              <Link href="#contact-form">
+                <Button variant="ghost" data-testid="button-contact-talk-to-someone">
+                  Talk to someone
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section
           ref={heroRef}
+          id="contact-form"
           className="py-16 lg:py-24 px-6 lg:px-8"
         >
           <div className="max-w-7xl mx-auto">

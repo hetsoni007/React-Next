@@ -1,0 +1,195 @@
+DO NOT rebuild the website from scratch.
+DO NOT remove existing pages or logic.
+
+Act as a senior CRO strategist, UX content architect,
+and growth-focused frontend engineer.
+
+My website (soniconsultancyservices.com) already exists
+and provides software development services.
+
+GOAL:
+Increase audience engagement, time-on-site, and service inquiries
+from email marketing, LinkedIn traffic, and organic visitors.
+
+This upgrade is NOT only about the Project Planner.
+It is about making the entire website more engaging,
+decision-friendly, and trust-driven.
+
+––––––––––––––––––––
+ENGAGEMENT STRATEGY (CORE)
+––––––––––––––––––––
+
+The website must help visitors:
+• Understand their situation
+• Explore options without pressure
+• Learn how decisions are made
+• Feel confident before contacting us
+
+Avoid aggressive selling.
+Avoid pricing emphasis.
+Focus on guidance and clarity.
+
+––––––––––––––––––––
+HOMEPAGE ENGAGEMENT UPGRADES
+––––––––––––––––––––
+
+1) ADD A “HELP ME DECIDE” SECTION (HIGH IMPACT)
+
+Add a homepage section with the heading:
+“Not sure what you actually need?”
+
+Subtext:
+“Most people aren’t. Let’s help you figure it out.”
+
+Provide click-based options:
+• Website
+• Web Application
+• Mobile App
+• I’m not sure — help me decide
+
+Each option should guide users to relevant content
+or an appropriate starting point (planner or contact),
+not force a form immediately.
+
+––––––––––––––––––––
+2) ADD A “HOW WE THINK” SECTION
+
+Replace generic “Why Choose Us” language with:
+
+Heading:
+“How we think about your project”
+
+Short bullet points explaining:
+• We focus on clarity before development
+• We suggest the simplest viable solution
+• We think long-term scalability
+• We guide first, build second
+
+This section must feel consultative, not promotional.
+
+––––––––––––––––––––
+3) ADD USE-CASE WALKTHROUGHS (NO CASE STUDIES REQUIRED)
+
+Add a section:
+“How projects like yours are usually built”
+
+Include 3–4 common use cases:
+• Simple marketing website
+• Startup MVP
+• Internal business tool
+• Mobile app for teams
+
+For each use case, show:
+• Goal
+• Typical features
+• Common mistakes
+• High-level tech approach
+• Typical timeline preference (no promises)
+
+No pricing.
+
+––––––––––––––––––––
+BLOG ENGAGEMENT UPGRADE
+––––––––––––––––––––
+
+Restructure blog pages to be engagement-focused.
+
+• Keep all blogs public
+• Use visual grid layout
+• Improve readability and spacing
+
+At the end of every blog post, add a soft CTA:
+
+“Thinking about something similar?
+Here’s how we usually guide teams.”
+
+Provide a button or link to:
+• Explore options
+• Plan a project
+• Talk to us
+
+Avoid hard selling.
+
+––––––––––––––––––––
+VISUAL ROADMAP SECTION
+––––––––––––––––––––
+
+Add a simple visual section on homepage and service pages:
+
+Heading:
+“From idea to launch”
+
+Steps:
+• Understand the idea
+• Define scope
+• Choose the right tech
+• Build and test
+• Launch and support
+
+This reduces anxiety and increases engagement.
+
+––––––––––––––––––––
+FOUNDER / HUMAN PRESENCE
+––––––––––––––––––––
+
+Add a short human section:
+
+“A note from the founder”
+
+Include:
+• Why the company was started
+• How client projects are approached
+• Focus on trust, clarity, and long-term success
+
+This should feel personal and honest.
+
+––––––––––––––––––––
+CONTACT PAGE ENGAGEMENT FIX
+––––––––––––––––––––
+
+On the Contact page, add a section ABOVE the form:
+
+Heading:
+“Not ready to talk yet?”
+
+Text:
+“If you’re still figuring things out, that’s okay.
+We help people at the idea stage too.”
+
+Provide options:
+• Explore options
+• Plan a project
+• Talk to someone
+
+Then keep the contact form below.
+
+––––––––––––––––––––
+LANGUAGE & UX RULES
+––––––––––––––––––––
+
+• Use calm, reassuring language
+• Avoid technical overload
+• Avoid sales buzzwords
+• Keep paragraphs short
+• Use click-based interactions instead of long text
+• Make users feel understood, not judged
+
+––––––––––––––––––––
+IMPORTANT CONSTRAINTS
+––––––––––––––––––––
+
+• Do NOT introduce pricing
+• Do NOT add aggressive CTAs
+• Do NOT rely on popups for engagement
+• Do NOT overwhelm users with choices
+
+––––––––––––––––––––
+SUCCESS METRICS
+––––––––––––––––––––
+
+After this upgrade:
+• Time on site increases
+• Scroll depth improves
+• More users explore multiple sections
+• More inquiries come from informed users
+• Website feels like guidance, not marketing

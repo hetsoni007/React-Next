@@ -344,23 +344,27 @@ export default function BlogDetail() {
 
             <Card className="mt-16 bg-muted/30 border-2">
               <CardContent className="p-8 text-center">
-                <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-2xl font-bold mb-4">Enjoyed this article?</h3>
+                <h3 className="text-2xl font-bold mb-4">Thinking about something similar?</h3>
                 <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                  Read the full article on Medium for the complete experience, 
-                  including comments and the ability to follow for more content.
+                  Here's how we usually guide teams through projects like this.
                 </p>
-                <a
-                  href={article.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button size="lg" data-testid="button-read-on-medium-footer">
-                    <BookOpen className="mr-2 h-5 w-5" />
-                    Continue on Medium
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                </a>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Link href="/services">
+                    <Button variant="outline" data-testid="button-blog-explore-options">
+                      Explore options
+                    </Button>
+                  </Link>
+                  <Link href="/estimate">
+                    <Button data-testid="button-blog-plan-project">
+                      Plan a project
+                    </Button>
+                  </Link>
+                  <Link href="/contact">
+                    <Button variant="ghost" data-testid="button-blog-talk-to-us">
+                      Talk to us
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
 
