@@ -171,8 +171,8 @@ export default function EstimatePage() {
     },
     onSuccess: () => {
       toast({
-        title: "Estimation sent!",
-        description: "Check your email for the detailed estimation document.",
+        title: "Thank you for sharing your idea with us",
+        description: "Our team will carefully review your requirements and get back to you within 24 hours.",
       });
       trackEvent('Estimation', 'Completed', wizardState.projectType);
     },
@@ -338,7 +338,7 @@ export default function EstimatePage() {
             <StepContainer key="step1">
               <StepHeader
                 title="What are you building?"
-                subtitle="Select the type of application you want to develop"
+                subtitle="This helps us understand your vision. There's no wrong choice here."
               />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {projectTypes.map((type) => {
@@ -364,7 +364,7 @@ export default function EstimatePage() {
             <StepContainer key="step2">
               <StepHeader
                 title="What's the purpose?"
-                subtitle="Help us understand your project goals"
+                subtitle="Help us understand your goals. You're not expected to know everything yet."
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {projectPurposes.map((purpose) => {
@@ -389,8 +389,8 @@ export default function EstimatePage() {
           {currentStep === 3 && (
             <StepContainer key="step3">
               <StepHeader
-                title="Select features"
-                subtitle="Choose the features you need (you can adjust later)"
+                title="Which features matter most?"
+                subtitle="Select the features that are important to you. We can always refine these later."
               />
               
               <div className="space-y-8">
@@ -436,8 +436,8 @@ export default function EstimatePage() {
           {currentStep === 4 && (
             <StepContainer key="step4">
               <StepHeader
-                title="How detailed do you want this plan?"
-                subtitle="Choose based on your project complexity and timeline"
+                title="How detailed should we plan?"
+                subtitle="Choose what feels right for you. We'll guide you if anything is unclear."
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {planningDepths.map((depth) => (
@@ -481,8 +481,8 @@ export default function EstimatePage() {
               ) : estimation && (
                 <>
                   <StepHeader
-                    title="Project Understanding"
-                    subtitle="Here's what we understood about your project"
+                    title="We understood your vision"
+                    subtitle="Here's what we captured. This gives us a clear direction."
                   />
                   <Card className="mb-8">
                     <CardContent className="p-8">
@@ -514,7 +514,7 @@ export default function EstimatePage() {
                     </CardContent>
                   </Card>
                   <p className="text-center text-muted-foreground">
-                    Looking good? Continue to see your ball-park estimation.
+                    That's helpful for planning. Continue to see your estimation.
                   </p>
                 </>
               )}
@@ -524,8 +524,8 @@ export default function EstimatePage() {
           {currentStep === 6 && estimation && (
             <StepContainer key="step6">
               <StepHeader
-                title="Ball-Park Estimation"
-                subtitle="Milestone-based cost and timeline overview"
+                title="Your Personalized Estimation"
+                subtitle="A milestone-based overview tailored to your requirements"
               />
               
               <div className="space-y-6">
@@ -582,7 +582,8 @@ export default function EstimatePage() {
                       <p className="text-2xl font-bold">
                         {estimation.currencySymbol}{estimation.totalCost.min.toLocaleString()} - {estimation.currencySymbol}{estimation.totalCost.max.toLocaleString()}
                       </p>
-                      <p className="text-sm text-muted-foreground mt-1">Ball-park estimation range</p>
+                      <p className="text-sm text-muted-foreground mt-1">Estimated investment range</p>
+                      <p className="text-xs text-muted-foreground mt-2">Custom features and add-ons are reviewed separately</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -626,8 +627,8 @@ export default function EstimatePage() {
           {currentStep === 7 && (
             <StepContainer key="step7">
               <StepHeader
-                title="Get Your Professional PDF"
-                subtitle="Enter your details to receive a detailed estimation document"
+                title="Receive Your Detailed Estimation"
+                subtitle="Share your details and we'll send you a comprehensive overview"
               />
               <Card className="max-w-md mx-auto">
                 <CardContent className="p-8">
@@ -665,17 +666,17 @@ export default function EstimatePage() {
                     data-testid="button-submit-estimation"
                   >
                     {submitMutation.isPending ? (
-                      <>Processing...</>
+                      <>Preparing your estimation...</>
                     ) : (
                       <>
                         <Mail className="h-4 w-4 mr-2" />
-                        Send My Professional Estimation PDF
+                        Send My Estimation
                       </>
                     )}
                   </Button>
                   
                   <p className="text-xs text-muted-foreground text-center mt-4">
-                    We respect your privacy. Your information is secure and will only be used to send your estimation.
+                    We follow GDPR and HIPAA-aligned practices to protect your data.
                   </p>
                 </CardContent>
               </Card>
@@ -719,10 +720,10 @@ export default function EstimatePage() {
 function StepContainer({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
       {children}
     </motion.div>
@@ -753,7 +754,7 @@ function SelectionCard({
 }) {
   return (
     <Card
-      className={`cursor-pointer transition-all duration-300 ${
+      className={`cursor-pointer transition-all duration-500 ease-out ${
         selected
           ? 'ring-2 ring-foreground bg-muted/50'
           : 'hover-elevate'
@@ -788,7 +789,7 @@ function FeatureCard({
 }) {
   return (
     <Card
-      className={`cursor-pointer transition-all duration-300 ${
+      className={`cursor-pointer transition-all duration-500 ease-out ${
         selected ? 'ring-2 ring-foreground bg-muted/50' : 'hover-elevate'
       }`}
       onClick={onClick}
@@ -817,16 +818,16 @@ function FeatureCard({
 function LoadingMessages() {
   const [messageIndex, setMessageIndex] = useState(0);
   const messages = [
-    "Reviewing your requirements...",
-    "Mapping scope & features...",
+    "Reviewing your inputs...",
+    "Organizing your requirements...",
     "Calculating milestones...",
-    "Preparing estimation...",
+    "Preparing your estimation...",
   ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex(prev => (prev + 1) % messages.length);
-    }, 500);
+    }, 600);
     return () => clearInterval(interval);
   }, []);
 

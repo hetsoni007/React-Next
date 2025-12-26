@@ -1,0 +1,167 @@
+DO NOT rebuild the product.
+DO NOT change the core structure or step flow.
+
+Act as a senior CRO specialist and Apple-style UX refiner.
+Your task is to IMPROVE the EXISTING IMPLEMENTATION
+based on preview feedback and real user psychology.
+
+––––––––––––––––––––
+PRIMARY OBJECTIVE
+––––––––––––––––––––
+
+Refine the current Project Planning & Requirement Tool so that:
+• Users feel we are genuinely interested in their idea
+• Every step feels valuable, calm, and intentional
+• The experience feels Apple-like, not form-like
+• Conversion rate increases without adding steps
+
+––––––––––––––––––––
+WHAT TO KEEP AS-IS
+––––––––––––––––––––
+
+• Existing step flow
+• Existing logic & routing
+• Existing fields & data structure
+• Existing submission & email handling
+• Existing PDF generation
+
+DO NOT add new steps unless necessary.
+Focus on UX, copy, and behavior improvements.
+
+––––––––––––––––––––
+KEY UX IMPROVEMENTS TO APPLY
+––––––––––––––––––––
+
+1) MICRO-COPY REFINEMENT (MOST IMPORTANT)
+
+Update labels and helper text so they:
+• Explain WHY the question is asked
+• Reassure users they can change things later
+• Reduce fear of “wrong answers”
+
+Examples to inject subtly:
+• “This helps us understand your vision”
+• “You’re not expected to know everything”
+• “There’s no right or wrong choice here”
+• “We’ll guide you if anything is unclear”
+
+Do NOT add long paragraphs.
+Short, calm sentences only.
+
+––––––––––––––––––––
+
+2) STEP VALIDATION FEEDBACK
+
+After each step completion:
+• Add a subtle confirmation line like:
+  “This gives us a clear direction.”
+  “That’s helpful for planning.”
+
+This creates the feeling of progress and care.
+
+––––––––––––––––––––
+
+3) REDUCE FORM-LIKE FEELING
+
+Wherever possible:
+• Replace “Enter / Fill / Submit” with:
+  “Share”, “Tell us”, “Help us understand”
+
+• Replace “Next” with:
+  “Continue”
+  “Next step”
+
+Small wording changes only.
+
+––––––––––––––––––––
+
+4) APPLE-STYLE MOTION POLISH
+
+Refine existing animations:
+• Slow transitions slightly (calm, not rushed)
+• Use fade + slight slide only
+• Remove any bounce, shake, or aggressive easing
+• Keep loaders minimal with reassuring text
+
+Loader text examples:
+• “Reviewing your inputs…”
+• “Organizing your requirements…”
+
+––––––––––––––––––––
+
+5) PRICING PERCEPTION CLEANUP
+
+Ensure:
+• No random numbers appear anywhere
+• $499 website pricing is shown calmly as:
+  “Website Project (Small Scope) — Starting at $499 USD”
+• Add subtle note:
+  “Custom features and add-ons are reviewed separately”
+
+Do NOT emphasize price visually.
+
+––––––––––––––––––––
+
+6) FINAL SUBMISSION PSYCHOLOGY
+
+Refine the final screen message to feel personal:
+
+Instead of generic success text, use:
+“Thank you for sharing your idea with us.
+Our team will carefully review your requirements
+and get back to you within 24 hours.”
+
+This wording is mandatory.
+
+––––––––––––––––––––
+
+7) DATA TRUST SIGNAL (KEEP SUBTLE)
+
+Ensure this line exists near final submit button:
+“We follow GDPR and HIPAA-aligned practices to protect your data.”
+
+• Small font
+• Neutral color
+• No banners or icons
+
+––––––––––––––––––––
+
+8) CTA VISIBILITY REFINEMENT (NO NEW BUTTONS)
+
+Refine existing CTA styles so:
+• One primary CTA stands out
+• Uses a single accent color
+• Feels confident, not promotional
+
+Preferred CTA language:
+• “Start Planning”
+• “Plan Your Product”
+• “Continue Planning”
+
+Avoid:
+• “Get Quote”
+• “Instant”
+• “Offer”
+
+––––––––––––––––––––
+IMPORTANT CONSTRAINTS
+––––––––––––––––––––
+
+• Do NOT add new steps
+• Do NOT change backend logic
+• Do NOT add popups or modals
+• Do NOT introduce new pricing models
+• Focus on clarity, calmness, and care
+
+––––––––––––––––––––
+SUCCESS CRITERIA
+––––––––––––––––––––
+
+After refinements:
+• Tool feels like a consultation, not a form
+• Users feel guided, not questioned
+• Flow feels lighter and calmer
+• Brand feels premium and trustworthy
+• CRO improves without pressure
+
+Apply changes incrementally and safely.
