@@ -265,7 +265,7 @@ export async function registerRoutes(
       // Validate features array size
       try {
         const features = JSON.parse(result.data.features);
-        if (!Array.isArray(features) || features.length > 20) {
+        if (!Array.isArray(features) || features.length > 50) {
           return res.status(400).json({ message: "Invalid features selection." });
         }
       } catch {
