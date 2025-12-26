@@ -169,8 +169,16 @@ export const projectEstimates = pgTable("project_estimates", {
   features: text("features").notNull(), // JSON array of selected features
   planningDepth: text("planning_depth").notNull(), // 'quick' or 'detailed'
   preferredTimeline: text("preferred_timeline"), // client-preferred timeline (user intent only)
+  // Manual customization fields
+  manualRequirements: text("manual_requirements"), // free-text custom requirements
+  preferredTechStack: text("preferred_tech_stack"), // JSON array of user-specified technologies
+  additionalNotes: text("additional_notes"), // any extra context from user
+  // PDF upload and AI analysis fields
   uploadedDocument: text("uploaded_document"), // filename if uploaded
   extractedScope: text("extracted_scope"), // AI-extracted scope from PDF
+  aiSummary: text("ai_summary"), // AI-generated summary of requirements
+  aiFollowUpQuestions: text("ai_follow_up_questions"), // JSON array of AI-generated questions
+  aiQuestionAnswers: text("ai_question_answers"), // JSON object of user answers to AI questions
   complexityLevel: text("complexity_level").notNull(), // 'simple', 'moderate', 'complex'
   estimationData: text("estimation_data").notNull(), // JSON with full estimation
   region: text("region"), // detected region for pricing

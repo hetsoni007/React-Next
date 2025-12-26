@@ -4,6 +4,22 @@ import { storage } from "./storage";
 import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema, insertProjectEstimateSchema, type BlogArticle } from "@shared/schema";
 import Parser from "rss-parser";
 import { sendContactNotification, sendEstimationEmail } from "./email";
+import multer from "multer";
+import pdfParse from "pdf-parse";
+import path from "path";
+import fs from "fs";
+
+const upload = multer({
+  dest: "/tmp/uploads/",
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF files are allowed"));
+    }
+  },
+});
 
 const parser = new Parser({
   customFields: {
@@ -304,5 +320,169 @@ export async function registerRoutes(
     }
   });
 
+  // POST /api/estimate/upload-pdf - Handle PDF upload and analysis
+  app.post("/api/estimate/upload-pdf", upload.single("document"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Please upload a PDF file." });
+      }
+
+      const filePath = req.file.path;
+      const fileBuffer = fs.readFileSync(filePath);
+      
+      // Extract text from PDF
+      let extractedText = "";
+      try {
+        const pdfData = await pdfParse(fileBuffer);
+        extractedText = pdfData.text;
+      } catch (pdfError) {
+        console.error("PDF parsing error:", pdfError);
+        fs.unlinkSync(filePath); // Clean up
+        return res.status(400).json({ message: "Unable to read PDF. Please ensure it contains readable text." });
+      }
+
+      // Clean up uploaded file
+      fs.unlinkSync(filePath);
+
+      if (extractedText.length < 50) {
+        return res.status(400).json({ 
+          message: "The PDF appears to have very little text content. Please upload a document with more details." 
+        });
+      }
+
+      // Truncate if too long
+      const truncatedText = extractedText.substring(0, 10000);
+
+      // Generate AI analysis using OpenAI
+      const aiAnalysis = await analyzeRequirementsWithAI(truncatedText);
+
+      return res.status(200).json({
+        success: true,
+        filename: req.file.originalname,
+        extractedText: truncatedText,
+        analysis: aiAnalysis,
+      });
+    } catch (error) {
+      console.error("PDF upload error:", error);
+      return res.status(500).json({ message: "Failed to process PDF. Please try again." });
+    }
+  });
+
+  // POST /api/estimate/analyze-text - Analyze manual requirements text
+  app.post("/api/estimate/analyze-text", async (req, res) => {
+    try {
+      const { requirements } = req.body;
+      
+      if (!requirements || requirements.length < 20) {
+        return res.status(400).json({ 
+          message: "Please provide more details about your requirements (at least 20 characters)." 
+        });
+      }
+
+      const truncatedText = requirements.substring(0, 5000);
+      const aiAnalysis = await analyzeRequirementsWithAI(truncatedText);
+
+      return res.status(200).json({
+        success: true,
+        analysis: aiAnalysis,
+      });
+    } catch (error) {
+      console.error("Requirements analysis error:", error);
+      return res.status(500).json({ message: "Failed to analyze requirements. Please try again." });
+    }
+  });
+
   return httpServer;
+}
+
+// AI analysis helper function
+async function analyzeRequirementsWithAI(text: string): Promise<{
+  summary: string;
+  suggestedFeatures: string[];
+  questions: { id: string; question: string; type: 'text' | 'choice'; options?: string[] }[];
+  estimatedComplexity: 'simple' | 'moderate' | 'complex';
+  techStackSuggestions: string[];
+}> {
+  // Check for OpenAI API key
+  const apiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+  
+  if (!apiKey) {
+    // Return fallback analysis without AI
+    return {
+      summary: "We've received your requirements and will review them in detail.",
+      suggestedFeatures: ["auth", "admin", "notifications"],
+      questions: [
+        { id: "q1", question: "What is your target launch date?", type: "text" },
+        { id: "q2", question: "Who is your primary user audience?", type: "text" },
+        { id: "q3", question: "Do you have existing branding or design assets?", type: "choice", options: ["Yes", "No", "Partially"] },
+      ],
+      estimatedComplexity: "moderate",
+      techStackSuggestions: ["React / Next.js", "Node.js", "PostgreSQL"],
+    };
+  }
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are a senior software consultant analyzing project requirements. Analyze the provided text and return a JSON object with:
+            - summary: A 2-3 sentence summary of the project requirements
+            - suggestedFeatures: Array of feature IDs from this list: auth, admin, payments, notifications, search, analytics, chat, api_integrations, ai, multilang
+            - questions: Array of 3-5 follow-up questions to clarify requirements. Each question has: id (q1, q2, etc), question (string), type ("text" or "choice"), options (array of strings if type is "choice")
+            - estimatedComplexity: "simple", "moderate", or "complex"
+            - techStackSuggestions: Array of 3-5 recommended technologies
+            
+            Return only valid JSON, no markdown.`
+          },
+          {
+            role: "user",
+            content: text
+          }
+        ],
+        temperature: 0.3,
+        max_tokens: 1000,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("OpenAI API error");
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+    
+    if (!content) {
+      throw new Error("No content in response");
+    }
+
+    const parsed = JSON.parse(content);
+    return {
+      summary: parsed.summary || "We've received your requirements.",
+      suggestedFeatures: Array.isArray(parsed.suggestedFeatures) ? parsed.suggestedFeatures : [],
+      questions: Array.isArray(parsed.questions) ? parsed.questions : [],
+      estimatedComplexity: parsed.estimatedComplexity || "moderate",
+      techStackSuggestions: Array.isArray(parsed.techStackSuggestions) ? parsed.techStackSuggestions : [],
+    };
+  } catch (error) {
+    console.error("AI analysis error:", error);
+    // Fallback response
+    return {
+      summary: "We've received your requirements and will review them in detail.",
+      suggestedFeatures: ["auth", "admin"],
+      questions: [
+        { id: "q1", question: "What is your target launch date?", type: "text" },
+        { id: "q2", question: "Who is your primary user audience?", type: "text" },
+      ],
+      estimatedComplexity: "moderate",
+      techStackSuggestions: ["React / Next.js", "Node.js", "PostgreSQL"],
+    };
+  }
 }
