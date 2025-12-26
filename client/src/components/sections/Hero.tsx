@@ -76,15 +76,15 @@ export function Hero() {
               Plan Your Project
             </Button>
           </Link>
-          <Link href="/portfolio">
+          <Link href="/contact">
             <Button
               variant="outline"
               size="lg"
               className="min-w-[160px] text-base transition-all duration-300"
-              data-testid="button-cta-portfolio"
-              onClick={() => Analytics.CTA.viewPortfolio('Hero')}
+              data-testid="button-cta-contact"
+              onClick={() => Analytics.CTA.contactUs('Hero')}
             >
-              View Portfolio
+              Contact Us
             </Button>
           </Link>
         </div>

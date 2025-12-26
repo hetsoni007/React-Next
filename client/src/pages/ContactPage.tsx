@@ -106,18 +106,21 @@ export default function ContactPage() {
               <FileText className="h-6 w-6 text-foreground" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
-              Want a detailed project estimation?
+              Know what you want to build?
             </h2>
             <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-              Use our Project Planner to get a personalized timeline and cost estimate 
-              before reaching out. It only takes a few minutes.
+              Use our guided Project Planner to share your requirements. 
+              It's like a free consultation that helps us understand exactly what you need.
             </p>
             <Link href="/estimate">
               <Button size="lg" data-testid="button-contact-planner-cta">
-                Use Project Planner
+                Plan Your Project
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
+            <p className="text-xs text-muted-foreground mt-4">
+              We'll review and respond within 24 hours
+            </p>
           </div>
         </section>
 

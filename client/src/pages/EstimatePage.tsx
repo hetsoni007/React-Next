@@ -603,6 +603,21 @@ export default function EstimatePage() {
                   );
                 })}
               </div>
+              
+              {wizardState.projectPurpose === 'not_sure' && (
+                <div className="mt-6 p-4 bg-muted/50 rounded-lg text-center">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    That's completely okay! Many of our best projects started with a rough idea. 
+                    Continue through the planner, or if you'd prefer to talk it through first:
+                  </p>
+                  <Link href="/contact">
+                    <Button variant="outline" size="sm" data-testid="button-not-sure-contact">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Let's Talk
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </StepContainer>
           )}
 
@@ -900,9 +915,10 @@ export default function EstimatePage() {
                     )}
                   </Button>
                   
-                  <p className="text-xs text-muted-foreground text-center mt-4">
-                    We follow GDPR and HIPAA-aligned practices to protect your data.
-                  </p>
+                  <div className="text-xs text-muted-foreground text-center mt-4 space-y-1">
+                    <p>We'll review your requirements and respond within 24 hours.</p>
+                    <p>We follow GDPR and HIPAA-aligned practices to protect your data.</p>
+                  </div>
                 </CardContent>
               </Card>
             </StepContainer>

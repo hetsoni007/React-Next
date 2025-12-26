@@ -30,9 +30,9 @@ export function PlannerCTA() {
             Plan Your Project
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get a personalized timeline and cost estimate for your project. 
-            Our interactive planner helps you understand what's involved 
-            before you commit.
+            Share your vision with us through our guided project planner. 
+            It's like a free consultation that helps us understand 
+            exactly what you need.
           </p>
         </div>
 
@@ -65,9 +65,9 @@ export function PlannerCTA() {
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-muted mb-3">
                   <FileText className="h-5 w-5 text-foreground" />
                 </div>
-                <h3 className="font-semibold mb-1">Detailed Report</h3>
+                <h3 className="font-semibold mb-1">24hr Response</h3>
                 <p className="text-sm text-muted-foreground">
-                  Receive a comprehensive overview
+                  We'll review and respond quickly
                 </p>
               </div>
             </div>

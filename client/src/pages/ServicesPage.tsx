@@ -190,8 +190,11 @@ export default function ServicesPage() {
               Ready to Start Your Project?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Planning a similar project? Use our Project Planner to get a personalized estimation, 
+              Use our guided Project Planner to share your vision, 
               or contact us directly to discuss your software development needs.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              We respond within 24 hours
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
               <Link href="/estimate">

@@ -1,0 +1,139 @@
+DO NOT rebuild from scratch.
+I already have a Project Planning / Requirement Tool implemented.
+
+Act as a senior conversion-rate-optimization (CRO) strategist,
+UX designer, and growth-focused frontend engineer.
+
+My PRIMARY BUSINESS GOAL:
+Generate consistent, high-quality service inquiries.
+
+Benchmark:
+From 200 email marketing visitors,
+I want at least 10 serious project inquiries (≈5% conversion).
+
+––––––––––––––––––––
+CORE STRATEGY
+––––––––––––––––––––
+
+This website must function as a LEAD GENERATION MACHINE,
+not a brochure.
+
+The primary conversion action across the site is:
+“Plan Your Project”
+
+Everything else supports this action.
+
+––––––––––––––––––––
+HOMEPAGE (CRITICAL)
+––––––––––––––––––––
+
+Update homepage so that within 5 seconds users understand:
+• What we do
+• Who it’s for
+• What to do next
+
+Hero section must include:
+• Clear headline (web + mobile development)
+• Short supportive subtext
+• ONE primary CTA:
+  “Plan Your Project”
+• Secondary CTA (less prominent):
+  “Contact Us”
+
+Remove competing CTAs.
+
+––––––––––––––––––––
+PROJECT PLANNER POSITIONING
+––––––––––––––––––––
+
+The planner is the MAIN lead capture tool.
+
+Ensure planner is accessible via:
+• Homepage hero CTA
+• Mid-page homepage section
+• Service pages (bottom CTA)
+• Contact page (top CTA)
+• Footer quick link
+
+Do NOT add to navigation.
+Do NOT rely on popups alone.
+
+––––––––––––––––––––
+PLANNER GOAL
+––––––––––––––––––––
+
+The planner must:
+• Reduce fear
+• Guide thinking
+• Collect structured inputs
+• Feel like free consultation
+
+It must support users who:
+• Know exactly what they want
+• Have a rough idea
+• Have no idea and need guidance
+
+Provide an option:
+“I’m not sure what to build yet”
+→ Encourage direct connection.
+
+––––––––––––––––––––
+NO PRICING, NO PROMISES
+––––––––––––––––––––
+
+• Do NOT show calculated prices
+• Do NOT estimate costs
+• Do NOT promise timelines
+
+Timeline input must be CLIENT-PREFERRED only:
+• Immediate
+• 1–3 weeks
+• 1 month
+• 1–3 months
+
+Language:
+“This helps us understand your priority.”
+
+––––––––––––––––––––
+TECH STACK & HOSTING
+––––––––––––––––––––
+
+Allow users to:
+• Get recommended tech stack
+• OR choose their own (frontend, backend, database)
+• OR enter manual inputs
+
+Allow hosting choice:
+• Recommend for me
+• I already have hosting
+
+Show hosting as monthly consideration only.
+
+––––––––––––––––––––
+TRUST & RESPONSE
+––––––––––––––––––––
+
+Reinforce:
+• “We’ll review and respond within 24 hours”
+• GDPR & HIPAA-aligned data practices
+
+Show this near final submission and in PDF.
+
+––––––––––––––––––––
+BLOG & AUTHORITY
+––––––––––––––––––––
+
+Restructure blog into visual grid.
+All blogs public.
+Use blog to build trust and authority,
+not to gate content.
+
+––––––––––––––––––––
+SUCCESS METRICS
+––––––––––––––––––––
+
+After improvements:
+• Clear next action everywhere
+• Planner feels like free consulting
+• Cold traffic feels safe
+• Inquiry rate reaches 5%+
