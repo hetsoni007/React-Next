@@ -14,6 +14,7 @@ const navItems = [
   { href: "/portfolio", label: "Portfolio" },
   { href: "/journey", label: "Journey" },
   { href: "/blog", label: "Blog" },
+  { href: "/estimate", label: "Project Planner" },
   { href: "/contact", label: "Contact" },
 ];
 

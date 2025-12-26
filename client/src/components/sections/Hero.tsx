@@ -63,17 +63,17 @@ export function Hero() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <Link href="/contact">
+          <Link href="/estimate">
             <Button
               size="lg"
               className="min-w-[160px] text-base shadow-lg transition-all duration-300"
-              data-testid="button-cta-contact"
+              data-testid="button-cta-plan-project"
               onClick={() => {
                 trackConversion("hero_cta_click");
-                Analytics.CTA.heroButton(variant.name);
+                Analytics.CTA.heroButton("Plan Your Project");
               }}
             >
-              {isLoading ? "Contact Me" : variant.name}
+              Plan Your Project
             </Button>
           </Link>
           <Link href="/portfolio">

@@ -181,15 +181,22 @@ export default function ServicesPage() {
               Ready to Start Your Project?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Get a free consultation to discuss your software development needs. 
-              We work with businesses of all sizes across USA, UK, UAE, and beyond.
+              Planning a similar project? Use our Project Planner to get a personalized estimation, 
+              or contact us directly to discuss your software development needs.
             </p>
-            <Link href="/contact">
-              <Button size="lg" className="mt-8" data-testid="button-services-cta">
-                Get Free Consultation
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+              <Link href="/estimate">
+                <Button size="lg" data-testid="button-services-planner-cta">
+                  Plan Your Project
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button size="lg" variant="outline" data-testid="button-services-contact-cta">
+                  Contact Us
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       </main>

@@ -42,6 +42,7 @@ export const Analytics = {
     viewPortfolio: (location: string) => trackEvent('CTA', 'View Portfolio Click', location),
     viewServices: (location: string) => trackEvent('CTA', 'View Services Click', location),
     contactUs: (location: string) => trackEvent('CTA', 'Contact Us Click', location),
+    plannerButton: (location: string) => trackEvent('CTA', 'Project Planner Click', location),
   },
 
   Forms: {

@@ -120,6 +120,16 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/estimate" onClick={() => Analytics.Navigation.footerLink("Project Planner")}>
+                  <span 
+                    className="text-muted-foreground transition-colors cursor-pointer"
+                    data-testid="link-footer-project-planner"
+                  >
+                    Project Planner
+                  </span>
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
+import { PlannerCTA } from "@/components/sections/PlannerCTA";
 import { PortfolioPreview } from "@/components/sections/PortfolioPreview";
 import { JourneyPreview } from "@/components/sections/JourneyPreview";
 import { BlogPreview } from "@/components/sections/BlogPreview";
@@ -16,6 +17,7 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
+        <PlannerCTA />
         <PortfolioPreview />
         <JourneyPreview />
         <BlogPreview />

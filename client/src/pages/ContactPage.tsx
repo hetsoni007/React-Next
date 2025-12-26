@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SocialIcons } from "@/components/layout/Header";
@@ -21,7 +22,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { insertContactSchema, type InsertContact } from "@shared/schema";
 import { z } from "zod";
-import { Mail, CheckCircle2, Loader2 } from "lucide-react";
+import { Mail, CheckCircle2, Loader2, ArrowRight, FileText } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView, useTrackEvent } from "@/hooks/use-analytics";
 import { useABTest, contactFormTest } from "@/hooks/use-ab-test";
@@ -99,6 +100,27 @@ export default function ContactPage() {
       <Header />
       
       <main className="pt-24 lg:pt-32">
+        <section className="py-12 lg:py-16 px-6 lg:px-8 bg-card border-b border-border">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-muted mb-4">
+              <FileText className="h-6 w-6 text-foreground" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+              Want a detailed project estimation?
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              Use our Project Planner to get a personalized timeline and cost estimate 
+              before reaching out. It only takes a few minutes.
+            </p>
+            <Link href="/estimate">
+              <Button size="lg" data-testid="button-contact-planner-cta">
+                Use Project Planner
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
         <section
           ref={heroRef}
           className="py-16 lg:py-24 px-6 lg:px-8"
