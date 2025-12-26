@@ -93,7 +93,9 @@ interface RoadmapMilestone {
 
 interface ProjectPhase {
   name: string;
-  tasks: string[];
+  description?: string;
+  deliverables?: string[];
+  tasks?: string[];
 }
 
 interface TechStackRecommendation {
@@ -150,20 +152,25 @@ export async function sendRoadmapEmail(data: RoadmapEmailData): Promise<boolean>
     let phasesOrMilestonesHtml = '';
     
     if (isNewFormat && roadmap.phases) {
-      phasesOrMilestonesHtml = roadmap.phases.map((phase, i) => `
+      phasesOrMilestonesHtml = roadmap.phases.map((phase, i) => {
+        const items = phase.deliverables || phase.tasks || [];
+        const description = phase.description || '';
+        return `
         <div style="margin-bottom: 24px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
           <div style="display: flex; align-items: center; margin-bottom: 12px;">
             <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background-color: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 500; margin-right: 12px;">${i + 1}</span>
             <strong style="color: #1a1a1a; font-size: 16px;">${escapeHtml(phase.name)}</strong>
           </div>
-          
+          ${description ? `<p style="color: #666; font-size: 14px; margin: 0 0 12px 40px;">${escapeHtml(description)}</p>` : ''}
           <div style="margin-left: 40px;">
+            ${items.length > 0 ? `
             <ul style="margin: 0; padding-left: 20px;">
-              ${phase.tasks.map(task => `<li style="color: #444; font-size: 14px; margin-bottom: 4px;">${escapeHtml(task)}</li>`).join('')}
+              ${items.map(item => `<li style="color: #444; font-size: 14px; margin-bottom: 4px;">${escapeHtml(item)}</li>`).join('')}
             </ul>
+            ` : ''}
           </div>
         </div>
-      `).join('');
+      `}).join('');
     } else if (roadmap.milestones) {
       phasesOrMilestonesHtml = roadmap.milestones.map((m, i) => `
         <div style="margin-bottom: 24px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
