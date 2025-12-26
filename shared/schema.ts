@@ -167,7 +167,7 @@ export const projectEstimates = pgTable("project_estimates", {
   projectType: text("project_type").notNull(), // 'web', 'mobile', 'web_mobile', 'simple_website'
   projectPurpose: text("project_purpose").notNull(),
   features: text("features").notNull(), // JSON array of selected features
-  planningDepth: text("planning_depth").notNull(), // 'quick' or 'detailed'
+  planningDepth: text("planning_depth"), // 'quick' or 'detailed' - now optional for new 7-step wizard
   preferredTimeline: text("preferred_timeline"), // client-preferred timeline (user intent only)
   // Manual customization fields
   manualRequirements: text("manual_requirements"), // free-text custom requirements

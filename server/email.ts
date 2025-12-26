@@ -91,6 +91,11 @@ interface RoadmapMilestone {
   activities: string[];
 }
 
+interface ProjectPhase {
+  name: string;
+  tasks: string[];
+}
+
 interface TechStackRecommendation {
   category: string;
   technologies: string[];
@@ -105,11 +110,13 @@ interface RoadmapEmailData {
     projectPurpose: string;
     features: string[];
     complexityLevel: string;
-    planningDepth: string;
-    preferredTimeline: string;
-    milestones: RoadmapMilestone[];
-    totalDuration: { min: number; max: number };
-    techStackRecommendations: TechStackRecommendation[];
+    planningDepth?: string;
+    preferredTimeline?: string;
+    clientDeadline?: string;
+    milestones?: RoadmapMilestone[];
+    phases?: ProjectPhase[];
+    totalDuration?: { min: number; max: number };
+    techStackRecommendations?: TechStackRecommendation[];
     manualRequirements?: string;
     preferredTechStack?: string[];
   };
@@ -136,33 +143,54 @@ export async function sendRoadmapEmail(data: RoadmapEmailData): Promise<boolean>
     const safeProjectPurpose = escapeHtml(roadmap.projectPurpose);
     const safeFeatures = roadmap.features.map(f => escapeHtml(f));
     const safeComplexity = escapeHtml(roadmap.complexityLevel);
-    const safeTimeline = escapeHtml(roadmap.preferredTimeline);
     
-    const milestonesHtml = roadmap.milestones.map((m, i) => `
-      <div style="margin-bottom: 24px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-        <div style="display: flex; align-items: center; margin-bottom: 12px;">
-          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background-color: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 500; margin-right: 12px;">${i + 1}</span>
-          <div>
-            <strong style="color: #1a1a1a; font-size: 16px;">${escapeHtml(m.name)}</strong>
-            <span style="color: #666; font-size: 13px; margin-left: 12px;">${m.durationWeeks.min}-${m.durationWeeks.max} weeks</span>
+    const isNewFormat = !!roadmap.phases && !roadmap.milestones;
+    const safeDeadline = roadmap.clientDeadline ? escapeHtml(roadmap.clientDeadline) : (roadmap.preferredTimeline ? escapeHtml(roadmap.preferredTimeline) : 'To be discussed');
+    
+    let phasesOrMilestonesHtml = '';
+    
+    if (isNewFormat && roadmap.phases) {
+      phasesOrMilestonesHtml = roadmap.phases.map((phase, i) => `
+        <div style="margin-bottom: 24px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+          <div style="display: flex; align-items: center; margin-bottom: 12px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background-color: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 500; margin-right: 12px;">${i + 1}</span>
+            <strong style="color: #1a1a1a; font-size: 16px;">${escapeHtml(phase.name)}</strong>
+          </div>
+          
+          <div style="margin-left: 40px;">
+            <ul style="margin: 0; padding-left: 20px;">
+              ${phase.tasks.map(task => `<li style="color: #444; font-size: 14px; margin-bottom: 4px;">${escapeHtml(task)}</li>`).join('')}
+            </ul>
           </div>
         </div>
-        
-        <div style="margin-left: 40px;">
-          <p style="color: #666; font-size: 13px; margin: 0 0 12px 0; font-weight: 500;">Deliverables:</p>
-          <ul style="margin: 0 0 16px 0; padding-left: 20px;">
-            ${m.deliverables.map(d => `<li style="color: #444; font-size: 14px; margin-bottom: 4px;">${escapeHtml(d)}</li>`).join('')}
-          </ul>
+      `).join('');
+    } else if (roadmap.milestones) {
+      phasesOrMilestonesHtml = roadmap.milestones.map((m, i) => `
+        <div style="margin-bottom: 24px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+          <div style="display: flex; align-items: center; margin-bottom: 12px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background-color: #1a1a1a; color: #ffffff; font-size: 14px; font-weight: 500; margin-right: 12px;">${i + 1}</span>
+            <div>
+              <strong style="color: #1a1a1a; font-size: 16px;">${escapeHtml(m.name)}</strong>
+              <span style="color: #666; font-size: 13px; margin-left: 12px;">${m.durationWeeks.min}-${m.durationWeeks.max} weeks</span>
+            </div>
+          </div>
           
-          <p style="color: #666; font-size: 13px; margin: 0 0 12px 0; font-weight: 500;">Key Activities:</p>
-          <ul style="margin: 0; padding-left: 20px;">
-            ${m.activities.map(a => `<li style="color: #666; font-size: 14px; margin-bottom: 4px;">${escapeHtml(a)}</li>`).join('')}
-          </ul>
+          <div style="margin-left: 40px;">
+            <p style="color: #666; font-size: 13px; margin: 0 0 12px 0; font-weight: 500;">Deliverables:</p>
+            <ul style="margin: 0 0 16px 0; padding-left: 20px;">
+              ${m.deliverables.map(d => `<li style="color: #444; font-size: 14px; margin-bottom: 4px;">${escapeHtml(d)}</li>`).join('')}
+            </ul>
+            
+            <p style="color: #666; font-size: 13px; margin: 0 0 12px 0; font-weight: 500;">Key Activities:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+              ${m.activities.map(a => `<li style="color: #666; font-size: 14px; margin-bottom: 4px;">${escapeHtml(a)}</li>`).join('')}
+            </ul>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
     
-    const techStackHtml = roadmap.techStackRecommendations.length > 0 ? `
+    const techStackHtml = (roadmap.techStackRecommendations && roadmap.techStackRecommendations.length > 0) ? `
       <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Recommended Tech Stack</h3>
       ${roadmap.techStackRecommendations.map(rec => `
         <div style="margin-bottom: 16px; padding: 16px; background-color: #f9f9f9; border-radius: 8px;">
@@ -182,24 +210,40 @@ export async function sendRoadmapEmail(data: RoadmapEmailData): Promise<boolean>
       </div>
     ` : '';
     
-    // Send email to the user
+    const deadlineHtml = isNewFormat ? `
+      <div style="background-color: #1a1a1a; color: #ffffff; border-radius: 8px; padding: 20px; margin-bottom: 30px; text-align: center;">
+        <p style="font-size: 14px; margin: 0 0 8px 0;">Your Preferred Deadline</p>
+        <p style="font-size: 28px; font-weight: 600; margin: 0;">${safeDeadline}</p>
+      </div>
+    ` : (roadmap.totalDuration ? `
+      <div style="background-color: #1a1a1a; color: #ffffff; border-radius: 8px; padding: 20px; margin-bottom: 30px; text-align: center;">
+        <p style="font-size: 14px; margin: 0 0 8px 0;">Estimated Timeline</p>
+        <p style="font-size: 28px; font-weight: 600; margin: 0;">${roadmap.totalDuration.min} - ${roadmap.totalDuration.max} weeks</p>
+      </div>
+    ` : '');
+    
+    const sectionTitle = isNewFormat ? 'Project Phases' : 'Development Milestones';
+    const emailSubject = isNewFormat ? 'Your Project Requirements Summary - Soni Consultancy Services' : 'Your Project Roadmap - Soni Consultancy Services';
+    const emailSubtitle = isNewFormat ? 'Your Project Requirements Summary' : 'Your Project Development Roadmap';
+    const emailIntro = isNewFormat 
+      ? 'Thank you for sharing your project requirements. Below is a summary of what you need, which will help us prepare for our consultation.'
+      : 'Thank you for using our Project Roadmap Generator. Below is your personalized development roadmap based on your project requirements.';
+    
     await client.emails.send({
       from: fromEmail,
       to: data.email,
       bcc: 'het.soni@soniconsultancyservices.com',
-      subject: `Your Project Roadmap - Soni Consultancy Services`,
+      subject: emailSubject,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 700px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 40px;">
             <h1 style="color: #1a1a1a; font-size: 28px; margin: 0;">Soni Consultancy Services</h1>
-            <p style="color: #666; margin: 10px 0 0 0;">Your Project Development Roadmap</p>
+            <p style="color: #666; margin: 10px 0 0 0;">${emailSubtitle}</p>
           </div>
           
           <div style="background-color: #f9f9f9; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
             <h2 style="color: #1a1a1a; font-size: 20px; margin: 0 0 20px 0;">Hello ${safeName},</h2>
-            <p style="color: #444; line-height: 1.6; margin: 0;">
-              Thank you for using our Project Roadmap Generator. Below is your personalized development roadmap based on your project requirements.
-            </p>
+            <p style="color: #444; line-height: 1.6; margin: 0;">${emailIntro}</p>
           </div>
           
           <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Project Overview</h3>
@@ -207,19 +251,16 @@ export async function sendRoadmapEmail(data: RoadmapEmailData): Promise<boolean>
             <p style="margin: 0 0 10px 0;"><strong>Type:</strong> ${safeProjectType}</p>
             <p style="margin: 0 0 10px 0;"><strong>Purpose:</strong> ${safeProjectPurpose}</p>
             <p style="margin: 0 0 10px 0;"><strong>Complexity:</strong> ${safeComplexity.charAt(0).toUpperCase() + safeComplexity.slice(1)}</p>
-            <p style="margin: 0 0 10px 0;"><strong>Preferred Timeline:</strong> ${safeTimeline}</p>
+            <p style="margin: 0 0 10px 0;"><strong>${isNewFormat ? 'Your Deadline' : 'Preferred Timeline'}:</strong> ${safeDeadline}</p>
             <p style="margin: 0;"><strong>Features:</strong> ${safeFeatures.join(', ')}</p>
           </div>
           
           ${manualRequirementsHtml}
           
-          <div style="background-color: #1a1a1a; color: #ffffff; border-radius: 8px; padding: 20px; margin-bottom: 30px; text-align: center;">
-            <p style="font-size: 14px; margin: 0 0 8px 0;">Estimated Timeline</p>
-            <p style="font-size: 28px; font-weight: 600; margin: 0;">${roadmap.totalDuration.min} - ${roadmap.totalDuration.max} weeks</p>
-          </div>
+          ${deadlineHtml}
           
-          <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">Development Milestones</h3>
-          ${milestonesHtml}
+          <h3 style="color: #1a1a1a; font-size: 18px; margin: 30px 0 15px 0;">${sectionTitle}</h3>
+          ${phasesOrMilestonesHtml}
           
           ${techStackHtml}
           
@@ -230,7 +271,7 @@ export async function sendRoadmapEmail(data: RoadmapEmailData): Promise<boolean>
           
           <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e5e5;">
             <p style="color: #999; font-size: 12px; margin: 0;">
-              This roadmap is a starting point. Final timelines and approach will be refined during our discovery call.
+              ${isNewFormat ? 'This summary will help us prepare a detailed proposal for your project.' : 'This roadmap is a starting point. Final timelines and approach will be refined during our discovery call.'}
             </p>
             <p style="color: #999; font-size: 12px; margin: 10px 0 0 0;">
               Prepared by Soni Consultancy Services
@@ -240,10 +281,10 @@ export async function sendRoadmapEmail(data: RoadmapEmailData): Promise<boolean>
       `,
     });
 
-    console.log('Roadmap email sent to:', data.email);
+    console.log('Requirements email sent to:', data.email);
     return true;
   } catch (error) {
-    console.error('Failed to send roadmap email:', error);
+    console.error('Failed to send requirements email:', error);
     return false;
   }
 }
