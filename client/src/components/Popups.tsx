@@ -281,7 +281,9 @@ export function FloatingPortfolioAssistant() {
     return () => clearInterval(interval);
   }, [isExpanded, tips.length]);
 
-  if (location === "/contact") return null;
+  // Do NOT show floating assistant on planner, contact, privacy, or terms pages
+  const noAssistantPaths = ['/estimate', '/contact', '/privacy', '/terms'];
+  if (noAssistantPaths.some(path => location.startsWith(path))) return null;
 
   return (
     <div
@@ -668,6 +670,14 @@ export function PageContextPopup() {
 }
 
 export function GlobalPopups() {
+  const [location] = useLocation();
+  
+  // Do NOT show popups on planner, contact, privacy, or terms pages
+  const noPopupPaths = ['/estimate', '/contact', '/privacy', '/terms'];
+  if (noPopupPaths.some(path => location.startsWith(path))) {
+    return null;
+  }
+  
   return (
     <>
       <ScrollEngagementPopup />

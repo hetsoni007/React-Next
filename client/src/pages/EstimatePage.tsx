@@ -529,6 +529,14 @@ export default function EstimatePage() {
                   );
                 })}
               </div>
+              
+              {wizardState.projectType === 'simple_website' && (
+                <div className="mt-6 p-4 bg-muted/50 rounded-lg text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Simple Website — Starting from $499 USD. Final scope is reviewed after submission.
+                  </p>
+                </div>
+              )}
             </StepContainer>
           )}
 
@@ -749,7 +757,7 @@ export default function EstimatePage() {
                 ))}
               </div>
               <p className="text-center text-xs text-muted-foreground mt-6">
-                We'll discuss feasibility and the best approach during our call.
+                This helps us understand your priority. You can change this later.
               </p>
             </StepContainer>
           )}

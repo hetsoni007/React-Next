@@ -1,0 +1,238 @@
+DO NOT rebuild the website.
+DO NOT recreate pages or features from scratch.
+
+Act as a senior CRO (Conversion Rate Optimization) strategist,
+Apple-style UX designer, SEO content architect,
+and growth-focused frontend engineer.
+
+My website (soniconsultancyservices.com) already exists and offers
+web, mobile app, AI, and software development services.
+
+PRIMARY BUSINESS GOAL:
+Turn website traffic into qualified service inquiries.
+
+TARGET BENCHMARK:
+From 200 cold visitors (email / LinkedIn traffic),
+generate at least 10 real project inquiries (≈5% conversion).
+
+––––––––––––––––––––
+OVERALL STRATEGY
+––––––––––––––––––––
+
+Transform the website from a SERVICE BROCHURE
+into a LEAD-GENERATION SYSTEM.
+
+The website must:
+• Guide confused users
+• Reduce fear and pressure
+• Feel like free consulting
+• Collect structured requirements
+• Push ONE primary action everywhere
+
+PRIMARY ACTION:
+“Plan Your Project”
+
+Everything else supports this action.
+
+––––––––––––––––––––
+HOMEPAGE (MOST IMPORTANT)
+––––––––––––––––––––
+
+Upgrade homepage to act like a high-conversion landing page.
+
+HERO SECTION MUST:
+• Clearly state what we do (web + mobile development)
+• Clearly state who it’s for (businesses, startups)
+• Clearly tell users what to do next
+
+Hero must include:
+• Strong, clear headline
+• Short supportive subtext
+• ONE dominant CTA:
+  “Plan Your Project”
+• Secondary CTA (less visual weight):
+  “Contact Us”
+
+Remove competing CTAs above the fold.
+
+––––––––––––––––––––
+PROJECT PLANNER = CORE PRODUCT
+––––––––––––––––––––
+
+The Project Planner is the MAIN lead capture tool.
+
+Make it discoverable WITHOUT adding it to navigation.
+
+Ensure planner CTAs exist in:
+• Homepage hero
+• Homepage mid-section
+• All service pages (bottom CTA)
+• Contact page (top CTA)
+• Blog pages (footer CTA)
+• Footer quick link
+
+Planner must feel like:
+“The correct way to start with us.”
+
+––––––––––––––––––––
+PLANNER PURPOSE
+––––––––––––––––––––
+
+The planner is NOT a pricing calculator.
+
+It must:
+• Help users think clearly
+• Work even if users have no idea
+• Ask simple, click-based questions
+• Collect expectations, not commitments
+
+Include an option:
+“I’m not sure what to build yet”
+→ Encourage direct connection with the team.
+
+––––––––––––––––––––
+NO PRICING (STRICT RULE)
+––––––––––––––––––––
+
+Do NOT show:
+• Calculated prices
+• Estimated costs
+• Feature-based totals
+• Random numbers
+
+For simple websites ONLY show static text:
+“Simple Website — Starting from $499 USD.
+Final scope is reviewed after submission.”
+
+No other pricing anywhere.
+
+––––––––––––––––––––
+TIMELINE INPUT (CLIENT-PREFERRED ONLY)
+––––––––––––––––––––
+
+Timeline must be user preference, not system logic.
+
+Ask:
+“When would you like this project to be completed?”
+
+Options ONLY:
+• Immediate
+• 1–3 weeks
+• 1 month
+• 1–3 months
+
+Helper text:
+“This helps us understand your priority. You can change this later.”
+
+Do NOT calculate timelines.
+Do NOT promise delivery dates.
+
+––––––––––––––––––––
+TECH STACK & HOSTING (HIGH-VALUE SECTION)
+––––––––––––––––––––
+
+Allow two modes:
+
+Mode 1: Recommend for me
+• Suggest frontend, backend, database, hosting
+• Based on project type and scale
+
+Mode 2: I have preferences
+• Allow manual selection or input of:
+  - Frontend
+  - Backend
+  - Database
+  - Hosting provider
+
+Hosting must show:
+• Monthly consideration only
+• Option to use existing hosting
+
+No development pricing.
+
+––––––––––––––––––––
+CONTACT PAGE (LEAD QUALITY FIX)
+––––––––––––––––––––
+
+At the TOP of Contact page:
+Encourage planner usage first:
+
+“Want faster and more accurate help?
+Use our Project Planner to share your requirements clearly.
+We’ll review and respond within 24 hours.”
+
+Button:
+“Use Project Planner”
+
+Keep contact form below.
+
+––––––––––––––––––––
+BLOG PAGE (AUTHORITY + CONVERSION)
+––––––––––––––––––––
+
+Upgrade blog into a creative visual grid:
+• Card-based layout
+• Image, title, excerpt
+• Entire card clickable
+• Clean Apple-style spacing
+
+IMPORTANT:
+• All blogs must be PUBLIC
+• No membership or login restriction
+
+At the end of every blog:
+Soft CTA:
+“Planning a project? Plan it with us.”
+
+––––––––––––––––––––
+POPUP CLEANUP (SUPPORTING ONLY)
+––––––––––––––––––––
+
+Remove all popups except TWO:
+
+Popup 1 (Intent-based):
+• Trigger after 50–60% scroll or 30–40 seconds
+• CTA: “Plan Your Project”
+• Show once per session
+
+Popup 2 (Exit intent):
+• CTA: “Start Planning”
+
+Do NOT show popups on:
+• Planner page
+• Contact page
+• Privacy / Terms pages
+
+Popups must support, not interrupt.
+
+––––––––––––––––––––
+TRUST & RESPONSE ASSURANCE
+––––––––––––––––––––
+
+Reinforce trust subtly:
+• “We’ll review and respond within 24 hours”
+• “We follow GDPR and HIPAA-aligned practices”
+
+Show near final submission and in PDF footer.
+
+––––––––––––––––––––
+SUCCESS CRITERIA
+––––––––––––––––––––
+
+After upgrade:
+• Users know what to do in 5 seconds
+• Planner feels like free consulting
+• Cold traffic feels safe
+• Homepage guides action clearly
+• Lead quality improves
+• Conversion rate reaches 5%+
+
+––––––––––––––––––––
+IMPORTANT CONSTRAINTS
+––––––––––––––––––––
+
+• Do NOT rebuild everything
+• Do NOT add complexity
+• Do NOT introduce pricing
+• Do NOT add planner to navigation
+• Focus on clarity, guidance, and lead generation
