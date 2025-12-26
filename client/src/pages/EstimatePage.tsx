@@ -16,6 +16,7 @@ import {
   Layers,
   LayoutTemplate,
   Check,
+  CheckCircle,
   ArrowRight,
   ArrowLeft,
   Sparkles,
@@ -53,12 +54,12 @@ import {
   planningDepths,
   timelinePreferences,
   regionPricing,
-  hostingTiers,
   calculateComplexityLevel,
-  calculateEstimation,
-  getTechStackRecommendation,
+  generateRoadmap,
+  featureCategoryLabels,
+  type FeatureCategory,
 } from "@/lib/estimation-data";
-import type { EstimationResult } from "@shared/schema";
+import type { RoadmapResult, FeatureCategoryType } from "@shared/schema";
 import { Upload, FileCheck, Loader2, Lightbulb, Code, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -142,7 +143,7 @@ const TOTAL_STEPS = 8;
 export default function EstimatePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [estimation, setEstimation] = useState<EstimationResult | null>(null);
+  const [roadmap, setRoadmap] = useState<RoadmapResult | null>(null);
   const [regionData, setRegionData] = useState(regionPricing.find(r => r.region === 'DEFAULT')!);
   const { toast } = useToast();
 
@@ -430,38 +431,26 @@ export default function EstimatePage() {
     
     setTimeout(() => {
       const complexity = calculateComplexityLevel(wizardState.selectedFeatures);
-      const { milestones, totalDuration, totalCost } = calculateEstimation(
+      const { milestones, totalDuration, recommendedTechStack } = generateRoadmap(
         wizardState.projectType,
         wizardState.projectPurpose,
         wizardState.selectedFeatures,
         wizardState.planningDepth,
-        regionData.multiplier
+        wizardState.preferredTechStack
       );
       
-      const techStack = getTechStackRecommendation(wizardState.projectType, wizardState.selectedFeatures);
-      
-      const adjustedHosting = hostingTiers.map(tier => ({
-        tier: tier.tier,
-        monthly: {
-          min: Math.round(tier.monthly.min * regionData.multiplier),
-          max: Math.round(tier.monthly.max * regionData.multiplier),
-        },
-        description: tier.description,
-      }));
-      
-      setEstimation({
+      setRoadmap({
         projectType: projectTypes.find(p => p.id === wizardState.projectType)?.name || '',
         projectPurpose: currentPurposes.find(p => p.id === wizardState.projectPurpose)?.name || '',
         features: wizardState.selectedFeatures.map(f => currentFeatures.find(feat => feat.id === f)?.name || f),
         complexityLevel: complexity,
         planningDepth: wizardState.planningDepth,
+        preferredTimeline: timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || '',
         milestones,
         totalDuration,
-        totalCost,
-        hostingCosts: adjustedHosting,
-        techStackRecommendation: techStack,
-        currency: regionData.currency,
-        currencySymbol: regionData.currencySymbol,
+        techStackRecommendations: recommendedTechStack,
+        manualRequirements: wizardState.manualRequirements,
+        preferredTechStack: wizardState.preferredTechStack,
       });
       
       setIsLoading(false);
@@ -469,12 +458,12 @@ export default function EstimatePage() {
   };
 
   const handleSubmit = () => {
-    if (!estimation) return;
+    if (!roadmap) return;
     
     if (!wizardState.name.trim() || wizardState.name.length < 2) {
       toast({
         title: "Please enter your name",
-        description: "Your name is required to generate the estimation.",
+        description: "Your name is required to generate the roadmap.",
         variant: "destructive",
       });
       return;
@@ -484,7 +473,7 @@ export default function EstimatePage() {
     if (!emailRegex.test(wizardState.email)) {
       toast({
         title: "Please enter a valid email",
-        description: "A valid email address is required to receive your estimation.",
+        description: "A valid email address is required to receive your roadmap.",
         variant: "destructive",
       });
       return;
@@ -496,8 +485,8 @@ export default function EstimatePage() {
       features: JSON.stringify(wizardState.selectedFeatures),
       planningDepth: wizardState.planningDepth,
       preferredTimeline: timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || wizardState.preferredTimeline,
-      complexityLevel: estimation.complexityLevel,
-      estimationData: JSON.stringify(estimation),
+      complexityLevel: roadmap.complexityLevel,
+      estimationData: JSON.stringify(roadmap),
       region: regionData.region,
       currency: regionData.currency,
       name: wizardState.name.trim(),
@@ -590,45 +579,33 @@ export default function EstimatePage() {
               />
               
               <div className="space-y-8">
-                <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-4">
-                    {wizardState.projectType === 'simple_website' ? 'Essential Features' : 'Common Features'}
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {currentFeatures.filter(f => f.category === 'common').map((feature) => {
-                      const Icon = featureIcons[feature.id] || HelpCircle;
-                      return (
-                        <FeatureCard
-                          key={feature.id}
-                          feature={feature}
-                          Icon={Icon}
-                          selected={wizardState.selectedFeatures.includes(feature.id)}
-                          onClick={() => toggleFeature(feature.id)}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-4">
-                    {wizardState.projectType === 'simple_website' ? 'Premium Add-ons' : 'Advanced Features'}
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {currentFeatures.filter(f => f.category === 'advanced').map((feature) => {
-                      const Icon = featureIcons[feature.id] || HelpCircle;
-                      return (
-                        <FeatureCard
-                          key={feature.id}
-                          feature={feature}
-                          Icon={Icon}
-                          selected={wizardState.selectedFeatures.includes(feature.id)}
-                          onClick={() => toggleFeature(feature.id)}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
+                {Object.entries(featureCategoryLabels).map(([categoryKey, categoryInfo]) => {
+                  const categoryFeatures = currentFeatures.filter(f => f.category === categoryKey);
+                  if (categoryFeatures.length === 0) return null;
+                  
+                  return (
+                    <div key={categoryKey}>
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium text-foreground">{categoryInfo.name}</h4>
+                        <p className="text-xs text-muted-foreground">{categoryInfo.description}</p>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {categoryFeatures.map((feature) => {
+                          const Icon = featureIcons[feature.id] || HelpCircle;
+                          return (
+                            <FeatureCard
+                              key={feature.id}
+                              feature={feature}
+                              Icon={Icon}
+                              selected={wizardState.selectedFeatures.includes(feature.id)}
+                              onClick={() => toggleFeature(feature.id)}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
 
                 {/* Custom Requirements Section */}
                 <div className="border-t border-border pt-8">
@@ -817,7 +794,7 @@ export default function EstimatePage() {
                   </div>
                   <LoadingMessages />
                 </div>
-              ) : estimation && (
+              ) : roadmap && (
                 <>
                   <StepHeader
                     title="We understood your vision"
@@ -828,20 +805,20 @@ export default function EstimatePage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Project Type</p>
-                          <p className="font-semibold">{estimation.projectType}</p>
+                          <p className="font-semibold">{roadmap.projectType}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Purpose</p>
-                          <p className="font-semibold">{estimation.projectPurpose}</p>
+                          <p className="font-semibold">{roadmap.projectPurpose}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Preferred Timeline</p>
-                          <p className="font-semibold">{timelinePreferences.find(t => t.id === wizardState.preferredTimeline)?.name || wizardState.preferredTimeline}</p>
+                          <p className="font-semibold">{roadmap.preferredTimeline}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Complexity</p>
-                          <Badge variant={estimation.complexityLevel === 'complex' ? 'default' : 'secondary'}>
-                            {estimation.complexityLevel.charAt(0).toUpperCase() + estimation.complexityLevel.slice(1)}
+                          <Badge variant={roadmap.complexityLevel === 'complex' ? 'default' : 'secondary'}>
+                            {roadmap.complexityLevel.charAt(0).toUpperCase() + roadmap.complexityLevel.slice(1)}
                           </Badge>
                         </div>
                       </div>
@@ -849,33 +826,53 @@ export default function EstimatePage() {
                       <div className="mt-6 pt-6 border-t border-border">
                         <p className="text-sm text-muted-foreground mb-3">Selected Features</p>
                         <div className="flex flex-wrap gap-2">
-                          {estimation.features.map((feature) => (
+                          {roadmap.features.map((feature: string) => (
                             <Badge key={feature} variant="outline">{feature}</Badge>
                           ))}
                         </div>
                       </div>
+                      
+                      {wizardState.manualRequirements && (
+                        <div className="mt-6 pt-6 border-t border-border">
+                          <p className="text-sm text-muted-foreground mb-3">Your Requirements</p>
+                          <p className="text-sm">{wizardState.manualRequirements}</p>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                   <p className="text-center text-muted-foreground">
-                    That's helpful for planning. Continue to see your estimation.
+                    That's helpful for planning. Continue to see your technical roadmap.
                   </p>
                 </>
               )}
             </StepContainer>
           )}
 
-          {currentStep === 7 && estimation && (
+          {currentStep === 7 && roadmap && (
             <StepContainer key="step7">
               <StepHeader
-                title="Your Personalized Estimation"
-                subtitle="A milestone-based overview tailored to your requirements"
+                title="Your Technical Roadmap"
+                subtitle="A milestone-based development plan tailored to your requirements"
               />
               
               <div className="space-y-6">
                 <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Calendar className="h-5 w-5 text-muted-foreground" />
+                      <h4 className="font-semibold">Timeline Overview</h4>
+                    </div>
+                    <p className="text-2xl font-bold">
+                      {roadmap.totalDuration.min} - {roadmap.totalDuration.max} weeks
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">Estimated project duration</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
                   <CardContent className="p-0">
                     <div className="divide-y divide-border">
-                      {estimation.milestones.map((milestone, index) => (
+                      {roadmap.milestones.map((milestone, index) => (
                         <div key={milestone.name} className="p-6">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
@@ -883,17 +880,39 @@ export default function EstimatePage() {
                                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium">
                                   {index + 1}
                                 </span>
-                                <h4 className="font-semibold">{milestone.name}</h4>
+                                <div>
+                                  <h4 className="font-semibold">{milestone.name}</h4>
+                                  <p className="text-xs text-muted-foreground">
+                                    {milestone.durationWeeks.min}-{milestone.durationWeeks.max} weeks
+                                  </p>
+                                </div>
                               </div>
-                              <p className="text-sm text-muted-foreground ml-11">{milestone.description}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-semibold">
-                                {estimation.currencySymbol}{milestone.costRange.min.toLocaleString()} - {estimation.currencySymbol}{milestone.costRange.max.toLocaleString()}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                {milestone.durationWeeks.min}-{milestone.durationWeeks.max} weeks
-                              </p>
+                              
+                              <div className="ml-11 space-y-3">
+                                <div>
+                                  <p className="text-xs font-medium text-muted-foreground mb-1">Deliverables</p>
+                                  <ul className="text-sm space-y-1">
+                                    {milestone.deliverables.map((deliverable, i) => (
+                                      <li key={i} className="flex items-start gap-2">
+                                        <CheckCircle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                                        <span>{deliverable}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                
+                                <div>
+                                  <p className="text-xs font-medium text-muted-foreground mb-1">Key Activities</p>
+                                  <ul className="text-sm space-y-1">
+                                    {milestone.activities.map((activity, i) => (
+                                      <li key={i} className="flex items-start gap-2">
+                                        <ArrowRight className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                                        <span className="text-muted-foreground">{activity}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -902,67 +921,28 @@ export default function EstimatePage() {
                   </CardContent>
                 </Card>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {roadmap.techStackRecommendations && roadmap.techStackRecommendations.length > 0 && (
                   <Card>
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3 mb-4">
-                        <Calendar className="h-5 w-5 text-muted-foreground" />
-                        <h4 className="font-semibold">Timeline Overview</h4>
+                        <Server className="h-5 w-5 text-muted-foreground" />
+                        <h4 className="font-semibold">Recommended Tech Stack</h4>
                       </div>
-                      <p className="text-2xl font-bold">
-                        {estimation.totalDuration.min} - {estimation.totalDuration.max} weeks
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-1">Estimated project duration</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <FileText className="h-5 w-5 text-muted-foreground" />
-                        <h4 className="font-semibold">Total Investment</h4>
-                      </div>
-                      <p className="text-2xl font-bold">
-                        {estimation.currencySymbol}{estimation.totalCost.min.toLocaleString()} - {estimation.currencySymbol}{estimation.totalCost.max.toLocaleString()}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-1">Estimated investment range</p>
-                      <p className="text-xs text-muted-foreground mt-2">Custom features and add-ons are reviewed separately</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Server className="h-5 w-5 text-muted-foreground" />
-                      <h4 className="font-semibold">Hosting & Infrastructure</h4>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {estimation.hostingCosts.map((tier) => (
-                        <div key={tier.tier} className="p-4 rounded-lg bg-muted/50">
-                          <p className="font-medium mb-1">{tier.tier}</p>
-                          <p className="text-lg font-semibold">
-                            {estimation.currencySymbol}{tier.monthly.min} - {estimation.currencySymbol}{tier.monthly.max}/mo
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">{tier.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {estimation.techStackRecommendation && estimation.techStackRecommendation.length > 0 && (
-                  <Card>
-                    <CardContent className="p-6">
-                      <h4 className="font-semibold mb-4">Recommended Tech Stack</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {estimation.techStackRecommendation.map((tech) => (
-                          <Badge key={tech} variant="outline">{tech}</Badge>
+                      <div className="space-y-4">
+                        {roadmap.techStackRecommendations.map((rec) => (
+                          <div key={rec.technology} className="flex items-start gap-3">
+                            <Badge variant="secondary" className="shrink-0">{rec.technology}</Badge>
+                            <p className="text-sm text-muted-foreground">{rec.reason}</p>
+                          </div>
                         ))}
                       </div>
                     </CardContent>
                   </Card>
                 )}
+                
+                <p className="text-center text-sm text-muted-foreground">
+                  This roadmap is a starting point. We'll refine the timeline and approach during our discovery call.
+                </p>
               </div>
             </StepContainer>
           )}
@@ -970,8 +950,8 @@ export default function EstimatePage() {
           {currentStep === 8 && (
             <StepContainer key="step8">
               <StepHeader
-                title="Receive Your Detailed Estimation"
-                subtitle="Share your details and we'll send you a comprehensive overview"
+                title="Receive Your Project Roadmap"
+                subtitle="Share your details and we'll send you a comprehensive development plan"
               />
               <Card className="max-w-md mx-auto">
                 <CardContent className="p-8">
@@ -1006,14 +986,14 @@ export default function EstimatePage() {
                     size="lg"
                     onClick={handleSubmit}
                     disabled={!canProceed() || submitMutation.isPending}
-                    data-testid="button-submit-estimation"
+                    data-testid="button-submit-roadmap"
                   >
                     {submitMutation.isPending ? (
-                      <>Preparing your estimation...</>
+                      <>Preparing your roadmap...</>
                     ) : (
                       <>
                         <Mail className="h-4 w-4 mr-2" />
-                        Send My Estimation
+                        Send My Roadmap
                       </>
                     )}
                   </Button>

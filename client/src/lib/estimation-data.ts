@@ -15,7 +15,6 @@ export const projectPurposes = [
   { id: 'not_sure', name: 'Not Sure Yet', description: 'I have an idea but need help defining the scope' },
 ];
 
-// Simple website purposes (for WordPress/Webflow projects)
 export const simpleWebsitePurposes = [
   { id: 'portfolio', name: 'Portfolio / Personal', description: 'Showcase your work, resume, or personal brand' },
   { id: 'business_landing', name: 'Business Landing Page', description: 'Single-page site to promote your business or service' },
@@ -25,78 +24,176 @@ export const simpleWebsitePurposes = [
   { id: 'event', name: 'Event / Campaign Site', description: 'Promotional site for events, launches, or campaigns' },
 ];
 
-// Simple website features
+// Feature categories for better organization
+export type FeatureCategory = 
+  | 'user_experience' 
+  | 'core_functionality' 
+  | 'data_management' 
+  | 'communication' 
+  | 'integrations' 
+  | 'intelligence'
+  | 'design_branding'
+  | 'content_media'
+  | 'commerce'
+  | 'security_compliance';
+
+export const featureCategoryLabels: Record<FeatureCategory, { name: string; description: string }> = {
+  user_experience: { name: 'User Experience', description: 'How users interact with your product' },
+  core_functionality: { name: 'Core Functionality', description: 'Essential features for your application' },
+  data_management: { name: 'Data & Analytics', description: 'Managing and understanding your data' },
+  communication: { name: 'Communication', description: 'Connecting with your users' },
+  integrations: { name: 'Third-Party Integrations', description: 'Connecting to external services' },
+  intelligence: { name: 'Smart Features', description: 'AI and automation capabilities' },
+  design_branding: { name: 'Design & Branding', description: 'Visual identity and customization' },
+  content_media: { name: 'Content & Media', description: 'Managing content and media files' },
+  commerce: { name: 'Commerce & Payments', description: 'Monetization and transactions' },
+  security_compliance: { name: 'Security & Compliance', description: 'Protecting data and meeting regulations' },
+};
+
+// Simple website features with better categorization
 export const simpleWebsiteFeatures: EstimationFeature[] = [
-  { id: 'responsive', name: 'Mobile Responsive', category: 'common', helperText: 'Looks great on all devices - phones, tablets, desktops', complexityWeight: 1 },
-  { id: 'contact_form', name: 'Contact Form', category: 'common', helperText: 'Let visitors send you messages directly', complexityWeight: 1 },
-  { id: 'gallery', name: 'Image Gallery', category: 'common', helperText: 'Showcase photos with lightbox viewing', complexityWeight: 1 },
-  { id: 'blog_section', name: 'Blog Section', category: 'common', helperText: 'Regular content updates with categories', complexityWeight: 1 },
-  { id: 'seo_basic', name: 'Basic SEO', category: 'common', helperText: 'Meta tags, sitemap, and Google indexing', complexityWeight: 1 },
-  { id: 'social_links', name: 'Social Media Links', category: 'common', helperText: 'Connect your social profiles', complexityWeight: 1 },
-  { id: 'newsletter', name: 'Newsletter Signup', category: 'common', helperText: 'Collect email addresses from visitors', complexityWeight: 1 },
-  { id: 'testimonials', name: 'Testimonials Section', category: 'common', helperText: 'Display client reviews and feedback', complexityWeight: 1 },
-  { id: 'analytics_basic', name: 'Google Analytics', category: 'common', helperText: 'Track visitor behavior and traffic', complexityWeight: 1 },
-  { id: 'maps', name: 'Google Maps', category: 'common', helperText: 'Show your business location', complexityWeight: 1 },
-  { id: 'scheduling', name: 'Appointment Booking', category: 'advanced', helperText: 'Let clients book appointments online', complexityWeight: 2 },
-  { id: 'ecommerce_lite', name: 'Simple Shop', category: 'advanced', helperText: 'Sell products with Stripe/PayPal checkout', complexityWeight: 2 },
-  { id: 'membership', name: 'Member Area', category: 'advanced', helperText: 'Gated content for logged-in users', complexityWeight: 2 },
-  { id: 'multilingual', name: 'Multiple Languages', category: 'advanced', helperText: 'Site content in more than one language', complexityWeight: 2 },
+  // Design & Branding
+  { id: 'responsive', name: 'Mobile Responsive', category: 'design_branding', helperText: 'Looks great on all devices - phones, tablets, desktops', complexityWeight: 1 },
+  { id: 'custom_design', name: 'Custom Visual Design', category: 'design_branding', helperText: 'Unique design tailored to your brand identity', complexityWeight: 2 },
+  { id: 'animations', name: 'Micro-animations', category: 'design_branding', helperText: 'Subtle animations for a polished feel', complexityWeight: 1 },
+  
+  // Communication
+  { id: 'contact_form', name: 'Contact Form', category: 'communication', helperText: 'Let visitors send you messages directly', complexityWeight: 1 },
+  { id: 'newsletter', name: 'Newsletter Signup', category: 'communication', helperText: 'Collect email addresses from visitors', complexityWeight: 1 },
+  { id: 'live_chat', name: 'Live Chat Widget', category: 'communication', helperText: 'Real-time chat with visitors', complexityWeight: 2 },
+  
+  // Content & Media
+  { id: 'gallery', name: 'Image Gallery', category: 'content_media', helperText: 'Showcase photos with lightbox viewing', complexityWeight: 1 },
+  { id: 'blog_section', name: 'Blog Section', category: 'content_media', helperText: 'Regular content updates with categories', complexityWeight: 1 },
+  { id: 'video_embed', name: 'Video Integration', category: 'content_media', helperText: 'Embed videos from YouTube, Vimeo', complexityWeight: 1 },
+  { id: 'testimonials', name: 'Testimonials Section', category: 'content_media', helperText: 'Display client reviews and feedback', complexityWeight: 1 },
+  
+  // Data & Analytics
+  { id: 'seo_basic', name: 'SEO Optimization', category: 'data_management', helperText: 'Meta tags, sitemap, and Google indexing', complexityWeight: 1 },
+  { id: 'analytics_basic', name: 'Analytics Setup', category: 'data_management', helperText: 'Track visitor behavior and traffic', complexityWeight: 1 },
+  
+  // Integrations
+  { id: 'social_links', name: 'Social Media Links', category: 'integrations', helperText: 'Connect your social profiles', complexityWeight: 1 },
+  { id: 'maps', name: 'Location Map', category: 'integrations', helperText: 'Show your business location', complexityWeight: 1 },
+  { id: 'booking_widget', name: 'Booking Integration', category: 'integrations', helperText: 'Calendly, Acuity, or custom booking', complexityWeight: 2 },
+  
+  // Commerce
+  { id: 'ecommerce_lite', name: 'Simple Shop', category: 'commerce', helperText: 'Sell products with Stripe/PayPal checkout', complexityWeight: 2 },
+  
+  // Security
+  { id: 'membership', name: 'Member Area', category: 'security_compliance', helperText: 'Gated content for logged-in users', complexityWeight: 2 },
+  { id: 'ssl', name: 'SSL Certificate', category: 'security_compliance', helperText: 'Secure HTTPS connection', complexityWeight: 1 },
+  
+  // Smart Features
+  { id: 'multilingual', name: 'Multiple Languages', category: 'intelligence', helperText: 'Site content in more than one language', complexityWeight: 2 },
 ];
 
-// Common tech stack options for manual selection
-export const techStackOptions = [
-  { id: 'react', name: 'React', category: 'frontend' },
-  { id: 'nextjs', name: 'Next.js', category: 'frontend' },
-  { id: 'vue', name: 'Vue.js', category: 'frontend' },
-  { id: 'angular', name: 'Angular', category: 'frontend' },
-  { id: 'wordpress', name: 'WordPress', category: 'cms' },
-  { id: 'webflow', name: 'Webflow', category: 'cms' },
-  { id: 'shopify', name: 'Shopify', category: 'cms' },
-  { id: 'nodejs', name: 'Node.js', category: 'backend' },
-  { id: 'python', name: 'Python / Django', category: 'backend' },
-  { id: 'php', name: 'PHP / Laravel', category: 'backend' },
-  { id: 'dotnet', name: '.NET', category: 'backend' },
-  { id: 'react_native', name: 'React Native', category: 'mobile' },
-  { id: 'flutter', name: 'Flutter', category: 'mobile' },
-  { id: 'swift', name: 'Swift (iOS)', category: 'mobile' },
-  { id: 'kotlin', name: 'Kotlin (Android)', category: 'mobile' },
-  { id: 'postgresql', name: 'PostgreSQL', category: 'database' },
-  { id: 'mysql', name: 'MySQL', category: 'database' },
-  { id: 'mongodb', name: 'MongoDB', category: 'database' },
-  { id: 'firebase', name: 'Firebase', category: 'database' },
-  { id: 'aws', name: 'AWS', category: 'hosting' },
-  { id: 'gcp', name: 'Google Cloud', category: 'hosting' },
-  { id: 'vercel', name: 'Vercel', category: 'hosting' },
-  { id: 'stripe', name: 'Stripe', category: 'integration' },
-  { id: 'twilio', name: 'Twilio', category: 'integration' },
-  { id: 'openai', name: 'OpenAI / AI', category: 'integration' },
-];
-
+// Web/Mobile app features with better categorization
 export const features: EstimationFeature[] = [
-  { id: 'auth', name: 'Login / Signup', category: 'common', helperText: 'User authentication with email, social login, or SSO', complexityWeight: 1 },
-  { id: 'admin', name: 'Admin Panel', category: 'common', helperText: 'Dashboard to manage users, content, and settings', complexityWeight: 1 },
-  { id: 'payments', name: 'Payments', category: 'common', helperText: 'Stripe, PayPal, or other payment gateway integration', complexityWeight: 2 },
-  { id: 'notifications', name: 'Notifications', category: 'common', helperText: 'Email, push, or in-app notifications', complexityWeight: 1 },
-  { id: 'search', name: 'Search & Filters', category: 'common', helperText: 'Advanced search with filtering and sorting', complexityWeight: 1 },
-  { id: 'analytics', name: 'Reports / Analytics', category: 'common', helperText: 'Charts, dashboards, and data visualization', complexityWeight: 2 },
-  { id: 'chat', name: 'Chat / Messaging', category: 'advanced', helperText: 'Real-time messaging between users', complexityWeight: 3 },
-  { id: 'api_integrations', name: 'Third-party APIs', category: 'advanced', helperText: 'Integration with external services', complexityWeight: 2 },
-  { id: 'ai', name: 'AI Feature', category: 'advanced', helperText: 'Machine learning, chatbots, or smart recommendations', complexityWeight: 3 },
-  { id: 'multilang', name: 'Multi-language Support', category: 'advanced', helperText: 'Internationalization for global users', complexityWeight: 2 },
+  // User Experience
+  { id: 'auth', name: 'User Authentication', category: 'user_experience', helperText: 'Login, signup, password recovery, social login', complexityWeight: 1 },
+  { id: 'user_profiles', name: 'User Profiles', category: 'user_experience', helperText: 'Personal profiles with settings and preferences', complexityWeight: 1 },
+  { id: 'onboarding', name: 'Onboarding Flow', category: 'user_experience', helperText: 'Guided experience for new users', complexityWeight: 1 },
+  { id: 'search', name: 'Search & Filters', category: 'user_experience', helperText: 'Find content quickly with filtering and sorting', complexityWeight: 1 },
+  
+  // Core Functionality
+  { id: 'admin', name: 'Admin Dashboard', category: 'core_functionality', helperText: 'Manage users, content, and settings', complexityWeight: 1 },
+  { id: 'roles', name: 'Role-Based Access', category: 'core_functionality', helperText: 'Different permissions for different user types', complexityWeight: 2 },
+  { id: 'workflows', name: 'Custom Workflows', category: 'core_functionality', helperText: 'Multi-step processes and approvals', complexityWeight: 2 },
+  
+  // Data & Analytics
+  { id: 'analytics', name: 'Analytics Dashboard', category: 'data_management', helperText: 'Charts, metrics, and business insights', complexityWeight: 2 },
+  { id: 'reports', name: 'Custom Reports', category: 'data_management', helperText: 'Generate and export data reports', complexityWeight: 2 },
+  { id: 'data_import', name: 'Data Import/Export', category: 'data_management', helperText: 'CSV, Excel import and export capabilities', complexityWeight: 1 },
+  
+  // Communication
+  { id: 'notifications', name: 'Notifications', category: 'communication', helperText: 'Email, push, or in-app notifications', complexityWeight: 1 },
+  { id: 'chat', name: 'Real-time Messaging', category: 'communication', helperText: 'Live chat between users', complexityWeight: 3 },
+  { id: 'email_templates', name: 'Email Templates', category: 'communication', helperText: 'Branded transactional emails', complexityWeight: 1 },
+  
+  // Integrations
+  { id: 'api_integrations', name: 'External APIs', category: 'integrations', helperText: 'Connect to third-party services', complexityWeight: 2 },
+  { id: 'webhooks', name: 'Webhooks', category: 'integrations', helperText: 'Real-time data sync with other systems', complexityWeight: 2 },
+  { id: 'calendar_sync', name: 'Calendar Integration', category: 'integrations', helperText: 'Google Calendar, Outlook sync', complexityWeight: 2 },
+  
+  // Smart Features
+  { id: 'ai', name: 'AI Features', category: 'intelligence', helperText: 'Chatbots, recommendations, automation', complexityWeight: 3 },
+  { id: 'automation', name: 'Task Automation', category: 'intelligence', helperText: 'Scheduled tasks and triggered actions', complexityWeight: 2 },
+  { id: 'multilang', name: 'Multi-language', category: 'intelligence', helperText: 'Internationalization for global users', complexityWeight: 2 },
+  
+  // Commerce
+  { id: 'payments', name: 'Payment Processing', category: 'commerce', helperText: 'Stripe, PayPal integration', complexityWeight: 2 },
+  { id: 'subscriptions', name: 'Subscriptions', category: 'commerce', helperText: 'Recurring billing and plans', complexityWeight: 2 },
+  { id: 'invoicing', name: 'Invoicing', category: 'commerce', helperText: 'Generate and manage invoices', complexityWeight: 2 },
+  
+  // Security
+  { id: 'audit_logs', name: 'Audit Logs', category: 'security_compliance', helperText: 'Track all user actions', complexityWeight: 2 },
+  { id: 'data_encryption', name: 'Data Encryption', category: 'security_compliance', helperText: 'End-to-end encryption', complexityWeight: 2 },
+  { id: 'compliance', name: 'Compliance Features', category: 'security_compliance', helperText: 'GDPR, HIPAA requirements', complexityWeight: 3 },
+];
+
+// Tech stack options with descriptions
+export const techStackOptions = [
+  // Frontend
+  { id: 'react', name: 'React', category: 'frontend', description: 'Modern, flexible UI library' },
+  { id: 'nextjs', name: 'Next.js', category: 'frontend', description: 'React framework with SSR' },
+  { id: 'vue', name: 'Vue.js', category: 'frontend', description: 'Progressive JavaScript framework' },
+  { id: 'angular', name: 'Angular', category: 'frontend', description: 'Enterprise-grade framework' },
+  { id: 'typescript', name: 'TypeScript', category: 'frontend', description: 'Type-safe JavaScript' },
+  
+  // CMS
+  { id: 'wordpress', name: 'WordPress', category: 'cms', description: 'Popular content management' },
+  { id: 'webflow', name: 'Webflow', category: 'cms', description: 'Visual website builder' },
+  { id: 'shopify', name: 'Shopify', category: 'cms', description: 'E-commerce platform' },
+  { id: 'strapi', name: 'Strapi', category: 'cms', description: 'Headless CMS' },
+  
+  // Backend
+  { id: 'nodejs', name: 'Node.js', category: 'backend', description: 'JavaScript runtime' },
+  { id: 'python', name: 'Python / Django', category: 'backend', description: 'Versatile and readable' },
+  { id: 'php', name: 'PHP / Laravel', category: 'backend', description: 'Mature web framework' },
+  { id: 'dotnet', name: '.NET', category: 'backend', description: 'Microsoft ecosystem' },
+  { id: 'go', name: 'Go', category: 'backend', description: 'High-performance services' },
+  
+  // Mobile
+  { id: 'react_native', name: 'React Native', category: 'mobile', description: 'Cross-platform mobile' },
+  { id: 'flutter', name: 'Flutter', category: 'mobile', description: 'Beautiful native apps' },
+  { id: 'swift', name: 'Swift (iOS)', category: 'mobile', description: 'Native iOS development' },
+  { id: 'kotlin', name: 'Kotlin (Android)', category: 'mobile', description: 'Native Android development' },
+  
+  // Database
+  { id: 'postgresql', name: 'PostgreSQL', category: 'database', description: 'Reliable relational DB' },
+  { id: 'mysql', name: 'MySQL', category: 'database', description: 'Popular relational DB' },
+  { id: 'mongodb', name: 'MongoDB', category: 'database', description: 'Flexible document DB' },
+  { id: 'redis', name: 'Redis', category: 'database', description: 'In-memory caching' },
+  { id: 'firebase', name: 'Firebase', category: 'database', description: 'Real-time database' },
+  
+  // Cloud
+  { id: 'aws', name: 'AWS', category: 'cloud', description: 'Amazon cloud services' },
+  { id: 'gcp', name: 'Google Cloud', category: 'cloud', description: 'Google cloud platform' },
+  { id: 'azure', name: 'Azure', category: 'cloud', description: 'Microsoft cloud' },
+  { id: 'vercel', name: 'Vercel', category: 'cloud', description: 'Frontend deployment' },
+  { id: 'digitalocean', name: 'DigitalOcean', category: 'cloud', description: 'Simple cloud hosting' },
+  
+  // Services
+  { id: 'stripe', name: 'Stripe', category: 'services', description: 'Payment processing' },
+  { id: 'twilio', name: 'Twilio', category: 'services', description: 'SMS and communications' },
+  { id: 'sendgrid', name: 'SendGrid', category: 'services', description: 'Email delivery' },
+  { id: 'openai', name: 'OpenAI', category: 'services', description: 'AI and LLM integration' },
+  { id: 'auth0', name: 'Auth0', category: 'services', description: 'Authentication service' },
 ];
 
 export const planningDepths = [
   { 
     id: 'quick', 
-    name: 'Quick Planning', 
-    description: 'Fast ball-park estimation with AI-filled gaps',
-    details: ['2-minute completion', 'Beginner-friendly language', 'AI recommends based on similar projects']
+    name: 'Quick Overview', 
+    description: 'High-level roadmap with key milestones',
+    details: ['2-minute completion', 'AI-powered recommendations', 'Core phase breakdown']
   },
   { 
     id: 'detailed', 
-    name: 'Detailed Planning', 
-    description: 'For complex & long-term projects',
-    details: ['Expanded milestones', 'Architecture reasoning', 'Tech stack recommendations']
+    name: 'Detailed Roadmap', 
+    description: 'Comprehensive technical breakdown',
+    details: ['Expanded milestones', 'Architecture reasoning', 'Detailed tech stack analysis']
   },
 ];
 
@@ -140,27 +237,15 @@ export const regionPricing: RegionPricing[] = [
   { region: 'DEFAULT', currency: 'USD', currencySymbol: '$', multiplier: 1.0 },
 ];
 
-export const baseEstimationRates = {
-  discovery: { baseWeeks: 1, baseCost: 1500 },
-  design: { baseWeeks: 2, baseCost: 3000 },
-  development: { baseWeeks: 6, baseCost: 12000 },
-  testing: { baseWeeks: 2, baseCost: 2500 },
-};
-
-export const hostingTiers = [
-  { tier: 'MVP / Small', monthly: { min: 20, max: 50 }, description: 'For early-stage apps with limited traffic' },
-  { tier: 'Growth / Medium', monthly: { min: 100, max: 300 }, description: 'For growing apps with moderate traffic' },
-  { tier: 'Scale / Large', monthly: { min: 500, max: 2000 }, description: 'For high-traffic production applications' },
-];
-
 export function calculateComplexityLevel(selectedFeatures: string[]): 'simple' | 'moderate' | 'complex' {
+  const allFeatures = [...features, ...simpleWebsiteFeatures];
   const totalWeight = selectedFeatures.reduce((sum, featureId) => {
-    const feature = features.find(f => f.id === featureId);
+    const feature = allFeatures.find(f => f.id === featureId);
     return sum + (feature?.complexityWeight || 0);
   }, 0);
   
   if (totalWeight <= 4) return 'simple';
-  if (totalWeight <= 8) return 'moderate';
+  if (totalWeight <= 10) return 'moderate';
   return 'complex';
 }
 
@@ -177,114 +262,365 @@ export function getComplexityMultiplier(complexity: string, projectType: string)
   return base;
 }
 
-export function calculateEstimation(
+// Generate roadmap milestones based on project configuration
+export interface RoadmapMilestone {
+  name: string;
+  description: string;
+  durationWeeks: { min: number; max: number };
+  deliverables: string[];
+  activities: string[];
+}
+
+export function generateRoadmap(
   projectType: string,
   projectPurpose: string,
   selectedFeatures: string[],
   planningDepth: string,
-  regionMultiplier: number
+  preferredTechStack: string[] = []
 ): {
-  milestones: { name: string; description: string; durationWeeks: { min: number; max: number }; costRange: { min: number; max: number } }[];
+  milestones: RoadmapMilestone[];
   totalDuration: { min: number; max: number };
-  totalCost: { min: number; max: number };
+  recommendedTechStack: { category: string; technologies: string[]; reasoning: string }[];
 } {
   const complexity = calculateComplexityLevel(selectedFeatures);
   const multiplier = getComplexityMultiplier(complexity, projectType);
+  const isSimpleWebsite = projectType === 'simple_website';
+  const isDetailed = planningDepth === 'detailed';
   
-  const planningMultiplier = planningDepth === 'detailed' ? 1.15 : 1;
+  const allFeatures = [...features, ...simpleWebsiteFeatures];
+  const selectedFeatureObjects = selectedFeatures.map(id => allFeatures.find(f => f.id === id)).filter(Boolean);
   
-  const milestones = [
-    {
-      name: 'Discovery & Planning',
-      description: 'Requirements gathering, user research, and project roadmap',
-      durationWeeks: {
-        min: Math.ceil(baseEstimationRates.discovery.baseWeeks * multiplier * 0.8),
-        max: Math.ceil(baseEstimationRates.discovery.baseWeeks * multiplier * 1.2),
-      },
-      costRange: {
-        min: Math.round(baseEstimationRates.discovery.baseCost * multiplier * 0.8 * regionMultiplier * planningMultiplier),
-        max: Math.round(baseEstimationRates.discovery.baseCost * multiplier * 1.2 * regionMultiplier * planningMultiplier),
-      },
-    },
-    {
-      name: 'UI/UX Design',
-      description: 'Wireframes, visual design, and interactive prototypes',
-      durationWeeks: {
-        min: Math.ceil(baseEstimationRates.design.baseWeeks * multiplier * 0.8),
-        max: Math.ceil(baseEstimationRates.design.baseWeeks * multiplier * 1.3),
-      },
-      costRange: {
-        min: Math.round(baseEstimationRates.design.baseCost * multiplier * 0.8 * regionMultiplier * planningMultiplier),
-        max: Math.round(baseEstimationRates.design.baseCost * multiplier * 1.3 * regionMultiplier * planningMultiplier),
-      },
-    },
-    {
-      name: 'Development',
-      description: 'Frontend and backend development with iterative releases',
-      durationWeeks: {
-        min: Math.ceil(baseEstimationRates.development.baseWeeks * multiplier * 0.85),
-        max: Math.ceil(baseEstimationRates.development.baseWeeks * multiplier * 1.4),
-      },
-      costRange: {
-        min: Math.round(baseEstimationRates.development.baseCost * multiplier * 0.85 * regionMultiplier * planningMultiplier),
-        max: Math.round(baseEstimationRates.development.baseCost * multiplier * 1.4 * regionMultiplier * planningMultiplier),
-      },
-    },
-    {
-      name: 'Testing & Deployment',
-      description: 'Quality assurance, bug fixes, and production deployment',
-      durationWeeks: {
-        min: Math.ceil(baseEstimationRates.testing.baseWeeks * multiplier * 0.8),
-        max: Math.ceil(baseEstimationRates.testing.baseWeeks * multiplier * 1.2),
-      },
-      costRange: {
-        min: Math.round(baseEstimationRates.testing.baseCost * multiplier * 0.8 * regionMultiplier * planningMultiplier),
-        max: Math.round(baseEstimationRates.testing.baseCost * multiplier * 1.2 * regionMultiplier * planningMultiplier),
-      },
-    },
-  ];
+  // Generate milestones based on project type
+  const milestones: RoadmapMilestone[] = [];
   
+  // Discovery Phase
+  milestones.push({
+    name: 'Discovery & Strategy',
+    description: 'Understanding your business goals, target users, and defining the project scope',
+    durationWeeks: {
+      min: Math.ceil(0.5 * multiplier),
+      max: Math.ceil(1 * multiplier),
+    },
+    deliverables: [
+      'Project scope document',
+      'User persona definitions',
+      'Feature prioritization matrix',
+      ...(isDetailed ? ['Competitive analysis', 'Technical feasibility assessment'] : []),
+    ],
+    activities: [
+      'Stakeholder interviews',
+      'Requirements gathering',
+      'Use case definition',
+      ...(isDetailed ? ['Market research', 'Risk assessment'] : []),
+    ],
+  });
+  
+  // Design Phase
+  milestones.push({
+    name: 'UX/UI Design',
+    description: 'Creating the visual identity and user experience for your product',
+    durationWeeks: {
+      min: Math.ceil(1 * multiplier),
+      max: Math.ceil(2 * multiplier),
+    },
+    deliverables: [
+      'Wireframes and user flows',
+      'High-fidelity mockups',
+      'Interactive prototype',
+      ...(isDetailed ? ['Design system documentation', 'Accessibility guidelines'] : []),
+    ],
+    activities: [
+      'Information architecture',
+      'Visual design creation',
+      'Prototype testing',
+      ...(isDetailed ? ['Design review sessions', 'Usability testing'] : []),
+    ],
+  });
+  
+  // Development Phase
+  const devActivities = ['Frontend development', 'Backend API development', 'Database setup'];
+  const devDeliverables = ['Working application', 'API documentation', 'Code repository'];
+  
+  if (selectedFeatures.includes('auth') || selectedFeatures.includes('membership')) {
+    devActivities.push('Authentication system');
+    devDeliverables.push('User authentication module');
+  }
+  if (selectedFeatures.includes('payments') || selectedFeatures.includes('ecommerce_lite') || selectedFeatures.includes('subscriptions')) {
+    devActivities.push('Payment integration');
+    devDeliverables.push('Payment processing system');
+  }
+  if (selectedFeatures.includes('ai') || selectedFeatures.includes('automation')) {
+    devActivities.push('AI/ML integration');
+    devDeliverables.push('Smart features module');
+  }
+  
+  milestones.push({
+    name: 'Development',
+    description: 'Building the core functionality and features of your product',
+    durationWeeks: {
+      min: Math.ceil(3 * multiplier),
+      max: Math.ceil(6 * multiplier),
+    },
+    deliverables: devDeliverables,
+    activities: devActivities,
+  });
+  
+  // Testing Phase
+  milestones.push({
+    name: 'Testing & QA',
+    description: 'Ensuring quality, performance, and reliability before launch',
+    durationWeeks: {
+      min: Math.ceil(1 * multiplier),
+      max: Math.ceil(2 * multiplier),
+    },
+    deliverables: [
+      'Test documentation',
+      'Bug fix reports',
+      'Performance optimization',
+      ...(isDetailed ? ['Security audit results', 'Load testing report'] : []),
+    ],
+    activities: [
+      'Functional testing',
+      'Cross-browser/device testing',
+      'Bug fixing',
+      ...(isDetailed ? ['Security testing', 'Performance testing'] : []),
+    ],
+  });
+  
+  // Launch Phase
+  milestones.push({
+    name: 'Deployment & Launch',
+    description: 'Preparing and executing a successful product launch',
+    durationWeeks: {
+      min: 1,
+      max: 1,
+    },
+    deliverables: [
+      'Production deployment',
+      'Domain & SSL setup',
+      'Monitoring configuration',
+      ...(isDetailed ? ['Launch checklist', 'Rollback procedures'] : []),
+    ],
+    activities: [
+      'Environment setup',
+      'Data migration',
+      'Go-live support',
+      ...(isDetailed ? ['Team training', 'Documentation handoff'] : []),
+    ],
+  });
+  
+  // Calculate total duration
   const totalDuration = {
     min: milestones.reduce((sum, m) => sum + m.durationWeeks.min, 0),
     max: milestones.reduce((sum, m) => sum + m.durationWeeks.max, 0),
   };
   
-  const totalCost = {
-    min: milestones.reduce((sum, m) => sum + m.costRange.min, 0),
-    max: milestones.reduce((sum, m) => sum + m.costRange.max, 0),
-  };
+  // Generate tech stack recommendations
+  const recommendedTechStack = generateTechStackRecommendations(
+    projectType,
+    projectPurpose,
+    selectedFeatures,
+    preferredTechStack
+  );
   
-  return { milestones, totalDuration, totalCost };
+  return { milestones, totalDuration, recommendedTechStack };
+}
+
+function generateTechStackRecommendations(
+  projectType: string,
+  projectPurpose: string,
+  selectedFeatures: string[],
+  preferredTechStack: string[]
+): { category: string; technologies: string[]; reasoning: string }[] {
+  const recommendations: { category: string; technologies: string[]; reasoning: string }[] = [];
+  
+  // Check if user has preferences and incorporate them
+  const userPreferences = preferredTechStack.map(id => techStackOptions.find(t => t.id === id)).filter(Boolean);
+  const userPreferencesByCategory: Record<string, typeof techStackOptions[0][]> = {};
+  userPreferences.forEach(pref => {
+    if (pref) {
+      if (!userPreferencesByCategory[pref.category]) {
+        userPreferencesByCategory[pref.category] = [];
+      }
+      userPreferencesByCategory[pref.category].push(pref);
+    }
+  });
+  
+  // Frontend recommendations
+  if (projectType === 'simple_website') {
+    if (userPreferencesByCategory['cms']?.length) {
+      recommendations.push({
+        category: 'Platform',
+        technologies: userPreferencesByCategory['cms'].map(t => t.name),
+        reasoning: 'Based on your preference for a website builder platform.',
+      });
+    } else {
+      recommendations.push({
+        category: 'Platform',
+        technologies: ['Webflow', 'WordPress'],
+        reasoning: 'Ideal for marketing sites with easy content management and no-code customization.',
+      });
+    }
+  } else {
+    // Web/Mobile apps
+    if (userPreferencesByCategory['frontend']?.length) {
+      recommendations.push({
+        category: 'Frontend',
+        technologies: userPreferencesByCategory['frontend'].map(t => t.name),
+        reasoning: 'Based on your team\'s expertise and preferences.',
+      });
+    } else {
+      if (selectedFeatures.includes('ai') || projectPurpose === 'saas') {
+        recommendations.push({
+          category: 'Frontend',
+          technologies: ['Next.js', 'TypeScript', 'Tailwind CSS'],
+          reasoning: 'Next.js provides excellent performance and SEO for SaaS products with server-side rendering.',
+        });
+      } else {
+        recommendations.push({
+          category: 'Frontend',
+          technologies: ['React', 'TypeScript', 'Tailwind CSS'],
+          reasoning: 'React offers flexibility and a large ecosystem for building dynamic user interfaces.',
+        });
+      }
+    }
+    
+    // Backend recommendations
+    if (userPreferencesByCategory['backend']?.length) {
+      recommendations.push({
+        category: 'Backend',
+        technologies: userPreferencesByCategory['backend'].map(t => t.name),
+        reasoning: 'Based on your team\'s expertise and existing infrastructure.',
+      });
+    } else {
+      if (selectedFeatures.includes('ai')) {
+        recommendations.push({
+          category: 'Backend',
+          technologies: ['Python / FastAPI', 'Node.js'],
+          reasoning: 'Python excels for AI/ML integration while Node.js handles real-time features efficiently.',
+        });
+      } else if (selectedFeatures.includes('chat') || selectedFeatures.includes('notifications')) {
+        recommendations.push({
+          category: 'Backend',
+          technologies: ['Node.js', 'Express', 'Socket.io'],
+          reasoning: 'Node.js is ideal for real-time applications with WebSocket support.',
+        });
+      } else {
+        recommendations.push({
+          category: 'Backend',
+          technologies: ['Node.js', 'Express'],
+          reasoning: 'JavaScript across the stack simplifies development and reduces context switching.',
+        });
+      }
+    }
+    
+    // Database recommendations
+    if (userPreferencesByCategory['database']?.length) {
+      recommendations.push({
+        category: 'Database',
+        technologies: userPreferencesByCategory['database'].map(t => t.name),
+        reasoning: 'Based on your preference and existing data infrastructure.',
+      });
+    } else {
+      if (selectedFeatures.includes('analytics') || selectedFeatures.includes('reports')) {
+        recommendations.push({
+          category: 'Database',
+          technologies: ['PostgreSQL', 'Redis'],
+          reasoning: 'PostgreSQL handles complex queries for analytics, Redis provides fast caching.',
+        });
+      } else if (selectedFeatures.includes('chat')) {
+        recommendations.push({
+          category: 'Database',
+          technologies: ['PostgreSQL', 'Redis', 'MongoDB'],
+          reasoning: 'Combination of relational and document databases for chat history and user data.',
+        });
+      } else {
+        recommendations.push({
+          category: 'Database',
+          technologies: ['PostgreSQL'],
+          reasoning: 'Reliable, scalable, and well-supported relational database for most applications.',
+        });
+      }
+    }
+  }
+  
+  // Mobile recommendations
+  if (projectType === 'mobile' || projectType === 'web_mobile') {
+    if (userPreferencesByCategory['mobile']?.length) {
+      recommendations.push({
+        category: 'Mobile',
+        technologies: userPreferencesByCategory['mobile'].map(t => t.name),
+        reasoning: 'Based on your platform preferences and team expertise.',
+      });
+    } else {
+      recommendations.push({
+        category: 'Mobile',
+        technologies: ['React Native', 'Expo'],
+        reasoning: 'Share code between iOS and Android while maintaining native performance.',
+      });
+    }
+  }
+  
+  // Cloud/Hosting recommendations
+  if (userPreferencesByCategory['cloud']?.length) {
+    recommendations.push({
+      category: 'Infrastructure',
+      technologies: userPreferencesByCategory['cloud'].map(t => t.name),
+      reasoning: 'Based on your cloud platform preference.',
+    });
+  } else if (projectType !== 'simple_website') {
+    if (selectedFeatures.includes('ai')) {
+      recommendations.push({
+        category: 'Infrastructure',
+        technologies: ['AWS', 'Vercel'],
+        reasoning: 'AWS provides AI/ML services, Vercel handles frontend deployment efficiently.',
+      });
+    } else {
+      recommendations.push({
+        category: 'Infrastructure',
+        technologies: ['Vercel', 'Railway', 'AWS'],
+        reasoning: 'Modern deployment platforms with automatic scaling and easy CI/CD.',
+      });
+    }
+  }
+  
+  // Services based on features
+  const services: string[] = [];
+  const serviceReasons: string[] = [];
+  
+  if (selectedFeatures.includes('payments') || selectedFeatures.includes('ecommerce_lite') || selectedFeatures.includes('subscriptions')) {
+    services.push('Stripe');
+    serviceReasons.push('payment processing');
+  }
+  if (selectedFeatures.includes('notifications') || selectedFeatures.includes('email_templates')) {
+    services.push('SendGrid', 'Resend');
+    serviceReasons.push('email delivery');
+  }
+  if (selectedFeatures.includes('auth') || selectedFeatures.includes('membership')) {
+    services.push('Auth0 or Clerk');
+    serviceReasons.push('authentication');
+  }
+  if (selectedFeatures.includes('ai')) {
+    services.push('OpenAI');
+    serviceReasons.push('AI capabilities');
+  }
+  if (selectedFeatures.includes('analytics') || selectedFeatures.includes('analytics_basic')) {
+    services.push('PostHog', 'Google Analytics');
+    serviceReasons.push('product analytics');
+  }
+  
+  if (services.length > 0) {
+    recommendations.push({
+      category: 'Services',
+      technologies: services,
+      reasoning: `Recommended integrations for ${serviceReasons.join(', ')}.`,
+    });
+  }
+  
+  return recommendations;
 }
 
 export function getTechStackRecommendation(projectType: string, selectedFeatures: string[]): string[] {
-  const stack: string[] = [];
-  
-  if (projectType === 'web' || projectType === 'web_mobile') {
-    stack.push('React / Next.js', 'Node.js', 'PostgreSQL');
-  }
-  
-  if (projectType === 'mobile' || projectType === 'web_mobile') {
-    stack.push('React Native or Flutter');
-  }
-  
-  if (selectedFeatures.includes('payments')) {
-    stack.push('Stripe Integration');
-  }
-  
-  if (selectedFeatures.includes('chat')) {
-    stack.push('WebSocket / Real-time Infrastructure');
-  }
-  
-  if (selectedFeatures.includes('ai')) {
-    stack.push('OpenAI / Custom ML Models');
-  }
-  
-  if (selectedFeatures.includes('notifications')) {
-    stack.push('Push Notification Service');
-  }
-  
-  stack.push('Cloud Hosting (AWS / GCP / Vercel)');
-  
-  return stack;
+  const result = generateTechStackRecommendations(projectType, '', selectedFeatures, []);
+  return result.flatMap(r => r.technologies);
 }

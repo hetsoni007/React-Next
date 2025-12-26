@@ -199,36 +199,50 @@ export type InsertProjectEstimate = z.infer<typeof insertProjectEstimateSchema>;
 export type ProjectEstimate = typeof projectEstimates.$inferSelect;
 
 // Estimation wizard types
+export type FeatureCategoryType = 
+  | 'user_experience' 
+  | 'core_functionality' 
+  | 'data_management' 
+  | 'communication' 
+  | 'integrations' 
+  | 'intelligence'
+  | 'design_branding'
+  | 'content_media'
+  | 'commerce'
+  | 'security_compliance';
+
 export interface EstimationFeature {
   id: string;
   name: string;
-  category: 'common' | 'advanced';
+  category: FeatureCategoryType;
   helperText: string;
   complexityWeight: number; // 1-3
 }
 
-export interface MilestoneEstimate {
+export interface RoadmapMilestone {
   name: string;
   description: string;
   durationWeeks: { min: number; max: number };
-  costRange: { min: number; max: number };
+  deliverables: string[];
+  activities: string[];
 }
 
-export interface EstimationResult {
+export interface TechStackRecommendation {
+  category: string;
+  technologies: string[];
+  reasoning: string;
+}
+
+export interface RoadmapResult {
   projectType: string;
   projectPurpose: string;
   features: string[];
   complexityLevel: string;
   planningDepth: string;
-  milestones: MilestoneEstimate[];
+  preferredTimeline: string;
+  milestones: RoadmapMilestone[];
   totalDuration: { min: number; max: number };
-  totalCost: { min: number; max: number };
-  hostingCosts: {
-    tier: string;
-    monthly: { min: number; max: number };
-    description: string;
-  }[];
-  techStackRecommendation?: string[];
-  currency: string;
-  currencySymbol: string;
+  techStackRecommendations: TechStackRecommendation[];
+  manualRequirements?: string;
+  preferredTechStack?: string[];
 }
