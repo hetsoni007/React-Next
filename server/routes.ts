@@ -272,47 +272,59 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Invalid features format." });
       }
 
-      // Parse and validate roadmap data structure
-      let roadmapData;
+      // Parse and validate estimation data structure (roadmap or requirements summary)
+      let estimationData;
       try {
-        roadmapData = JSON.parse(result.data.estimationData);
+        estimationData = JSON.parse(result.data.estimationData);
         
-        // Validate required roadmap fields
-        if (!roadmapData.projectType || !roadmapData.projectPurpose) {
-          return res.status(400).json({ message: "Incomplete roadmap data." });
+        // Validate required fields for both formats
+        if (!estimationData.projectType || !estimationData.projectPurpose) {
+          return res.status(400).json({ message: "Incomplete estimation data." });
         }
-        if (!Array.isArray(roadmapData.milestones) || roadmapData.milestones.length === 0 || roadmapData.milestones.length > 10) {
-          return res.status(400).json({ message: "Invalid milestones data." });
+        
+        // Support both old milestones format and new phases format
+        const hasPhases = Array.isArray(estimationData.phases);
+        const hasMilestones = Array.isArray(estimationData.milestones);
+        
+        if (!hasPhases && !hasMilestones) {
+          return res.status(400).json({ message: "Invalid estimation data - missing phases or milestones." });
         }
-        if (!roadmapData.totalDuration || typeof roadmapData.totalDuration.min !== 'number') {
-          return res.status(400).json({ message: "Invalid timeline data." });
+        
+        if (hasMilestones) {
+          // Old format validation
+          if (estimationData.milestones.length === 0 || estimationData.milestones.length > 10) {
+            return res.status(400).json({ message: "Invalid milestones data." });
+          }
+          if (!estimationData.totalDuration || typeof estimationData.totalDuration.min !== 'number') {
+            return res.status(400).json({ message: "Invalid timeline data." });
+          }
         }
       } catch (parseError) {
-        console.error("Failed to parse roadmap data:", parseError);
-        return res.status(400).json({ message: "Invalid roadmap data format." });
+        console.error("Failed to parse estimation data:", parseError);
+        return res.status(400).json({ message: "Invalid estimation data format." });
       }
 
       // Persist the estimate to database
       const estimate = await storage.createProjectEstimate(result.data);
 
-      // Send roadmap email to user (with BCC to admin)
+      // Send requirements summary email to user (with BCC to admin)
       try {
         await sendEstimationEmail({
           name: result.data.name,
           email: result.data.email,
-          roadmap: roadmapData,
+          roadmap: estimationData,
         });
       } catch (emailError) {
-        console.error('Roadmap email failed:', emailError);
+        console.error('Requirements email failed:', emailError);
         return res.status(201).json({ 
-          message: "Your roadmap has been saved. You should receive an email shortly.",
+          message: "Your requirements have been saved. You should receive an email shortly.",
           estimate,
           emailSent: false
         });
       }
       
       return res.status(201).json({ 
-        message: "Your project roadmap has been sent to your email!",
+        message: "Your project requirements have been sent to your email!",
         estimate,
         emailSent: true
       });

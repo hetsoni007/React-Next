@@ -193,6 +193,7 @@ export const insertProjectEstimateSchema = createInsertSchema(projectEstimates).
 }).extend({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
+  planningDepth: z.string().optional(), // Now optional - not collected in new 7-step wizard
 });
 
 export type InsertProjectEstimate = z.infer<typeof insertProjectEstimateSchema>;
