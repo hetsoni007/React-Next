@@ -46,7 +46,10 @@ import { trackEvent } from "@/lib/analytics";
 import {
   projectTypes,
   projectPurposes,
+  simpleWebsitePurposes,
   features,
+  simpleWebsiteFeatures,
+  techStackOptions,
   planningDepths,
   timelinePreferences,
   regionPricing,
@@ -56,6 +59,8 @@ import {
   getTechStackRecommendation,
 } from "@/lib/estimation-data";
 import type { EstimationResult } from "@shared/schema";
+import { Upload, FileCheck, Loader2, Lightbulb, Code, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 const projectTypeIcons: Record<string, typeof Globe> = {
   layout: LayoutTemplate,
@@ -70,6 +75,13 @@ const purposeIcons: Record<string, typeof Building2> = {
   marketplace: ShoppingCart,
   booking: CalendarCheck,
   not_sure: HelpCircle,
+  // Simple website purposes
+  portfolio: User,
+  business_landing: Target,
+  company_website: Building2,
+  blog: FileText,
+  ecommerce_basic: ShoppingCart,
+  event: Calendar,
 };
 
 const featureIcons: Record<string, typeof User> = {
@@ -83,6 +95,21 @@ const featureIcons: Record<string, typeof User> = {
   api_integrations: Puzzle,
   ai: Brain,
   multilang: Languages,
+  // Simple website features
+  responsive: Smartphone,
+  contact_form: Mail,
+  gallery: LayoutTemplate,
+  blog_section: FileText,
+  seo_basic: Target,
+  social_links: Globe,
+  newsletter: Mail,
+  testimonials: MessageCircle,
+  analytics_basic: BarChart3,
+  maps: Globe,
+  scheduling: CalendarCheck,
+  ecommerce_lite: ShoppingCart,
+  membership: User,
+  multilingual: Languages,
 };
 
 interface WizardState {
@@ -91,8 +118,23 @@ interface WizardState {
   selectedFeatures: string[];
   planningDepth: string;
   preferredTimeline: string;
+  manualRequirements: string;
+  preferredTechStack: string[];
+  additionalNotes: string;
   name: string;
   email: string;
+}
+
+interface AIAnalysis {
+  summary: string;
+  suggestedFeatures: string[];
+  questions: { id: string; question: string; type: 'text' | 'choice'; options?: string[] }[];
+  estimatedComplexity: 'simple' | 'moderate' | 'complex';
+  techStackSuggestions: string[];
+}
+
+interface QuestionAnswer {
+  [questionId: string]: string;
 }
 
 const TOTAL_STEPS = 8;
@@ -110,9 +152,17 @@ export default function EstimatePage() {
     selectedFeatures: [],
     planningDepth: '',
     preferredTimeline: '',
+    manualRequirements: '',
+    preferredTechStack: [],
+    additionalNotes: '',
     name: '',
     email: '',
   });
+
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null);
+  const [questionAnswers, setQuestionAnswers] = useState<QuestionAnswer>({});
 
   useEffect(() => {
     detectRegion();
@@ -205,6 +255,142 @@ export default function EstimatePage() {
     }));
   };
 
+  const toggleTechStack = (techId: string) => {
+    setWizardState(prev => ({
+      ...prev,
+      preferredTechStack: prev.preferredTechStack.includes(techId)
+        ? prev.preferredTechStack.filter(t => t !== techId)
+        : [...prev.preferredTechStack, techId],
+    }));
+  };
+
+  const handleFileUpload = async (file: File) => {
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload a file smaller than 10MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadedFile(file);
+    setIsAnalyzing(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('document', file);
+
+      const response = await fetch('/api/estimate/upload-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to analyze PDF');
+      }
+
+      setAiAnalysis(data.analysis);
+      
+      // Auto-select suggested features that exist in current feature set
+      if (data.analysis.suggestedFeatures?.length > 0) {
+        const validFeatureIds = [...features, ...simpleWebsiteFeatures].map(f => f.id);
+        const validSuggestions = data.analysis.suggestedFeatures.filter((f: string) => validFeatureIds.includes(f));
+        if (validSuggestions.length > 0) {
+          setWizardState(prev => ({
+            ...prev,
+            selectedFeatures: Array.from(new Set([...prev.selectedFeatures, ...validSuggestions])),
+          }));
+        }
+      }
+
+      toast({
+        title: "Document analyzed",
+        description: "We've reviewed your requirements and have some suggestions.",
+      });
+    } catch (error: any) {
+      console.error('PDF upload error:', error);
+      toast({
+        title: "Analysis failed",
+        description: error.message || "Please try again or describe your requirements manually.",
+        variant: "destructive",
+      });
+      setUploadedFile(null);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const analyzeManualRequirements = async () => {
+    if (wizardState.manualRequirements.length < 20) {
+      toast({
+        title: "More details needed",
+        description: "Please provide at least a few sentences about your requirements.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+
+    try {
+      const response = await fetch('/api/estimate/analyze-text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requirements: wizardState.manualRequirements }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to analyze requirements');
+      }
+
+      setAiAnalysis(data.analysis);
+      
+      // Auto-select suggested features that exist in current feature set
+      if (data.analysis.suggestedFeatures?.length > 0) {
+        const validFeatureIds = [...features, ...simpleWebsiteFeatures].map(f => f.id);
+        const validSuggestions = data.analysis.suggestedFeatures.filter((f: string) => validFeatureIds.includes(f));
+        if (validSuggestions.length > 0) {
+          setWizardState(prev => ({
+            ...prev,
+            selectedFeatures: Array.from(new Set([...prev.selectedFeatures, ...validSuggestions])),
+          }));
+        }
+      }
+
+      toast({
+        title: "Requirements analyzed",
+        description: "We've reviewed your requirements and have some suggestions.",
+      });
+    } catch (error: any) {
+      console.error('Analysis error:', error);
+      toast({
+        title: "Analysis failed",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Get the appropriate purposes and features based on project type
+  const currentPurposes = wizardState.projectType === 'simple_website' ? simpleWebsitePurposes : projectPurposes;
+  const currentFeatures = wizardState.projectType === 'simple_website' ? simpleWebsiteFeatures : features;
+
   const canProceed = (): boolean => {
     switch (currentStep) {
       case 1: return !!wizardState.projectType;
@@ -265,8 +451,8 @@ export default function EstimatePage() {
       
       setEstimation({
         projectType: projectTypes.find(p => p.id === wizardState.projectType)?.name || '',
-        projectPurpose: projectPurposes.find(p => p.id === wizardState.projectPurpose)?.name || '',
-        features: wizardState.selectedFeatures.map(f => features.find(feat => feat.id === f)?.name || f),
+        projectPurpose: currentPurposes.find(p => p.id === wizardState.projectPurpose)?.name || '',
+        features: wizardState.selectedFeatures.map(f => currentFeatures.find(feat => feat.id === f)?.name || f),
         complexityLevel: complexity,
         planningDepth: wizardState.planningDepth,
         milestones,
@@ -372,11 +558,13 @@ export default function EstimatePage() {
             <StepContainer key="step2">
               <StepHeader
                 title="What's the purpose?"
-                subtitle="Help us understand your goals. You're not expected to know everything yet."
+                subtitle={wizardState.projectType === 'simple_website' 
+                  ? "Select the type of website that best describes your needs." 
+                  : "Help us understand your goals. You're not expected to know everything yet."}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {projectPurposes.map((purpose) => {
-                  const Icon = purposeIcons[purpose.id];
+                {currentPurposes.map((purpose) => {
+                  const Icon = purposeIcons[purpose.id] || HelpCircle;
                   return (
                     <SelectionCard
                       key={purpose.id}
@@ -403,10 +591,12 @@ export default function EstimatePage() {
               
               <div className="space-y-8">
                 <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-4">Common Features</h4>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-4">
+                    {wizardState.projectType === 'simple_website' ? 'Essential Features' : 'Common Features'}
+                  </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {features.filter(f => f.category === 'common').map((feature) => {
-                      const Icon = featureIcons[feature.id];
+                    {currentFeatures.filter(f => f.category === 'common').map((feature) => {
+                      const Icon = featureIcons[feature.id] || HelpCircle;
                       return (
                         <FeatureCard
                           key={feature.id}
@@ -421,10 +611,12 @@ export default function EstimatePage() {
                 </div>
                 
                 <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-4">Advanced Features</h4>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-4">
+                    {wizardState.projectType === 'simple_website' ? 'Premium Add-ons' : 'Advanced Features'}
+                  </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {features.filter(f => f.category === 'advanced').map((feature) => {
-                      const Icon = featureIcons[feature.id];
+                    {currentFeatures.filter(f => f.category === 'advanced').map((feature) => {
+                      const Icon = featureIcons[feature.id] || HelpCircle;
                       return (
                         <FeatureCard
                           key={feature.id}
@@ -435,6 +627,119 @@ export default function EstimatePage() {
                         />
                       );
                     })}
+                  </div>
+                </div>
+
+                {/* Custom Requirements Section */}
+                <div className="border-t border-border pt-8">
+                  <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                    <Lightbulb className="h-4 w-4" />
+                    Have specific requirements?
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Describe your unique needs or upload a document with your requirements.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <Textarea
+                      placeholder="Describe your specific requirements, features, or tech preferences..."
+                      value={wizardState.manualRequirements}
+                      onChange={(e) => updateState('manualRequirements', e.target.value)}
+                      className="min-h-[100px]"
+                      data-testid="input-manual-requirements"
+                    />
+                    
+                    <div className="flex flex-wrap gap-3 items-center">
+                      <label className="relative">
+                        <input
+                          type="file"
+                          accept=".pdf"
+                          className="sr-only"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleFileUpload(file);
+                          }}
+                          data-testid="input-file-upload"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="cursor-pointer"
+                          disabled={isAnalyzing}
+                          asChild
+                        >
+                          <span>
+                            {isAnalyzing ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : uploadedFile ? (
+                              <FileCheck className="h-4 w-4 mr-2" />
+                            ) : (
+                              <Upload className="h-4 w-4 mr-2" />
+                            )}
+                            {uploadedFile ? uploadedFile.name : 'Upload PDF'}
+                          </span>
+                        </Button>
+                      </label>
+                      
+                      {wizardState.manualRequirements.length >= 20 && !uploadedFile && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={analyzeManualRequirements}
+                          disabled={isAnalyzing}
+                          data-testid="button-analyze-requirements"
+                        >
+                          {isAnalyzing ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Sparkles className="h-4 w-4 mr-2" />
+                          )}
+                          Get Smart Suggestions
+                        </Button>
+                      )}
+                      
+                      {uploadedFile && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setUploadedFile(null);
+                            setAiAnalysis(null);
+                          }}
+                          data-testid="button-remove-file"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    {/* AI Analysis Results */}
+                    {aiAnalysis && (
+                      <Card className="mt-4 border-primary/20 bg-primary/5">
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-3">
+                            <Sparkles className="h-5 w-5 text-primary mt-0.5" />
+                            <div className="flex-1 space-y-3">
+                              <p className="text-sm font-medium">Smart Analysis</p>
+                              <p className="text-sm text-muted-foreground">{aiAnalysis.summary}</p>
+                              
+                              {aiAnalysis.techStackSuggestions.length > 0 && (
+                                <div>
+                                  <p className="text-xs text-muted-foreground mb-2">Recommended technologies:</p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {aiAnalysis.techStackSuggestions.map((tech, i) => (
+                                      <Badge key={i} variant="secondary" className="text-xs">
+                                        {tech}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
                   </div>
                 </div>
               </div>

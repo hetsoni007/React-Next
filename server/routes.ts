@@ -5,9 +5,11 @@ import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema
 import Parser from "rss-parser";
 import { sendContactNotification, sendEstimationEmail } from "./email";
 import multer from "multer";
-import pdfParse from "pdf-parse";
+import * as pdfParseModule from "pdf-parse";
 import path from "path";
 import fs from "fs";
+
+const pdfParse = (pdfParseModule as any).default || pdfParseModule;
 
 const upload = multer({
   dest: "/tmp/uploads/",

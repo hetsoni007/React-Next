@@ -15,6 +15,63 @@ export const projectPurposes = [
   { id: 'not_sure', name: 'Not Sure Yet', description: 'I have an idea but need help defining the scope' },
 ];
 
+// Simple website purposes (for WordPress/Webflow projects)
+export const simpleWebsitePurposes = [
+  { id: 'portfolio', name: 'Portfolio / Personal', description: 'Showcase your work, resume, or personal brand' },
+  { id: 'business_landing', name: 'Business Landing Page', description: 'Single-page site to promote your business or service' },
+  { id: 'company_website', name: 'Company Website', description: 'Multi-page site with about, services, contact pages' },
+  { id: 'blog', name: 'Blog / Content Site', description: 'Regular content publishing with categories and search' },
+  { id: 'ecommerce_basic', name: 'Simple Online Store', description: 'Basic e-commerce with product catalog and checkout' },
+  { id: 'event', name: 'Event / Campaign Site', description: 'Promotional site for events, launches, or campaigns' },
+];
+
+// Simple website features
+export const simpleWebsiteFeatures: EstimationFeature[] = [
+  { id: 'responsive', name: 'Mobile Responsive', category: 'common', helperText: 'Looks great on all devices - phones, tablets, desktops', complexityWeight: 1 },
+  { id: 'contact_form', name: 'Contact Form', category: 'common', helperText: 'Let visitors send you messages directly', complexityWeight: 1 },
+  { id: 'gallery', name: 'Image Gallery', category: 'common', helperText: 'Showcase photos with lightbox viewing', complexityWeight: 1 },
+  { id: 'blog_section', name: 'Blog Section', category: 'common', helperText: 'Regular content updates with categories', complexityWeight: 1 },
+  { id: 'seo_basic', name: 'Basic SEO', category: 'common', helperText: 'Meta tags, sitemap, and Google indexing', complexityWeight: 1 },
+  { id: 'social_links', name: 'Social Media Links', category: 'common', helperText: 'Connect your social profiles', complexityWeight: 1 },
+  { id: 'newsletter', name: 'Newsletter Signup', category: 'common', helperText: 'Collect email addresses from visitors', complexityWeight: 1 },
+  { id: 'testimonials', name: 'Testimonials Section', category: 'common', helperText: 'Display client reviews and feedback', complexityWeight: 1 },
+  { id: 'analytics_basic', name: 'Google Analytics', category: 'common', helperText: 'Track visitor behavior and traffic', complexityWeight: 1 },
+  { id: 'maps', name: 'Google Maps', category: 'common', helperText: 'Show your business location', complexityWeight: 1 },
+  { id: 'scheduling', name: 'Appointment Booking', category: 'advanced', helperText: 'Let clients book appointments online', complexityWeight: 2 },
+  { id: 'ecommerce_lite', name: 'Simple Shop', category: 'advanced', helperText: 'Sell products with Stripe/PayPal checkout', complexityWeight: 2 },
+  { id: 'membership', name: 'Member Area', category: 'advanced', helperText: 'Gated content for logged-in users', complexityWeight: 2 },
+  { id: 'multilingual', name: 'Multiple Languages', category: 'advanced', helperText: 'Site content in more than one language', complexityWeight: 2 },
+];
+
+// Common tech stack options for manual selection
+export const techStackOptions = [
+  { id: 'react', name: 'React', category: 'frontend' },
+  { id: 'nextjs', name: 'Next.js', category: 'frontend' },
+  { id: 'vue', name: 'Vue.js', category: 'frontend' },
+  { id: 'angular', name: 'Angular', category: 'frontend' },
+  { id: 'wordpress', name: 'WordPress', category: 'cms' },
+  { id: 'webflow', name: 'Webflow', category: 'cms' },
+  { id: 'shopify', name: 'Shopify', category: 'cms' },
+  { id: 'nodejs', name: 'Node.js', category: 'backend' },
+  { id: 'python', name: 'Python / Django', category: 'backend' },
+  { id: 'php', name: 'PHP / Laravel', category: 'backend' },
+  { id: 'dotnet', name: '.NET', category: 'backend' },
+  { id: 'react_native', name: 'React Native', category: 'mobile' },
+  { id: 'flutter', name: 'Flutter', category: 'mobile' },
+  { id: 'swift', name: 'Swift (iOS)', category: 'mobile' },
+  { id: 'kotlin', name: 'Kotlin (Android)', category: 'mobile' },
+  { id: 'postgresql', name: 'PostgreSQL', category: 'database' },
+  { id: 'mysql', name: 'MySQL', category: 'database' },
+  { id: 'mongodb', name: 'MongoDB', category: 'database' },
+  { id: 'firebase', name: 'Firebase', category: 'database' },
+  { id: 'aws', name: 'AWS', category: 'hosting' },
+  { id: 'gcp', name: 'Google Cloud', category: 'hosting' },
+  { id: 'vercel', name: 'Vercel', category: 'hosting' },
+  { id: 'stripe', name: 'Stripe', category: 'integration' },
+  { id: 'twilio', name: 'Twilio', category: 'integration' },
+  { id: 'openai', name: 'OpenAI / AI', category: 'integration' },
+];
+
 export const features: EstimationFeature[] = [
   { id: 'auth', name: 'Login / Signup', category: 'common', helperText: 'User authentication with email, social login, or SSO', complexityWeight: 1 },
   { id: 'admin', name: 'Admin Panel', category: 'common', helperText: 'Dashboard to manage users, content, and settings', complexityWeight: 1 },
