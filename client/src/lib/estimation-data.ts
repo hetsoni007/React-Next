@@ -293,13 +293,13 @@ export function generateRoadmap(
   // Generate milestones based on project type
   const milestones: RoadmapMilestone[] = [];
   
-  // Discovery Phase
+  // Discovery Phase - shorter for simple websites
   milestones.push({
     name: 'Discovery & Strategy',
     description: 'Understanding your business goals, target users, and defining the project scope',
     durationWeeks: {
-      min: Math.ceil(0.5 * multiplier),
-      max: Math.ceil(1 * multiplier),
+      min: isSimpleWebsite ? 0.5 : Math.ceil(0.5 * multiplier),
+      max: isSimpleWebsite ? 1 : Math.ceil(1 * multiplier),
     },
     deliverables: [
       'Project scope document',
@@ -315,13 +315,13 @@ export function generateRoadmap(
     ],
   });
   
-  // Design Phase
+  // Design Phase - shorter for simple websites
   milestones.push({
     name: 'UX/UI Design',
     description: 'Creating the visual identity and user experience for your product',
     durationWeeks: {
-      min: Math.ceil(1 * multiplier),
-      max: Math.ceil(2 * multiplier),
+      min: isSimpleWebsite ? 0.5 : Math.ceil(1 * multiplier),
+      max: isSimpleWebsite ? 1 : Math.ceil(2 * multiplier),
     },
     deliverables: [
       'Wireframes and user flows',
@@ -358,20 +358,20 @@ export function generateRoadmap(
     name: 'Development',
     description: 'Building the core functionality and features of your product',
     durationWeeks: {
-      min: Math.ceil(3 * multiplier),
-      max: Math.ceil(6 * multiplier),
+      min: isSimpleWebsite ? 1 : Math.ceil(3 * multiplier),
+      max: isSimpleWebsite ? 2 : Math.ceil(6 * multiplier),
     },
     deliverables: devDeliverables,
     activities: devActivities,
   });
   
-  // Testing Phase
+  // Testing Phase - shorter for simple websites
   milestones.push({
     name: 'Testing & QA',
     description: 'Ensuring quality, performance, and reliability before launch',
     durationWeeks: {
-      min: Math.ceil(1 * multiplier),
-      max: Math.ceil(2 * multiplier),
+      min: isSimpleWebsite ? 0.5 : Math.ceil(1 * multiplier),
+      max: isSimpleWebsite ? 1 : Math.ceil(2 * multiplier),
     },
     deliverables: [
       'Test documentation',
@@ -387,13 +387,13 @@ export function generateRoadmap(
     ],
   });
   
-  // Launch Phase
+  // Launch Phase - shorter for simple websites
   milestones.push({
     name: 'Deployment & Launch',
     description: 'Preparing and executing a successful product launch',
     durationWeeks: {
-      min: 1,
-      max: 1,
+      min: isSimpleWebsite ? 0.5 : 1,
+      max: isSimpleWebsite ? 0.5 : 1,
     },
     deliverables: [
       'Production deployment',
