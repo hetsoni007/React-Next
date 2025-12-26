@@ -16,6 +16,13 @@ export const services: Service[] = [
     solution: "We develop custom web applications and SaaS platforms using React, Next.js, and Node.js. Our solutions include payroll management systems, retail chain software, and enterprise portals designed for businesses in USA, UK, UAE, and beyond.",
   },
   {
+    id: "simple-websites",
+    title: "Simple Websites",
+    icon: "layout",
+    problem: "Not every project requires custom development. Sometimes you need a professional landing page, marketing site, or portfolio that launches quickly and is easy to maintain without technical expertise.",
+    solution: "We design and build polished websites using WordPress and Webflow, ideal for marketing pages, portfolios, and small business sites. Fast turnaround, SEO-optimized, and easy for you to update.",
+  },
+  {
     id: "ui-ux",
     title: "UI/UX & Product Design",
     icon: "palette",

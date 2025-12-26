@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Smartphone, Globe, Palette, ArrowRight, CheckCircle2, ChevronDown, Building2, Users, Zap } from "lucide-react";
+import { Smartphone, Globe, Palette, LayoutTemplate, ArrowRight, CheckCircle2, ChevronDown, Building2, Users, Zap } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView } from "@/hooks/use-analytics";
 import { services } from "@/lib/data";
@@ -14,6 +14,7 @@ const iconMap: Record<string, typeof Smartphone> = {
   smartphone: Smartphone,
   globe: Globe,
   palette: Palette,
+  layout: LayoutTemplate,
 };
 
 const serviceDetails: Record<string, string[]> = {
@@ -32,6 +33,14 @@ const serviceDetails: Record<string, string[]> = {
     "API development with Node.js",
     "Database design and optimization",
     "Cloud deployment and scaling",
+  ],
+  "simple-websites": [
+    "WordPress and Webflow development",
+    "Landing pages and marketing sites",
+    "Portfolio and small business websites",
+    "SEO optimization and fast loading",
+    "Easy content management",
+    "Quick turnaround times",
   ],
   "ui-ux": [
     "User research and persona development",
