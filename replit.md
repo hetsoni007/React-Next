@@ -45,10 +45,18 @@ Preferred communication style: Simple, everyday language.
 - **Build Tool**: Vite with custom plugins for Replit integration
 
 The frontend follows a page-based structure with reusable components:
-- Pages: Home, Services, Portfolio, Portfolio Detail, Journey, Blog, Contact
+- Pages: Home, Services, Portfolio, Portfolio Detail, Journey, Blog, Contact, Estimate (Project Planner)
 - Shared layout components: Header, Footer
-- Section components for homepage: Hero, Services, PortfolioPreview, etc.
+- Section components for homepage: Hero, HelpMeDecide, HowWeThink, Services, UseCaseWalkthroughs, VisualRoadmap, PlannerCTA, PortfolioPreview, FounderNote, JourneyPreview, BlogPreview, ContactCTA
 - UI components from shadcn/ui (Radix primitives)
+
+### CRO Engagement Sections (Dec 2025)
+- **HelpMeDecide**: "Not sure what you actually need?" - Click-based navigation to relevant starting points
+- **HowWeThink**: "How we think about your project" - Consultative approach messaging
+- **UseCaseWalkthroughs**: "How projects like yours are usually built" - 4 common use cases with goals, features, mistakes, tech approach
+- **VisualRoadmap**: "From idea to launch" - 5-step visual timeline reducing anxiety
+- **FounderNote**: "A note from the founder" - Personal trust-building section
+- **Soft CTAs**: Blog posts end with "Thinking about something similar?" guidance, Contact page has "Not ready to talk yet?" reassurance
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express
