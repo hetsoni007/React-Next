@@ -9,12 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  X, 
-  MessageCircle, 
-  Sparkles, 
-  ArrowRight, 
-  Briefcase, 
+import {
+  X,
+  MessageCircle,
+  Sparkles,
+  ArrowRight,
+  Briefcase,
   ChevronRight,
   Lightbulb,
   Rocket,
@@ -25,7 +25,7 @@ import {
   HelpCircle,
   Send,
   Calculator,
-  FileText
+  FileText,
 } from "lucide-react";
 import { portfolioProjects } from "@/lib/data";
 import Analytics from "@/lib/analytics";
@@ -57,7 +57,10 @@ function getPopupState(): PopupState {
 function setPopupState(state: Partial<PopupState>) {
   try {
     const current = getPopupState();
-    sessionStorage.setItem("popup-state", JSON.stringify({ ...current, ...state }));
+    sessionStorage.setItem(
+      "popup-state",
+      JSON.stringify({ ...current, ...state })
+    );
   } catch {}
 }
 
@@ -71,12 +74,12 @@ export function EntrancePopup() {
     if (state.hasSeenEntrance) return;
 
     let timeoutId: ReturnType<typeof setTimeout>;
-    
+
     function cleanup() {
       clearTimeout(timeoutId);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     }
-    
+
     function triggerPopup() {
       if (hasTriggeredRef.current) return;
       hasTriggeredRef.current = true;
@@ -87,14 +90,17 @@ export function EntrancePopup() {
     }
 
     function handleScroll() {
-      const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      const scrollPercentage =
+        (window.scrollY /
+          (document.documentElement.scrollHeight - window.innerHeight)) *
+        100;
       if (scrollPercentage >= 40) {
         triggerPopup();
       }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     timeoutId = setTimeout(triggerPopup, 28000);
 
     return cleanup;
@@ -114,7 +120,7 @@ export function EntrancePopup() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-lg bg-background border-border shadow-2xl"
         data-testid="popup-entrance"
       >
@@ -128,10 +134,11 @@ export function EntrancePopup() {
             Get a Free Project Estimate
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground mt-3 text-base">
-            Use our interactive tool to get a ball-park cost and timeline estimate for your web or mobile app project in minutes.
+            Use our interactive tool to get a ball-park cost and timeline
+            estimate for your web or mobile app project in minutes.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-2 gap-3 mt-6">
           <button
             onClick={handleEstimate}
@@ -140,9 +147,11 @@ export function EntrancePopup() {
           >
             <FileText className="h-5 w-5 text-background mb-2" />
             <p className="font-medium text-sm">Get Free Estimate</p>
-            <p className="text-xs text-background/70 mt-1">Interactive planning tool</p>
+            <p className="text-xs text-background/70 mt-1">
+              Interactive planning tool
+            </p>
           </button>
-          
+
           <button
             onClick={handlePortfolio}
             className="group p-4 rounded-xl border border-border bg-muted/50 text-left transition-all duration-300 hover-elevate"
@@ -150,12 +159,14 @@ export function EntrancePopup() {
           >
             <Eye className="h-5 w-5 text-foreground mb-2" />
             <p className="font-medium text-sm">See Our Work</p>
-            <p className="text-xs text-muted-foreground mt-1">View portfolio projects</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              View portfolio projects
+            </p>
           </button>
         </div>
-        
-        <Button 
-          variant="ghost" 
+
+        <Button
+          variant="ghost"
           onClick={() => setIsOpen(false)}
           className="w-full mt-4 text-muted-foreground"
           data-testid="button-popup-dismiss"
@@ -191,7 +202,7 @@ export function ExitIntentPopup() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-md bg-background border-border shadow-2xl"
         data-testid="popup-exit-intent"
       >
@@ -203,12 +214,13 @@ export function ExitIntentPopup() {
             Before you go...
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground mt-2">
-            Still exploring your options? Let us send you a quick overview of how we can help with your project.
+            Still exploring your options? Let us send you a quick overview of
+            how we can help with your project.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex flex-col gap-3 mt-6">
-          <Button 
+          <Button
             onClick={() => {
               setIsOpen(false);
               Analytics.Popups.exit.ctaClick();
@@ -220,7 +232,7 @@ export function ExitIntentPopup() {
             <Calculator className="h-4 w-4 mr-2" />
             Get Free Project Estimate
           </Button>
-          <Button 
+          <Button
             variant="outline"
             onClick={() => {
               setIsOpen(false);
@@ -233,8 +245,8 @@ export function ExitIntentPopup() {
             <Briefcase className="h-4 w-4 mr-2" />
             View Success Stories
           </Button>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => {
               setIsOpen(false);
               Analytics.Popups.exit.dismiss();
@@ -273,7 +285,7 @@ export function FloatingPortfolioAssistant() {
 
   useEffect(() => {
     if (!isExpanded) return;
-    
+
     const interval = setInterval(() => {
       setCurrentTip((prev) => (prev + 1) % tips.length);
     }, 4000);
@@ -282,13 +294,15 @@ export function FloatingPortfolioAssistant() {
   }, [isExpanded, tips.length]);
 
   // Do NOT show floating assistant on planner, contact, privacy, or terms pages
-  const noAssistantPaths = ['/estimate', '/contact', '/privacy', '/terms'];
-  if (noAssistantPaths.some(path => location.startsWith(path))) return null;
+  const noAssistantPaths = ["/estimate", "/contact", "/privacy", "/terms"];
+  if (noAssistantPaths.some((path) => location.startsWith(path))) return null;
 
   return (
     <div
       className={`fixed bottom-6 right-6 z-40 transition-all duration-500 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+        isVisible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-8 pointer-events-none"
       }`}
       data-testid="floating-assistant"
     >
@@ -303,7 +317,7 @@ export function FloatingPortfolioAssistant() {
                   </div>
                   <span className="font-medium text-sm">How can I help?</span>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     setIsExpanded(false);
                     Analytics.Popups.floatingAssistant.close();
@@ -314,11 +328,13 @@ export function FloatingPortfolioAssistant() {
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              <Link 
+              <Link
                 href={tips[currentTip].link}
                 onClick={() => {
                   setIsExpanded(false);
-                  Analytics.Popups.floatingAssistant.actionClick(tips[currentTip].text);
+                  Analytics.Popups.floatingAssistant.actionClick(
+                    tips[currentTip].text
+                  );
                 }}
                 className="flex items-center gap-2 text-xs text-muted-foreground transition-all duration-500 hover:text-foreground"
               >
@@ -330,7 +346,7 @@ export function FloatingPortfolioAssistant() {
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            
+
             <div className="p-3 space-y-2">
               {portfolioProjects.slice(0, 3).map((project, index) => (
                 <Link
@@ -348,18 +364,22 @@ export function FloatingPortfolioAssistant() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{project.title}</p>
-                    <p className="text-xs text-muted-foreground">{project.category}</p>
+                    <p className="font-medium text-sm truncate">
+                      {project.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {project.category}
+                    </p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                 </Link>
               ))}
             </div>
-            
+
             <div className="p-3 pt-0">
               <Link href="/portfolio">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full text-sm"
                   onClick={() => setIsExpanded(false)}
                   data-testid="button-assistant-view-all"
@@ -400,7 +420,7 @@ export function ScrollEngagementPopup() {
     if (location !== "/") return;
 
     let timeoutId: ReturnType<typeof setTimeout>;
-    
+
     const handleScroll = () => {
       const scrollPercent =
         (window.scrollY /
@@ -422,7 +442,7 @@ export function ScrollEngagementPopup() {
         setIsOpen(true);
         setPopupState({ hasSeenScrollEngagement: true });
       }
-    }, 35000);
+    }, 34000);
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
@@ -452,7 +472,7 @@ export function ScrollEngagementPopup() {
           >
             <X className="h-4 w-4" />
           </button>
-          
+
           <div className="flex items-start gap-3 pr-6">
             <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
               <Calculator className="h-5 w-5 text-foreground" />
@@ -460,13 +480,14 @@ export function ScrollEngagementPopup() {
             <div>
               <p className="font-medium text-sm">Plan your project</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Get a free ball-park estimate for your web or mobile app in just 2 minutes.
+                Get a free ball-park estimate for your web or mobile app in just
+                2 minutes.
               </p>
             </div>
           </div>
-          
+
           <div className="flex gap-2 mt-4">
-            <Button 
+            <Button
               size="sm"
               onClick={() => {
                 setIsOpen(false);
@@ -477,7 +498,7 @@ export function ScrollEngagementPopup() {
             >
               Get Estimate
             </Button>
-            <Button 
+            <Button
               size="sm"
               variant="outline"
               onClick={() => setIsOpen(false)}
@@ -545,7 +566,7 @@ export function PortfolioPopup({ projectTitle }: PortfolioPopupProps) {
           >
             <X className="h-4 w-4" />
           </button>
-          
+
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
               <Rocket className="h-5 w-5 text-foreground" />
@@ -559,20 +580,21 @@ export function PortfolioPopup({ projectTitle }: PortfolioPopupProps) {
               </p>
             </div>
           </div>
-          
+
           <p className="text-sm text-muted-foreground mb-4">
-            We'd love to discuss how we can build a solution tailored to your specific business needs.
+            We'd love to discuss how we can build a solution tailored to your
+            specific business needs.
           </p>
-          
+
           <div className="flex gap-2">
-            <Button 
-              onClick={handleCTA} 
+            <Button
+              onClick={handleCTA}
               className="flex-1"
               data-testid="button-popup-portfolio-cta"
             >
               Start Your Project
             </Button>
-            <Button 
+            <Button
               variant="outline"
               onClick={() => setIsOpen(false)}
               data-testid="button-popup-portfolio-dismiss"
@@ -592,7 +614,10 @@ export function PageContextPopup() {
   const [, navigate] = useLocation();
   const hasShownRef = useRef<Record<string, boolean>>({});
 
-  const pageMessages: Record<string, { title: string; message: string; cta: string; link: string }> = {
+  const pageMessages: Record<
+    string,
+    { title: string; message: string; cta: string; link: string }
+  > = {
     "/services": {
       title: "Need a custom solution?",
       message: "Our services can be tailored to your specific requirements.",
@@ -607,7 +632,8 @@ export function PageContextPopup() {
     },
     "/blog": {
       title: "Found something useful?",
-      message: "We write about software development, product strategy, and more.",
+      message:
+        "We write about software development, product strategy, and more.",
       cta: "Let's Connect",
       link: "/contact",
     },
@@ -620,7 +646,7 @@ export function PageContextPopup() {
     const timer = setTimeout(() => {
       hasShownRef.current[location] = true;
       setIsOpen(true);
-    }, 15000);
+    }, 14000);
 
     return () => clearTimeout(timer);
   }, [location]);
@@ -647,11 +673,13 @@ export function PageContextPopup() {
           >
             <X className="h-4 w-4" />
           </button>
-          
+
           <h4 className="font-medium text-sm pr-6">{currentMessage.title}</h4>
-          <p className="text-xs text-muted-foreground mt-1">{currentMessage.message}</p>
-          
-          <Button 
+          <p className="text-xs text-muted-foreground mt-1">
+            {currentMessage.message}
+          </p>
+
+          <Button
             size="sm"
             className="w-full mt-3"
             onClick={() => {
@@ -671,13 +699,13 @@ export function PageContextPopup() {
 
 export function GlobalPopups() {
   const [location] = useLocation();
-  
+
   // Do NOT show popups on planner, contact, privacy, or terms pages
-  const noPopupPaths = ['/estimate', '/contact', '/privacy', '/terms'];
-  if (noPopupPaths.some(path => location.startsWith(path))) {
+  const noPopupPaths = ["/estimate", "/contact", "/privacy", "/terms"];
+  if (noPopupPaths.some((path) => location.startsWith(path))) {
     return null;
   }
-  
+
   return (
     <>
       <ScrollEngagementPopup />

@@ -1,7 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertNewsletterSchema, insertAnalyticsEventSchema, insertProjectEstimateSchema, type BlogArticle } from "@shared/schema";
+import {
+  insertContactSchema,
+  insertNewsletterSchema,
+  insertAnalyticsEventSchema,
+  insertProjectEstimateSchema,
+  type BlogArticle,
+} from "@shared/schema";
 import Parser from "rss-parser";
 import { sendContactNotification, sendEstimationEmail } from "./email";
 import multer from "multer";
@@ -25,7 +31,7 @@ const upload = multer({
 
 const parser = new Parser({
   customFields: {
-    item: [['content:encoded', 'contentEncoded']],
+    item: [["content:encoded", "contentEncoded"]],
   },
 });
 
@@ -39,36 +45,37 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
   // POST /api/contact - Handle contact form submissions
   app.post("/api/contact", async (req, res) => {
     try {
       const result = insertContactSchema.safeParse(req.body);
-      
+
       if (!result.success) {
-        return res.status(400).json({ 
-          message: "Validation failed", 
-          errors: result.error.flatten().fieldErrors 
+        return res.status(400).json({
+          message: "Validation failed",
+          errors: result.error.flatten().fieldErrors,
         });
       }
 
       const contact = await storage.createContact(result.data);
-      
+
       // Send email notification
       sendContactNotification({
         name: result.data.name,
         email: result.data.email,
         projectType: result.data.projectType,
-        message: result.data.message
-      }).catch(err => console.error('Email notification failed:', err));
-      
-      return res.status(201).json({ 
+        message: result.data.message,
+      }).catch((err) => console.error("Email notification failed:", err));
+
+      return res.status(201).json({
         message: "Thank you for reaching out! I'll get back to you soon.",
-        contact 
+        contact,
       });
     } catch (error) {
       console.error("Contact form error:", error);
-      return res.status(500).json({ message: "Something went wrong. Please try again." });
+      return res
+        .status(500)
+        .json({ message: "Something went wrong. Please try again." });
     }
   });
 
@@ -76,18 +83,22 @@ export async function registerRoutes(
   app.get("/api/blog", async (_req, res) => {
     try {
       const now = Date.now();
-      
+
       // Return cached data if still valid
-      if (cachedBlogArticles.length > 0 && (now - lastFetchTime) < CACHE_DURATION) {
+      if (
+        cachedBlogArticles.length > 0 &&
+        now - lastFetchTime < CACHE_DURATION
+      ) {
         return res.json(cachedBlogArticles);
       }
 
       const feed = await parser.parseURL(MEDIUM_RSS_URL);
-      
+
       const articles: BlogArticle[] = feed.items.map((item) => {
         // Extract thumbnail from content
         let thumbnail: string | undefined;
-        const contentEncoded = (item as any).contentEncoded || item.content || "";
+        const contentEncoded =
+          (item as any).contentEncoded || item.content || "";
         const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/);
         if (imgMatch) {
           thumbnail = imgMatch[1];
@@ -97,7 +108,8 @@ export async function registerRoutes(
         let description = item.contentSnippet || item.content || "";
         description = description.replace(/<[^>]*>/g, "").substring(0, 200);
         if (description.length >= 200) {
-          description = description.substring(0, description.lastIndexOf(" ")) + "...";
+          description =
+            description.substring(0, description.lastIndexOf(" ")) + "...";
         }
 
         // Helper function to decode HTML entities
@@ -124,8 +136,12 @@ export async function registerRoutes(
             .replace(/&ldquo;/g, '"')
             .replace(/&rdquo;/g, '"')
             .replace(/&nbsp;/g, " ")
-            .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
-            .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)));
+            .replace(/&#(\d+);/g, (_, code) =>
+              String.fromCharCode(parseInt(code, 10))
+            )
+            .replace(/&#x([0-9a-fA-F]+);/g, (_, code) =>
+              String.fromCharCode(parseInt(code, 16))
+            );
         };
 
         // Get full content text (stripped of HTML for display)
@@ -177,30 +193,34 @@ export async function registerRoutes(
   app.post("/api/newsletter", async (req, res) => {
     try {
       const result = insertNewsletterSchema.safeParse(req.body);
-      
+
       if (!result.success) {
-        return res.status(400).json({ 
-          message: "Validation failed", 
-          errors: result.error.flatten().fieldErrors 
+        return res.status(400).json({
+          message: "Validation failed",
+          errors: result.error.flatten().fieldErrors,
         });
       }
 
       // Check if email already exists
       const existing = await storage.getNewsletterByEmail(result.data.email);
       if (existing) {
-        return res.status(200).json({ 
-          message: "You're already subscribed! Thank you for your continued interest." 
+        return res.status(200).json({
+          message:
+            "You're already subscribed! Thank you for your continued interest.",
         });
       }
 
       const newsletter = await storage.createNewsletter(result.data);
-      return res.status(201).json({ 
-        message: "Welcome aboard! You'll receive updates on new projects and insights.",
-        newsletter 
+      return res.status(201).json({
+        message:
+          "Welcome aboard! You'll receive updates on new projects and insights.",
+        newsletter,
       });
     } catch (error) {
       console.error("Newsletter subscription error:", error);
-      return res.status(500).json({ message: "Something went wrong. Please try again." });
+      return res
+        .status(500)
+        .json({ message: "Something went wrong. Please try again." });
     }
   });
 
@@ -208,7 +228,7 @@ export async function registerRoutes(
   app.post("/api/analytics", async (req, res) => {
     try {
       const result = insertAnalyticsEventSchema.safeParse(req.body);
-      
+
       if (!result.success) {
         return res.status(400).json({ message: "Invalid event data" });
       }
@@ -237,36 +257,47 @@ export async function registerRoutes(
     try {
       // Validate payload size limits first
       const bodySize = JSON.stringify(req.body).length;
-      if (bodySize > 50000) { // 50KB max payload
-        return res.status(400).json({ message: "Request too large. Please simplify your submission." });
+      if (bodySize > 40000) {
+        // 50KB max payload
+        return res
+          .status(400)
+          .json({
+            message: "Request too large. Please simplify your submission.",
+          });
       }
 
       const result = insertProjectEstimateSchema.safeParse(req.body);
-      
+
       if (!result.success) {
         console.error("Estimation validation failed:", result.error.flatten());
-        return res.status(400).json({ 
-          message: "Please fill in all required fields correctly.", 
-          errors: result.error.flatten().fieldErrors 
+        return res.status(400).json({
+          message: "Please fill in all required fields correctly.",
+          errors: result.error.flatten().fieldErrors,
         });
       }
 
       // Validate email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(result.data.email)) {
-        return res.status(400).json({ message: "Please provide a valid email address." });
+        return res
+          .status(400)
+          .json({ message: "Please provide a valid email address." });
       }
 
       // Validate name length
       if (result.data.name.length < 2 || result.data.name.length > 100) {
-        return res.status(400).json({ message: "Please provide a valid name." });
+        return res
+          .status(400)
+          .json({ message: "Please provide a valid name." });
       }
 
       // Validate features array size
       try {
         const features = JSON.parse(result.data.features);
         if (!Array.isArray(features) || features.length > 50) {
-          return res.status(400).json({ message: "Invalid features selection." });
+          return res
+            .status(400)
+            .json({ message: "Invalid features selection." });
         }
       } catch {
         return res.status(400).json({ message: "Invalid features format." });
@@ -276,32 +307,49 @@ export async function registerRoutes(
       let estimationData;
       try {
         estimationData = JSON.parse(result.data.estimationData);
-        
+
         // Validate required fields for both formats
         if (!estimationData.projectType || !estimationData.projectPurpose) {
-          return res.status(400).json({ message: "Incomplete estimation data." });
+          return res
+            .status(400)
+            .json({ message: "Incomplete estimation data." });
         }
-        
+
         // Support both old milestones format and new phases format
         const hasPhases = Array.isArray(estimationData.phases);
         const hasMilestones = Array.isArray(estimationData.milestones);
-        
+
         if (!hasPhases && !hasMilestones) {
-          return res.status(400).json({ message: "Invalid estimation data - missing phases or milestones." });
+          return res
+            .status(400)
+            .json({
+              message:
+                "Invalid estimation data - missing phases or milestones.",
+            });
         }
-        
+
         if (hasMilestones) {
           // Old format validation
-          if (estimationData.milestones.length === 0 || estimationData.milestones.length > 10) {
-            return res.status(400).json({ message: "Invalid milestones data." });
+          if (
+            estimationData.milestones.length === 0 ||
+            estimationData.milestones.length > 10
+          ) {
+            return res
+              .status(400)
+              .json({ message: "Invalid milestones data." });
           }
-          if (!estimationData.totalDuration || typeof estimationData.totalDuration.min !== 'number') {
+          if (
+            !estimationData.totalDuration ||
+            typeof estimationData.totalDuration.min !== "number"
+          ) {
             return res.status(400).json({ message: "Invalid timeline data." });
           }
         }
       } catch (parseError) {
         console.error("Failed to parse estimation data:", parseError);
-        return res.status(400).json({ message: "Invalid estimation data format." });
+        return res
+          .status(400)
+          .json({ message: "Invalid estimation data format." });
       }
 
       // Persist the estimate to database
@@ -315,85 +363,101 @@ export async function registerRoutes(
           roadmap: estimationData,
         });
       } catch (emailError) {
-        console.error('Requirements email failed:', emailError);
-        return res.status(201).json({ 
-          message: "Your requirements have been saved. You should receive an email shortly.",
+        console.error("Requirements email failed:", emailError);
+        return res.status(201).json({
+          message:
+            "Your requirements have been saved. You should receive an email shortly.",
           estimate,
-          emailSent: false
+          emailSent: false,
         });
       }
-      
-      return res.status(201).json({ 
+
+      return res.status(201).json({
         message: "Your project requirements have been sent to your email!",
         estimate,
-        emailSent: true
+        emailSent: true,
       });
     } catch (error) {
       console.error("Estimation submission error:", error);
-      return res.status(500).json({ message: "Something went wrong. Please try again." });
+      return res
+        .status(500)
+        .json({ message: "Something went wrong. Please try again." });
     }
   });
 
   // POST /api/estimate/upload-pdf - Handle PDF upload and analysis
-  app.post("/api/estimate/upload-pdf", upload.single("document"), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: "Please upload a PDF file." });
-      }
-
-      const filePath = req.file.path;
-      const fileBuffer = fs.readFileSync(filePath);
-      
-      // Extract text from PDF
-      let extractedText = "";
+  app.post(
+    "/api/estimate/upload-pdf",
+    upload.single("document"),
+    async (req, res) => {
       try {
-        const pdfData = await pdfParse(fileBuffer);
-        extractedText = pdfData.text;
-      } catch (pdfError) {
-        console.error("PDF parsing error:", pdfError);
-        fs.unlinkSync(filePath); // Clean up
-        return res.status(400).json({ message: "Unable to read PDF. Please ensure it contains readable text." });
-      }
+        if (!req.file) {
+          return res.status(400).json({ message: "Please upload a PDF file." });
+        }
 
-      // Clean up uploaded file
-      fs.unlinkSync(filePath);
+        const filePath = req.file.path;
+        const fileBuffer = fs.readFileSync(filePath);
 
-      if (extractedText.length < 50) {
-        return res.status(400).json({ 
-          message: "The PDF appears to have very little text content. Please upload a document with more details." 
+        // Extract text from PDF
+        let extractedText = "";
+        try {
+          const pdfData = await pdfParse(fileBuffer);
+          extractedText = pdfData.text;
+        } catch (pdfError) {
+          console.error("PDF parsing error:", pdfError);
+          fs.unlinkSync(filePath); // Clean up
+          return res
+            .status(400)
+            .json({
+              message:
+                "Unable to read PDF. Please ensure it contains readable text.",
+            });
+        }
+
+        // Clean up uploaded file
+        fs.unlinkSync(filePath);
+
+        if (extractedText.length < 50) {
+          return res.status(400).json({
+            message:
+              "The PDF appears to have very little text content. Please upload a document with more details.",
+          });
+        }
+
+        // Truncate if too long
+        const truncatedText = extractedText.substring(0, 10000);
+
+        // Generate AI analysis using OpenAI
+        const aiAnalysis = await analyzeRequirementsWithAI(truncatedText);
+
+        return res.status(200).json({
+          success: true,
+          filename: req.file.originalname,
+          extractedText: truncatedText,
+          analysis: aiAnalysis,
         });
+      } catch (error) {
+        console.error("PDF upload error:", error);
+        return res
+          .status(500)
+          .json({ message: "Failed to process PDF. Please try again." });
       }
-
-      // Truncate if too long
-      const truncatedText = extractedText.substring(0, 10000);
-
-      // Generate AI analysis using OpenAI
-      const aiAnalysis = await analyzeRequirementsWithAI(truncatedText);
-
-      return res.status(200).json({
-        success: true,
-        filename: req.file.originalname,
-        extractedText: truncatedText,
-        analysis: aiAnalysis,
-      });
-    } catch (error) {
-      console.error("PDF upload error:", error);
-      return res.status(500).json({ message: "Failed to process PDF. Please try again." });
     }
-  });
+  );
 
   // POST /api/estimate/analyze-text - Analyze manual requirements text
   app.post("/api/estimate/analyze-text", async (req, res) => {
     try {
       const { requirements } = req.body;
-      
+
       if (!requirements || requirements.length < 20) {
-        return res.status(400).json({ 
-          message: "Please provide more details about your requirements (at least 20 characters)." 
+        return res.status(400).json({
+          message:
+            "Please provide more details about your requirements (at least 20 characters).",
         });
       }
 
-      const truncatedText = requirements.substring(0, 5000);
+      const truncatedText = requirements.substring(0, 4000);
       const aiAnalysis = await analyzeRequirementsWithAI(truncatedText);
 
       return res.status(200).json({
@@ -402,7 +466,9 @@ export async function registerRoutes(
       });
     } catch (error) {
       console.error("Requirements analysis error:", error);
-      return res.status(500).json({ message: "Failed to analyze requirements. Please try again." });
+      return res
+        .status(500)
+        .json({ message: "Failed to analyze requirements. Please try again." });
     }
   });
 
@@ -413,22 +479,42 @@ export async function registerRoutes(
 async function analyzeRequirementsWithAI(text: string): Promise<{
   summary: string;
   suggestedFeatures: string[];
-  questions: { id: string; question: string; type: 'text' | 'choice'; options?: string[] }[];
-  estimatedComplexity: 'simple' | 'moderate' | 'complex';
+  questions: {
+    id: string;
+    question: string;
+    type: "text" | "choice";
+    options?: string[];
+  }[];
+  estimatedComplexity: "simple" | "moderate" | "complex";
   techStackSuggestions: string[];
 }> {
   // Check for OpenAI API key
-  const apiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
-  
+  const apiKey =
+    process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+
   if (!apiKey) {
     // Return fallback analysis without AI
     return {
-      summary: "We've received your requirements and will review them in detail.",
+      summary:
+        "We've received your requirements and will review them in detail.",
       suggestedFeatures: ["auth", "admin", "notifications"],
       questions: [
-        { id: "q1", question: "What is your target launch date?", type: "text" },
-        { id: "q2", question: "Who is your primary user audience?", type: "text" },
-        { id: "q3", question: "Do you have existing branding or design assets?", type: "choice", options: ["Yes", "No", "Partially"] },
+        {
+          id: "q1",
+          question: "What is your target launch date?",
+          type: "text",
+        },
+        {
+          id: "q2",
+          question: "Who is your primary user audience?",
+          type: "text",
+        },
+        {
+          id: "q3",
+          question: "Do you have existing branding or design assets?",
+          type: "choice",
+          options: ["Yes", "No", "Partially"],
+        },
       ],
       estimatedComplexity: "moderate",
       techStackSuggestions: ["React / Next.js", "Node.js", "PostgreSQL"],
@@ -440,7 +526,7 @@ async function analyzeRequirementsWithAI(text: string): Promise<{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
@@ -454,12 +540,12 @@ async function analyzeRequirementsWithAI(text: string): Promise<{
             - estimatedComplexity: "simple", "moderate", or "complex"
             - techStackSuggestions: Array of 3-5 recommended technologies
             
-            Return only valid JSON, no markdown.`
+            Return only valid JSON, no markdown.`,
           },
           {
             role: "user",
-            content: text
-          }
+            content: text,
+          },
         ],
         temperature: 0.3,
         max_tokens: 1000,
@@ -472,7 +558,7 @@ async function analyzeRequirementsWithAI(text: string): Promise<{
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
-    
+
     if (!content) {
       throw new Error("No content in response");
     }
@@ -480,20 +566,33 @@ async function analyzeRequirementsWithAI(text: string): Promise<{
     const parsed = JSON.parse(content);
     return {
       summary: parsed.summary || "We've received your requirements.",
-      suggestedFeatures: Array.isArray(parsed.suggestedFeatures) ? parsed.suggestedFeatures : [],
+      suggestedFeatures: Array.isArray(parsed.suggestedFeatures)
+        ? parsed.suggestedFeatures
+        : [],
       questions: Array.isArray(parsed.questions) ? parsed.questions : [],
       estimatedComplexity: parsed.estimatedComplexity || "moderate",
-      techStackSuggestions: Array.isArray(parsed.techStackSuggestions) ? parsed.techStackSuggestions : [],
+      techStackSuggestions: Array.isArray(parsed.techStackSuggestions)
+        ? parsed.techStackSuggestions
+        : [],
     };
   } catch (error) {
     console.error("AI analysis error:", error);
     // Fallback response
     return {
-      summary: "We've received your requirements and will review them in detail.",
+      summary:
+        "We've received your requirements and will review them in detail.",
       suggestedFeatures: ["auth", "admin"],
       questions: [
-        { id: "q1", question: "What is your target launch date?", type: "text" },
-        { id: "q2", question: "Who is your primary user audience?", type: "text" },
+        {
+          id: "q1",
+          question: "What is your target launch date?",
+          type: "text",
+        },
+        {
+          id: "q2",
+          question: "Who is your primary user audience?",
+          type: "text",
+        },
       ],
       estimatedComplexity: "moderate",
       techStackSuggestions: ["React / Next.js", "Node.js", "PostgreSQL"],

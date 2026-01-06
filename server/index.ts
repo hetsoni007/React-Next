@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-import { testDatabaseConnection } from "./db";
+// import { testDatabaseConnection } from "./db";
 import path from "path";
 
 const app = express();
@@ -19,13 +19,16 @@ app.use(
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
-  }),
+  })
 );
 
 app.use(express.urlencoded({ extended: false }));
 
 // Serve attached_assets folder for portfolio PDFs and images
-app.use('/attached_assets', express.static(path.join(process.cwd(), 'attached_assets')));
+app.use(
+  "/attached_assets",
+  express.static(path.join(process.cwd(), "attached_assets"))
+);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -67,11 +70,13 @@ app.use((req, res, next) => {
 (async () => {
   try {
     // Test database connection on startup
-    log('Testing database connection...');
-    const dbConnected = await testDatabaseConnection();
-    if (!dbConnected) {
-      log('Warning: Database connection test failed, but continuing startup...');
-    }
+    log("Testing database connection...");
+    // const dbConnected = await testDatabaseConnection();
+    // if (!dbConnected) {
+    //   log(
+    //     "Warning: Database connection test failed, but continuing startup..."
+    //   );
+    // }
 
     await registerRoutes(httpServer, app);
 
@@ -80,7 +85,7 @@ app.use((req, res, next) => {
       const message = err.message || "Internal Server Error";
 
       res.status(status).json({ message });
-      console.error('Express error:', err);
+      console.error("Express error:", err);
     });
 
     // importantly only setup vite in development and after
@@ -94,10 +99,10 @@ app.use((req, res, next) => {
     }
 
     // ALWAYS serve the app on the port specified in the environment variable PORT
-    // Other ports are firewalled. Default to 5000 if not specified.
+    // Other ports are firewalled. Default to 4000 if not specified.
     // this serves both the API and the client.
     // It is the only port that is not firewalled.
-    const port = parseInt(process.env.PORT || "5000", 10);
+    const port = parseInt(process.env.PORT || "4000", 10);
     httpServer.listen(
       {
         port,
@@ -106,20 +111,20 @@ app.use((req, res, next) => {
       },
       () => {
         log(`serving on port ${port}`);
-      },
+      }
     );
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 })();
 
 // Handle uncaught errors
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
