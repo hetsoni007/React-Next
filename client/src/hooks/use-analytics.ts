@@ -3,10 +3,15 @@ import { apiRequest } from "@/lib/queryClient";
 
 function getSessionId(): string {
   let sessionId = sessionStorage.getItem("analytics_session_id");
+
   if (!sessionId) {
-    sessionId = crypto.randomUUID();
+    sessionId =
+      crypto.randomUUID?.() ??
+      `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
     sessionStorage.setItem("analytics_session_id", sessionId);
   }
+
   return sessionId;
 }
 
@@ -19,7 +24,7 @@ export function usePageView(page: string) {
     hasTrackedView.current = true;
 
     const sessionId = getSessionId();
-    
+
     apiRequest("POST", "/api/analytics", {
       eventType: "page_view",
       page,
@@ -43,16 +48,19 @@ export function usePageView(page: string) {
 }
 
 export function useTrackEvent() {
-  const trackEvent = useCallback((eventType: string, page: string, metadata?: Record<string, unknown>) => {
-    const sessionId = getSessionId();
-    
-    apiRequest("POST", "/api/analytics", {
-      eventType,
-      page,
-      sessionId,
-      metadata: metadata ? JSON.stringify(metadata) : undefined,
-    }).catch(console.error);
-  }, []);
+  const trackEvent = useCallback(
+    (eventType: string, page: string, metadata?: Record<string, unknown>) => {
+      const sessionId = getSessionId();
+
+      apiRequest("POST", "/api/analytics", {
+        eventType,
+        page,
+        sessionId,
+        metadata: metadata ? JSON.stringify(metadata) : undefined,
+      }).catch(console.error);
+    },
+    []
+  );
 
   return { trackEvent };
 }
