@@ -57,6 +57,15 @@ export const insertNewsletterSchema = createInsertSchema(newsletterSubscriptions
 export type InsertNewsletter = z.infer<typeof insertNewsletterSchema>;
 export type Newsletter = typeof newsletterSubscriptions.$inferSelect;
 
+/** Tracks newest Medium article link seen by the blog RSS poller (for “new post” digest emails). */
+export const blogDigestCursor = pgTable("blog_digest_cursor", {
+  id: varchar("id").primaryKey().default("singleton"),
+  lastTopArticleLink: text("last_top_article_link"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type BlogDigestCursor = typeof blogDigestCursor.$inferSelect;
+
 // Analytics events for tracking page views and engagement
 export const analyticsEvents = pgTable("analytics_events", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

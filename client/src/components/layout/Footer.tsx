@@ -60,12 +60,10 @@ export function Footer() {
                     <span className="font-medium">You're subscribed!</span>
                   </div>
                   <div className="text-sm text-muted-foreground space-y-1">
-                    <p>Here's what to expect in your welcome sequence:</p>
-                    <ul className="list-disc list-inside pl-1 space-y-0.5">
-                      <li>Day 1: Welcome & introduction to my services</li>
-                      <li>Day 3: Featured portfolio case studies</li>
-                      <li>Day 7: Exclusive insights on app development</li>
-                    </ul>
+                    <p>
+                      When a new blog post goes live on Medium, we will email you a short
+                      summary with a link so you can read it.
+                    </p>
                   </div>
                 </div>
               ) : (

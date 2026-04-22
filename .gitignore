@@ -1,4 +1,6 @@
 node_modules
+# Local newsletter subscriber list (emails); keep out of git if you prefer
+data/newsletter-subscribers.json
 dist
 .DS_Store
 server/public

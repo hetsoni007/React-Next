@@ -10,6 +10,8 @@ import {
 } from "@shared/schema";
 import Parser from "rss-parser";
 import { sendContactNotification, sendEstimationEmail } from "./email";
+import { notifyBlogSubscribersIfNeeded } from "./blogDigestNotifications";
+import { addNewsletterSubscriber } from "./newsletterLocalStore";
 import multer from "multer";
 import * as pdfParseModule from "pdf-parse";
 import path from "path";
@@ -178,6 +180,10 @@ export async function registerRoutes(
       cachedBlogArticles = articles;
       lastFetchTime = now;
 
+      void notifyBlogSubscribersIfNeeded(articles).catch((err) =>
+        console.error("[blog-digest] background job failed:", err),
+      );
+
       return res.json(articles);
     } catch (error) {
       console.error("Blog fetch error:", error);
@@ -201,20 +207,18 @@ export async function registerRoutes(
         });
       }
 
-      // Check if email already exists
-      const existing = await storage.getNewsletterByEmail(result.data.email);
-      if (existing) {
+      const status = await addNewsletterSubscriber(result.data.email);
+      if (status === "exists") {
         return res.status(200).json({
           message:
             "You're already subscribed! Thank you for your continued interest.",
         });
       }
 
-      const newsletter = await storage.createNewsletter(result.data);
       return res.status(201).json({
         message:
           "Welcome aboard! You'll receive updates on new projects and insights.",
-        newsletter,
+        newsletter: { email: result.data.email.trim().toLowerCase() },
       });
     } catch (error) {
       console.error("Newsletter subscription error:", error);

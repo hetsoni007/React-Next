@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { sendEmail } from "@/lib/emailjs";
+import { generateEstimateFormHTML } from "@/lib/emailjs-content";
 import {
   Globe,
   Smartphone,
@@ -147,6 +148,7 @@ const TOTAL_STEPS = 7;
 
 export default function EstimatePage() {
   usePageView("/estimate");
+  const [, setLocation] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [requirementsSummary, setRequirementsSummary] =
@@ -247,7 +249,31 @@ export default function EstimatePage() {
 
   const submitMutation = useMutation({
     mutationFn: async (data: EstimateSubmission) => {
-      return apiRequest("POST", "/api/estimate", data);
+      const summary = requirementsSummary;
+      if (!summary) {
+        throw new Error("Requirements summary is missing. Please go back a step and try again.");
+      }
+
+      await sendEmail({
+        subject: "Project Assistance Request",
+        htmlContent: generateEstimateFormHTML({
+          name: data.name,
+          email: data.email,
+          roadmap: {
+            projectType: summary.projectType,
+            projectPurpose: summary.projectPurpose,
+            features: summary.features,
+            complexityLevel: summary.complexityLevel,
+            preferredTimeline: data.preferredTimeline,
+            clientDeadline: summary.clientDeadline,
+            phases: summary.phases,
+            techStackRecommendations: summary.techStackRecommendations,
+            manualRequirements: wizardState.manualRequirements,
+            preferredTechStack: wizardState.preferredTechStack,
+          },
+        }),
+        replyToEmail: data.email,
+      });
     },
     onSuccess: () => {
       toast({
@@ -256,6 +282,7 @@ export default function EstimatePage() {
           "Our team will carefully review your requirements and get back to you within 24 hours.",
       });
       trackEvent("Estimation", "Completed", wizardState.projectType);
+      window.setTimeout(() => setLocation("/"), 1500);
     },
     onError: (error: Error) => {
       console.error("Estimation submission error:", error);

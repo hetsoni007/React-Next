@@ -3,20 +3,20 @@ import {
   type InsertUser,
   type Contact,
   type InsertContact,
-  type Newsletter,
-  type InsertNewsletter,
   type AnalyticsEvent,
   type InsertAnalyticsEvent,
   type ProjectEstimate,
   type InsertProjectEstimate,
   users,
   contactSubmissions,
-  newsletterSubscriptions,
+  blogDigestCursor,
   analyticsEvents,
   projectEstimates,
 } from "@shared/schema";
+import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, desc, sql, gte } from "drizzle-orm";
+import { getNewsletterSubscriberCount } from "./newsletterLocalStore";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -24,8 +24,8 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   createContact(contact: InsertContact): Promise<Contact>;
   getContacts(): Promise<Contact[]>;
-  createNewsletter(newsletter: InsertNewsletter): Promise<Newsletter>;
-  getNewsletterByEmail(email: string): Promise<Newsletter | undefined>;
+  getBlogDigestCursor(): Promise<string | null>;
+  setBlogDigestCursor(link: string): Promise<void>;
   createAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent>;
   getAnalyticsSummary(): Promise<AnalyticsSummary>;
   createProjectEstimate(
@@ -78,27 +78,44 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(contactSubmissions.createdAt));
   }
 
-  async createNewsletter(
-    insertNewsletter: InsertNewsletter
-  ): Promise<Newsletter> {
-    const [newsletter] = await db
-      .insert(newsletterSubscriptions)
-      .values(insertNewsletter)
-      .returning();
-    return newsletter;
+  async getBlogDigestCursor(): Promise<string | null> {
+    if (!db) return null;
+    const [row] = await db
+      .select()
+      .from(blogDigestCursor)
+      .where(eq(blogDigestCursor.id, "singleton"));
+    return row?.lastTopArticleLink ?? null;
   }
 
-  async getNewsletterByEmail(email: string): Promise<Newsletter | undefined> {
-    const [newsletter] = await db
-      .select()
-      .from(newsletterSubscriptions)
-      .where(eq(newsletterSubscriptions.email, email));
-    return newsletter || undefined;
+  async setBlogDigestCursor(link: string): Promise<void> {
+    if (!db) return;
+    await db
+      .insert(blogDigestCursor)
+      .values({ id: "singleton", lastTopArticleLink: link })
+      .onConflictDoUpdate({
+        target: blogDigestCursor.id,
+        set: { lastTopArticleLink: link, updatedAt: new Date() },
+      });
   }
 
   async createAnalyticsEvent(
     insertEvent: InsertAnalyticsEvent
   ): Promise<AnalyticsEvent> {
+    if (!db) {
+      console.warn(
+        "[storage] createAnalyticsEvent skipped: DATABASE_URL is not set",
+      );
+      return {
+        id: randomUUID(),
+        eventType: insertEvent.eventType,
+        page: insertEvent.page,
+        duration: insertEvent.duration ?? null,
+        metadata: insertEvent.metadata ?? null,
+        sessionId: insertEvent.sessionId ?? null,
+        createdAt: new Date(),
+      };
+    }
+
     const [event] = await db
       .insert(analyticsEvents)
       .values(insertEvent)
@@ -107,6 +124,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAnalyticsSummary(): Promise<AnalyticsSummary> {
+    const newsletterSubscriptions = await getNewsletterSubscriberCount();
+
+    if (!db) {
+      return {
+        totalPageViews: 0,
+        uniqueSessions: 0,
+        avgEngagementTime: 0,
+        topPages: [],
+        contactSubmissions: 0,
+        newsletterSubscriptions,
+        recentEvents: [],
+      };
+    }
+
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     const [pageViewsResult] = await db
@@ -142,10 +173,6 @@ export class DatabaseStorage implements IStorage {
       .select({ count: sql<number>`count(*)` })
       .from(contactSubmissions);
 
-    const [newsletterCount] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(newsletterSubscriptions);
-
     const recentEvents = await db
       .select()
       .from(analyticsEvents)
@@ -161,7 +188,7 @@ export class DatabaseStorage implements IStorage {
         views: Number(p.views),
       })),
       contactSubmissions: Number(contactsCount?.count || 0),
-      newsletterSubscriptions: Number(newsletterCount?.count || 0),
+      newsletterSubscriptions,
       recentEvents,
     };
   }
