@@ -12,6 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import type { BlogArticle } from "@shared/schema";
 import { usePageView } from "@/hooks/use-analytics";
 import { useToast } from "@/hooks/use-toast";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
 
 export default function BlogDetail() {
   const [, params] = useRoute("/blog/:slug");
@@ -75,6 +77,7 @@ export default function BlogDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
+        <SeoHead title="Blog Article" description="Loading article..." canonical={`/blog/${slug}`} />
         <Header />
         <main className="max-w-4xl mx-auto px-6 lg:px-8 py-20">
           <Skeleton className="h-8 w-32 mb-8" />
@@ -90,6 +93,7 @@ export default function BlogDetail() {
   if (!article) {
     return (
       <div className="min-h-screen bg-background">
+        <SeoHead title="Article Not Found" description="This article does not exist." canonical="/blog" />
         <Header />
         <main className="max-w-4xl mx-auto px-6 lg:px-8 py-20 text-center">
           <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
@@ -107,6 +111,27 @@ export default function BlogDetail() {
       </div>
     );
   }
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": article.title,
+    "description": article.excerpt,
+    "url": `https://soniconsultancyservices.com/blog/${slug}`,
+    "datePublished": article.pubDate,
+    "author": { "@type": "Organization", "name": "Soni Consultancy Services" },
+    "publisher": { "@type": "Organization", "name": "Soni Consultancy Services" }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://soniconsultancyservices.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": article.title, "item": `https://soniconsultancyservices.com/blog/${slug}` }
+    ]
+  };
 
   const formattedDate = new Date(article.pubDate).toLocaleDateString("en-US", {
     weekday: "long",
@@ -130,12 +155,21 @@ export default function BlogDetail() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-blog-detail">
-      <div 
+      <SeoHead
+        title={article.title}
+        description={article.excerpt}
+        canonical={`/blog/${slug}`}
+        ogType="article"
+        publishedTime={article.pubDate}
+        tags={article.categories}
+      />
+      <JsonLd data={[articleSchema, breadcrumbSchema]} />
+      <div
         className="fixed top-0 left-0 h-1 bg-foreground z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
         data-testid="scroll-progress"
       />
-      
+
       <Header />
       
       <aside className="fixed right-4 lg:right-8 top-1/2 -translate-y-1/2 z-40 hidden md:block">

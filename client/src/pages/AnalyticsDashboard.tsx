@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Users, Clock, Mail, MessageSquare, TrendingUp } from "lucide-react";
+import { SeoHead } from "@/components/SeoHead";
 
 interface AnalyticsSummaryData {
   totalPageViews: number;
@@ -34,7 +35,7 @@ export default function AnalyticsDashboard() {
   };
 
   const formatEventType = (type: string) => {
-    return type.split("_").map(word => 
+    return type.split("_").map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(" ");
   };
@@ -47,14 +48,21 @@ export default function AnalyticsDashboard() {
       "/journey": "Journey",
       "/blog": "Blog",
       "/contact": "Contact",
+      "/estimate": "Estimate",
     };
     return labels[page] || page;
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SeoHead
+        title="Admin — Analytics Dashboard"
+        description="Admin analytics dashboard for Soni Consultancy Services."
+        canonical="/admin/analytics"
+        noIndex
+      />
       <Header />
-      
+
       <main className="flex-1">
         <section className="py-16 md:py-24">
           <div className="container max-w-6xl mx-auto px-4">
@@ -173,7 +181,7 @@ export default function AnalyticsDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold" data-testid="text-conversion-rate">
-                        {data.uniqueSessions > 0 
+                        {data.uniqueSessions > 0
                           ? ((data.contactSubmissions / data.uniqueSessions) * 100).toFixed(1)
                           : "0"}%
                       </div>
@@ -195,8 +203,8 @@ export default function AnalyticsDashboard() {
                       ) : (
                         <div className="space-y-4">
                           {data.topPages.map((page, index) => (
-                            <div 
-                              key={page.page} 
+                            <div
+                              key={page.page}
                               className="flex items-center justify-between"
                               data-testid={`row-top-page-${index}`}
                             >
@@ -224,8 +232,8 @@ export default function AnalyticsDashboard() {
                       ) : (
                         <div className="space-y-3 max-h-80 overflow-y-auto">
                           {data.recentEvents.slice(0, 10).map((event, index) => (
-                            <div 
-                              key={event.id} 
+                            <div
+                              key={event.id}
                               className="flex items-center justify-between text-sm"
                               data-testid={`row-event-${index}`}
                             >

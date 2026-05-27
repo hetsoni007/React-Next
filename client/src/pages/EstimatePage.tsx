@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { sendEmail } from "@/lib/emailjs";
 import { generateEstimateFormHTML } from "@/lib/emailjs-content";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
 import {
   Globe,
   Smartphone,
@@ -585,6 +587,12 @@ export default function EstimatePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SeoHead
+        title="Get a Project Estimate"
+        description="Instantly estimate the cost and timeline for your custom software project. SaaS, mobile app, or website — get a detailed breakdown in minutes."
+        canonical="/estimate"
+      />
+      <JsonLd data={breadcrumbSchema} />
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
@@ -1282,3 +1290,12 @@ function LoadingMessages() {
     <p className="text-lg text-muted-foreground">{messages[messageIndex]}</p>
   );
 }
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+    { "@type": "ListItem", "position": 2, "name": "Project Estimate", "item": "https://soniconsultancyservices.com/estimate" }
+  ]
+};

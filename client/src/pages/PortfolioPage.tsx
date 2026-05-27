@@ -10,12 +10,30 @@ import { usePageView } from "@/hooks/use-analytics";
 import { portfolioProjects } from "@/lib/data";
 import { HireUsBadge } from "@/components/HireUsBadge";
 
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+    { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://soniconsultancyservices.com/portfolio" }
+  ]
+};
+
 export default function PortfolioPage() {
   usePageView("/portfolio");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-portfolio">
+      <SeoHead
+        title="Software Development Portfolio"
+        description="Explore our portfolio of custom SaaS applications, mobile apps, and enterprise software built for clients across USA, UK, UAE, and Australia."
+        canonical="/portfolio"
+      />
+      <JsonLd data={breadcrumbSchema} />
       <Header />
       
       <main className="pt-24 lg:pt-32">

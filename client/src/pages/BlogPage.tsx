@@ -15,6 +15,8 @@ import type { BlogArticle } from "@shared/schema";
 import { socialLinks } from "@/lib/data";
 import { usePageView } from "@/hooks/use-analytics";
 import blogHeroVideo from "@assets/generated_videos/abstract_tech_digital_particles.mp4";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
@@ -94,9 +96,24 @@ export default function BlogPage() {
     return () => observer.disconnect();
   }, []);
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://soniconsultancyservices.com/blog" }
+    ]
+  };
+
   return (
     <div ref={containerRef} className="min-h-screen" data-testid="page-blog">
-      <motion.div 
+      <SeoHead
+        title="Blog — Insights on Custom Software Development"
+        description="Practical articles on SaaS development, mobile app strategy, technology choices, and software project planning."
+        canonical="/blog"
+      />
+      <JsonLd data={breadcrumbSchema} />
+      <motion.div
         className="fixed inset-0 -z-10 transition-colors"
         style={{ backgroundColor: isDark ? darkBackgroundColor : backgroundColor }}
       />

@@ -58,6 +58,62 @@ export async function registerRoutes(
     next();
   });
 
+  // Security headers
+  app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    if (req.path.startsWith("/sitemap.xml")) {
+      res.setHeader("Cache-Control", "public, max-age=86400");
+    }
+    next();
+  });
+
+  // GET /sitemap.xml — dynamic sitemap
+  app.get("/sitemap.xml", (_req, res) => {
+    const BASE = "https://soniconsultancyservices.com";
+    const today = new Date().toISOString().split("T")[0];
+    const staticPages = [
+      { url: "/", priority: "1.0", changefreq: "weekly" },
+      { url: "/services", priority: "0.9", changefreq: "monthly" },
+      { url: "/portfolio", priority: "0.8", changefreq: "monthly" },
+      { url: "/journey", priority: "0.8", changefreq: "monthly" },
+      { url: "/blog", priority: "0.8", changefreq: "weekly" },
+      { url: "/contact", priority: "0.6", changefreq: "monthly" },
+      { url: "/estimate", priority: "0.7", changefreq: "monthly" },
+      { url: "/faq", priority: "0.8", changefreq: "monthly" },
+      { url: "/usa", priority: "0.8", changefreq: "monthly" },
+      { url: "/uk", priority: "0.8", changefreq: "monthly" },
+      { url: "/uae", priority: "0.8", changefreq: "monthly" },
+      { url: "/australia", priority: "0.8", changefreq: "monthly" },
+      ...[
+        "saas-application-development", "mobile-app-development", "enterprise-software-development",
+        "cab-booking-app-development", "chauffeur-app-development", "influencer-marketing-platform",
+        "payroll-management-software", "retail-chain-management-software",
+        "react-developer-for-hire", "flutter-developer-for-hire", "nodejs-developer-for-hire"
+      ].map(s => ({ url: `/services/${s}`, priority: "0.8", changefreq: "monthly" })),
+      ...[
+        "how-to-build-a-saas-mvp", "saas-vs-custom-software", "cab-booking-app-development-cost",
+        "react-native-vs-flutter", "influencer-marketing-platform-features",
+        "hire-remote-developer-guide", "enterprise-software-development-guide", "payroll-software-features"
+      ].map(s => ({ url: `/blog/${s}`, priority: "0.7", changefreq: "weekly" })),
+    ];
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticPages.map(p => `  <url>
+    <loc>${BASE}${p.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join("\n")}
+</urlset>`;
+
+    res.setHeader("Content-Type", "text/xml");
+    res.send(xml);
+  });
+
   // POST /api/contact - Handle contact form submissions
   app.post("/api/contact", async (req, res) => {
     try {

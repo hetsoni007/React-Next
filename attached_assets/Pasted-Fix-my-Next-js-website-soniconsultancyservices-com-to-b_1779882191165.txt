@@ -1,0 +1,796 @@
+Fix my Next.js website (soniconsultancyservices.com) to be fully crawlable 
+by Google and properly connected to Google Search Console. Apply every 
+change below in order.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 1 — CRITICAL: FIX JS RENDERING (DO THIS FIRST)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is the #1 priority. The site is a client-side rendered SPA.
+Googlebot cannot read JavaScript-rendered content reliably.
+Every page must return fully rendered HTML in the initial response.
+
+## 1A. Detect which Next.js version is being used
+Check package.json and tell me:
+  - Next.js version
+  - Whether App Router or Pages Router is being used
+  - Whether any pages currently use getServerSideProps / 
+    getStaticProps / generateStaticParams
+
+Then apply the correct fix:
+
+--- IF USING PAGES ROUTER (next < 13 or /pages directory) ---
+
+For every page file in /pages:
+  1. Convert any client-only data fetching (useEffect + fetch) 
+     to getStaticProps (preferred for content that doesn't 
+     change per-request) or getServerSideProps (for dynamic data).
+
+  2. Template for each static page:
+     export async function getStaticProps() {
+       return {
+         props: {
+           // pass all data the page needs here
+         },
+         revalidate: 3600, // ISR: revalidate every hour
+       };
+     }
+
+  3. For the homepage specifically, ensure the following are 
+     server-rendered as real HTML (not loaded via useEffect):
+     - Hero headline and subheadline
+     - Services list/grid
+     - About section text
+     - Testimonials
+     - CTA text
+
+--- IF USING APP ROUTER (/app directory, Next.js 13+) ---
+
+  1. Remove 'use client' from any component that doesn't 
+     strictly need browser APIs or useState/useEffect.
+     
+  2. Page components (page.tsx / page.jsx) must be 
+     React Server Components (no 'use client' at top).
+     
+  3. Move useState/useEffect logic into small child components 
+     with 'use client' — keep them as leaves of the component tree, 
+     not wrappers around the whole page.
+     
+  4. Add generateMetadata() to every page.tsx:
+     export async function generateMetadata({ params }) {
+       return {
+         title: '...',
+         description: '...',
+         alternates: { canonical: 'https://soniconsultancyservices.com/...' },
+       };
+     }
+
+  5. Add generateStaticParams() to all dynamic routes 
+     ([slug], [service], [country]) so they are statically 
+     generated at build time.
+
+## 1B. Verify rendering works
+After converting pages, add a build test:
+  - Run: next build
+  - Check the output — all key pages should show as ○ (static) 
+    or ● (SSG) or λ (SSR) in the build output, NOT blank
+  - If any page shows a hydration error, fix it before moving on
+
+## 1C. Add next/head (Pages Router) or metadata export 
+       (App Router) to EVERY page
+
+Every single page must export its own unique:
+  - title (≤60 chars)
+  - meta description (≤160 chars)
+  - canonical URL
+  - og:title, og:description, og:image, og:url
+  - twitter:card, twitter:title, twitter:description
+
+Create a reusable SEO component:
+
+  // components/SEO.jsx (Pages Router version)
+  import Head from 'next/head';
+  export default function SEO({ title, description, canonical, ogImage }) {
+    const siteName = 'Soni Consultancy Services';
+    const defaultOG = 'https://soniconsultancyservices.com/og-image.jpg';
+    return (
+      <Head>
+        <title>{title} | {siteName}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={`${title} | ${siteName}`} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage || defaultOG} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={siteName} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@CodeMak_" />
+        <meta name="twitter:title" content={`${title} | ${siteName}`} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage || defaultOG} />
+        <meta name="robots" content="index, follow, max-image-preview:large,
+              max-snippet:-1, max-video-preview:-1" />
+        <meta name="author" content={siteName} />
+        <meta name="geo.region" content="IN-GJ" />
+        <meta name="geo.placename" content="Ahmedabad, Gujarat, India" />
+      </Head>
+    );
+  }
+
+Use <SEO /> at the top of every page component.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 2 — GOOGLE SEARCH CONSOLE SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 2A. Add GSC verification meta tag
+In the site's <head> (via _app.js / layout.tsx / SEO component), 
+add a placeholder for the GSC verification tag:
+
+  <meta 
+    name="google-site-verification" 
+    content={process.env.NEXT_PUBLIC_GSC_VERIFICATION_TOKEN} 
+  />
+
+In .env.local add:
+  NEXT_PUBLIC_GSC_VERIFICATION_TOKEN=PASTE_YOUR_TOKEN_HERE
+
+Instruct the user: 
+  1. Go to https://search.google.com/search-console
+  2. Click Add Property → URL prefix → enter 
+     https://soniconsultancyservices.com
+  3. Choose "HTML tag" verification method
+  4. Copy the content="..." value from the meta tag shown
+  5. Paste it as NEXT_PUBLIC_GSC_VERIFICATION_TOKEN in .env.local
+  6. Deploy → then click Verify in GSC
+
+## 2B. Create dynamic sitemap.xml route
+Create /pages/sitemap.xml.jsx (Pages Router) 
+or /app/sitemap.ts (App Router):
+
+--- PAGES ROUTER VERSION ---
+// pages/sitemap.xml.jsx
+const BASE = 'https://soniconsultancyservices.com';
+const today = new Date().toISOString().split('T')[0];
+
+const staticPages = [
+  { url: '/',              priority: '1.0', changefreq: 'weekly'  },
+  { url: '/about',         priority: '0.8', changefreq: 'monthly' },
+  { url: '/services',      priority: '0.9', changefreq: 'monthly' },
+  { url: '/contact',       priority: '0.6', changefreq: 'monthly' },
+  { url: '/faq',           priority: '0.8', changefreq: 'monthly' },
+  { url: '/blog',          priority: '0.8', changefreq: 'weekly'  },
+  { url: '/usa',           priority: '0.8', changefreq: 'monthly' },
+  { url: '/uk',            priority: '0.8', changefreq: 'monthly' },
+  { url: '/uae',           priority: '0.8', changefreq: 'monthly' },
+  { url: '/australia',     priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/saas-application-development',      priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/mobile-app-development',            priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/enterprise-software-development',   priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/cab-booking-app-development',       priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/chauffeur-app-development',         priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/influencer-marketing-platform',     priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/payroll-management-software',       priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/retail-chain-management-software',  priority: '0.8', changefreq: 'monthly' },
+  { url: '/services/react-developer-for-hire',          priority: '0.7', changefreq: 'monthly' },
+  { url: '/services/flutter-developer-for-hire',        priority: '0.7', changefreq: 'monthly' },
+  { url: '/services/nodejs-developer-for-hire',         priority: '0.7', changefreq: 'monthly' },
+];
+
+// Dynamically import blog slugs from your content source
+// Replace with actual data fetching if using CMS/MDX
+const blogSlugs = [
+  'how-to-build-a-saas-mvp',
+  'saas-vs-custom-software',
+  'cab-booking-app-development-cost',
+  'react-native-vs-flutter',
+  'influencer-marketing-platform-features',
+  'hire-remote-developer-guide',
+  'enterprise-software-development-guide',
+  'payroll-software-features',
+];
+
+function generateSitemap(pages, blogs) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map(p => `  <url>
+    <loc>${BASE}${p.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('\n')}
+${blogs.map(slug => `  <url>
+    <loc>${BASE}/blog/${slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`).join('\n')}
+</urlset>`;
+}
+
+export async function getServerSideProps({ res }) {
+  res.setHeader('Content-Type', 'text/xml');
+  res.setHeader('Cache-Control', 
+    'public, s-maxage=86400, stale-while-revalidate');
+  res.write(generateSitemap(staticPages, blogSlugs));
+  res.end();
+  return { props: {} };
+}
+
+export default function Sitemap() { return null; }
+
+--- APP ROUTER VERSION ---
+// app/sitemap.ts
+import { MetadataRoute } from 'next';
+const BASE = 'https://soniconsultancyservices.com';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const today = new Date();
+  return [
+    { url: BASE,                        lastModified: today, 
+      changeFrequency: 'weekly',        priority: 1.0 },
+    { url: `${BASE}/about`,             lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.8 },
+    { url: `${BASE}/services`,          lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.9 },
+    { url: `${BASE}/contact`,           lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.6 },
+    { url: `${BASE}/faq`,               lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.8 },
+    { url: `${BASE}/blog`,              lastModified: today, 
+      changeFrequency: 'weekly',        priority: 0.8 },
+    { url: `${BASE}/usa`,               lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.8 },
+    { url: `${BASE}/uk`,                lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.8 },
+    { url: `${BASE}/uae`,               lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.8 },
+    { url: `${BASE}/australia`,         lastModified: today, 
+      changeFrequency: 'monthly',       priority: 0.8 },
+    // service pages
+    ...[ 
+      'saas-application-development',
+      'mobile-app-development',
+      'enterprise-software-development',
+      'cab-booking-app-development',
+      'chauffeur-app-development',
+      'influencer-marketing-platform',
+      'payroll-management-software',
+      'retail-chain-management-software',
+      'react-developer-for-hire',
+      'flutter-developer-for-hire',
+      'nodejs-developer-for-hire',
+    ].map(slug => ({
+      url: `${BASE}/services/${slug}`,
+      lastModified: today,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
+    // blog posts
+    ...[
+      'how-to-build-a-saas-mvp',
+      'saas-vs-custom-software',
+      'cab-booking-app-development-cost',
+      'react-native-vs-flutter',
+      'influencer-marketing-platform-features',
+      'hire-remote-developer-guide',
+      'enterprise-software-development-guide',
+      'payroll-software-features',
+    ].map(slug => ({
+      url: `${BASE}/blog/${slug}`,
+      lastModified: today,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
+  ];
+}
+
+## 2C. Create robots.txt
+Create /public/robots.txt:
+
+  User-agent: *
+  Allow: /
+  Disallow: /admin/
+  Disallow: /api/
+  Disallow: /_next/
+  Sitemap: https://soniconsultancyservices.com/sitemap.xml
+
+  User-agent: Googlebot
+  Allow: /
+  Crawl-delay: 1
+
+## 2D. Add www → non-www redirect
+In next.config.js, add:
+
+  /** @type {import('next').NextConfig} */
+  const nextConfig = {
+    async redirects() {
+      return [
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.soniconsultancyservices.com' }],
+          destination: 'https://soniconsultancyservices.com/:path*',
+          permanent: true, // 301 redirect
+        },
+      ];
+    },
+    // Force trailing slash consistency
+    trailingSlash: false,
+  };
+  module.exports = nextConfig;
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 3 — STRUCTURED DATA (SCHEMA.ORG)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 3A. Create a reusable JsonLd component
+// components/JsonLd.jsx
+export default function JsonLd({ data }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
+## 3B. Add to homepage <head>
+Add these four schema blocks to the homepage using <JsonLd />:
+
+BLOCK 1 — Organization:
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Soni Consultancy Services",
+  "url": "https://soniconsultancyservices.com",
+  "logo": "https://soniconsultancyservices.com/logo.png",
+  "description": "Leading custom software development company 
+    offering SaaS, mobile app, and enterprise software solutions.",
+  "founder": {
+    "@type": "Person",
+    "name": "Het Soni",
+    "jobTitle": "CEO & Founder"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Ahmedabad",
+    "addressRegion": "Gujarat",
+    "addressCountry": "IN"
+  },
+  "areaServed": ["US", "GB", "AE", "AU", "IN"],
+  "sameAs": [
+    "https://twitter.com/CodeMak_",
+    "https://linkedin.com/in/hetsoni",
+    "https://github.com/hetsoni",
+    "https://www.dnb.com/business-directory/company-profiles.soni_consultancy_services.d198b68d0111a51720617e4f8cf882b5.html"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "hello@soniconsultancyservices.com",
+    "availableLanguage": "English"
+  }
+}
+
+BLOCK 2 — Person (Het Soni):
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Het Soni",
+  "jobTitle": "CEO & Founder",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Soni Consultancy Services"
+  },
+  "url": "https://soniconsultancyservices.com/about",
+  "sameAs": [
+    "https://twitter.com/CodeMak_",
+    "https://linkedin.com/in/hetsoni",
+    "https://github.com/hetsoni"
+  ]
+}
+
+BLOCK 3 — WebSite (enables Google Sitelinks search box):
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Soni Consultancy Services",
+  "url": "https://soniconsultancyservices.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": 
+        "https://soniconsultancyservices.com/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+
+BLOCK 4 — FAQPage (from the most common questions):
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does custom software development cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Costs vary by scope. A simple MVP starts from 
+          $5,000–$15,000. A full SaaS product typically ranges 
+          from $20,000–$80,000. An enterprise system can exceed 
+          $100,000. We provide a detailed quote after a free 
+          discovery call."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does it take to build a SaaS application?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An MVP typically takes 8–16 weeks. A full-featured 
+          SaaS product takes 4–9 months depending on complexity."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer a free consultation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We offer a free 30-minute consultation call 
+          for all new project inquiries."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What technologies do you use for mobile app development?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We build cross-platform apps with React Native 
+          and Flutter, and native apps with Swift (iOS) and 
+          Kotlin (Android)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you work with startups or only enterprises?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Both. About 60% of our clients are funded or 
+          bootstrapped startups building their first product. 
+          40% are established businesses adding new software 
+          capabilities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will I own the source code?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You receive 100% ownership of all source 
+          code, assets, and IP upon final payment."
+      }
+    }
+  ]
+}
+
+## 3C. Add Service schema to every service page
+Each service page at /services/[slug] must include:
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "[SERVICE NAME]",
+  "provider": {
+    "@type": "Organization",
+    "name": "Soni Consultancy Services",
+    "url": "https://soniconsultancyservices.com"
+  },
+  "description": "[SERVICE DESCRIPTION]",
+  "areaServed": ["US", "GB", "AE", "AU", "IN"],
+  "url": "https://soniconsultancyservices.com/services/[slug]"
+}
+
+## 3D. Add BreadcrumbList schema to all inner pages
+Every page except the homepage must include:
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://soniconsultancyservices.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "[SECTION]",
+      "item": "https://soniconsultancyservices.com/[section]"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "[PAGE TITLE]",
+      "item": "https://soniconsultancyservices.com/[full-path]"
+    }
+  ]
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 4 — GOOGLE ANALYTICS 4 SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 4A. Install GA4 via environment variable
+In .env.local add:
+  NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+Instruct the user to:
+  1. Go to https://analytics.google.com
+  2. Create a new GA4 property for soniconsultancyservices.com
+  3. Copy the Measurement ID (starts with G-)
+  4. Paste it as NEXT_PUBLIC_GA_MEASUREMENT_ID
+
+## 4B. Install the GA4 script
+// components/GoogleAnalytics.jsx
+import Script from 'next/script';
+
+export default function GoogleAnalytics() {
+  const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  if (!GA_ID) return null;
+  return (
+    <>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_ID}', {
+            page_path: window.location.pathname,
+            send_page_view: true
+          });
+        `}
+      </Script>
+    </>
+  );
+}
+
+## 4C. Add to _app.js or layout.tsx
+Import and add <GoogleAnalytics /> inside the <head> or just 
+before </body> in your root layout.
+
+For App Router (layout.tsx):
+  import GoogleAnalytics from '@/components/GoogleAnalytics';
+  export default function RootLayout({ children }) {
+    return (
+      <html lang="en">
+        <body>
+          <GoogleAnalytics />
+          {children}
+        </body>
+      </html>
+    );
+  }
+
+## 4D. Add page view tracking on route changes (Pages Router only)
+// In _app.js
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+export default function App({ Component, pageProps }) {
+  const router = useRouter();
+  
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (window.gtag) {
+        window.gtag('config', 
+          process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID, 
+          { page_path: url }
+        );
+      }
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
+  return <Component {...pageProps} />;
+}
+
+## 4E. Add custom GA4 events for key conversions
+Create a helper:
+
+// lib/analytics.js
+export const trackEvent = (eventName, params = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
+      ...params,
+      page_path: window.location.pathname,
+    });
+  }
+};
+
+// Usage on form submit:
+trackEvent('form_submit', {
+  form_name: 'quick_inquiry',
+  service_interest: selectedService,
+});
+
+// Usage on CTA click:
+trackEvent('cta_click', {
+  cta_text: 'Get Free Consultation',
+  location: 'hero',
+});
+
+// Usage on phone/WhatsApp click:
+trackEvent('contact_click', {
+  method: 'whatsapp',
+});
+
+Import and call trackEvent() in:
+  - All form submit handlers (success state only)
+  - CTA buttons (hero, sticky bar, modal open)
+  - WhatsApp / email / Calendly link clicks
+  - Blog "Read more" clicks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 5 — CORE WEB VITALS FIXES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 5A. Replace all <img> tags with next/image
+Find every <img> tag in the project and replace with:
+  import Image from 'next/image';
+  <Image 
+    src="/path/to/image.jpg"
+    alt="Descriptive alt text"
+    width={800}
+    height={600}
+    loading="lazy"          // lazy for below-fold images
+    priority={false}        // set priority={true} for hero/above-fold only
+  />
+
+For the hero image or logo (above the fold):
+  <Image src="/hero.jpg" alt="..." width={1200} height={600} 
+         priority={true} />
+
+## 5B. Add font optimisation
+In _app.js or layout.tsx, if using Google Fonts, replace 
+<link> tags with next/font:
+
+  import { Inter } from 'next/font/google';
+  const inter = Inter({ 
+    subsets: ['latin'],
+    display: 'swap',
+    preload: true,
+  });
+
+## 5C. Add preconnect hints to <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="//www.google-analytics.com" />
+
+## 5D. Add next.config.js optimisations
+  const nextConfig = {
+    images: {
+      formats: ['image/avif', 'image/webp'],
+      deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+      minimumCacheTTL: 86400,
+    },
+    compress: true,
+    poweredByHeader: false,
+    async headers() {
+      return [
+        {
+          source: '/(.*)',
+          headers: [
+            { key: 'X-Content-Type-Options', value: 'nosniff' },
+            { key: 'X-Frame-Options', value: 'DENY' },
+            { key: 'X-XSS-Protection', value: '1; mode=block' },
+            { 
+              key: 'Cache-Control', 
+              value: 'public, max-age=3600, stale-while-revalidate=86400' 
+            },
+          ],
+        },
+        {
+          source: '/sitemap.xml',
+          headers: [
+            { key: 'Content-Type', value: 'text/xml' },
+            { key: 'Cache-Control', 
+              value: 'public, max-age=86400' },
+          ],
+        },
+      ];
+    },
+    ...nextConfig.redirects, // keep from Part 2D
+  };
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 6 — GSC MANUAL INDEXING HELPER PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 6A. Create /admin/gsc-checklist page
+A simple password-protected checklist page at /admin/gsc-checklist
+that shows the user exactly what to do in GSC after deployment.
+
+Password gate: check for ?key= query param matching 
+process.env.ADMIN_KEY in .env.local.
+
+Page content — show a step-by-step checklist with status toggles:
+
+  STEP 1: Verify site ownership in GSC
+    → Button linking to https://search.google.com/search-console
+    → Instructions: "HTML tag method → copy the token → 
+       paste into NEXT_PUBLIC_GSC_VERIFICATION_TOKEN → 
+       redeploy → click Verify"
+    → [Mark complete ✓]
+
+  STEP 2: Submit sitemap
+    → Direct link: 
+       https://search.google.com/search-console/sitemaps
+    → Enter: soniconsultancyservices.com/sitemap.xml
+    → [Mark complete ✓]
+
+  STEP 3: Request manual indexing for all key pages
+    → List all pages from the sitemap with a 
+       "Inspect URL" link for each that opens:
+       https://search.google.com/search-console/inspect?
+       resource_id=https://soniconsultancyservices.com
+       &url=https://soniconsultancyservices.com[PAGE_PATH]
+    → [Mark complete ✓] per page
+
+  STEP 4: Check Coverage report
+    → Link to: https://search.google.com/search-console/index
+    → Note: "Check back in 7 days. Look for pages under 
+       'Crawled, not indexed' — if many appear, the SSR 
+       fix in Part 1 needs to be re-verified."
+    → [Mark complete ✓]
+
+  STEP 5: Link GSC to GA4
+    → Link to: GA4 Admin → Search Console Links
+    → [Mark complete ✓]
+
+  STEP 6: Set target country
+    → Link: GSC Settings → International Targeting → Country → India
+    → [Mark complete ✓]
+
+Save checklist state to localStorage so checkmarks persist.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINAL DELIVERABLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After all changes, show me:
+
+1.  Confirmation that all pages now use SSR/SSG (list each page 
+    and which method was applied)
+2.  The full generated sitemap.xml output
+3.  The robots.txt content
+4.  All 4 JSON-LD schema blocks (formatted)
+5.  Updated next.config.js (complete file)
+6.  Updated .env.example with all new variables:
+      NEXT_PUBLIC_GSC_VERIFICATION_TOKEN=
+      NEXT_PUBLIC_GA_MEASUREMENT_ID=
+      ADMIN_KEY=
+7.  Complete list of files created and files modified
+8.  npm install command for any new packages added
+9.  Build output summary (○ / ● / λ per route)
+10. Post-deploy checklist:
+      □ Paste GSC verification token into .env and redeploy
+      □ Click Verify in Google Search Console
+      □ Submit sitemap.xml in GSC → Sitemaps
+      □ Request indexing for homepage manually via URL Inspection
+      □ Paste GA4 Measurement ID into .env and redeploy
+      □ Link GSC to GA4 in GA4 Admin settings
+      □ Set country to India in GSC International Targeting
+      □ Validate schema at search.google.com/test/rich-results
+      □ Run Lighthouse audit — target 90+ on all four scores
+      □ Check back in 7 days for Coverage report results

@@ -10,6 +10,8 @@ import { SiGoogleplay, SiAppstore } from "react-icons/si";
 import { useScrollAnimation, useScrollProgress } from "@/hooks/use-scroll-animation";
 import { portfolioProjects } from "@/lib/data";
 import { PortfolioPopup } from "@/components/Popups";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
 
 const timelineIcons = {
   discovery: Search,
@@ -58,13 +60,29 @@ export default function PortfolioDetail() {
   const hasShowcaseContent = project.showcaseContent && project.showcaseContent.length > 0;
   const hasRoadmap = project.roadmap && project.roadmap.length > 0;
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+      { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://soniconsultancyservices.com/portfolio" },
+      { "@type": "ListItem", "position": 3, "name": project.title, "item": `https://soniconsultancyservices.com/portfolio/${id}` }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid={`page-portfolio-${id}`}>
-      <div 
+      <SeoHead
+        title={project.title}
+        description={`${project.subtitle} — ${project.tags.join(", ")}. ${project.overview?.substring(0, 120) || "View case study"}`}
+        canonical={`/portfolio/${id}`}
+      />
+      <JsonLd data={breadcrumbSchema} />
+      <div
         className="fixed top-0 left-0 h-[2px] bg-foreground z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
       />
-      
+
       <Header />
       
       <main className="pt-24 lg:pt-32">

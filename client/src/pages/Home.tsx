@@ -13,11 +13,34 @@ import { JourneyPreview } from "@/components/sections/JourneyPreview";
 import { BlogPreview } from "@/components/sections/BlogPreview";
 import { ContactCTA } from "@/components/sections/ContactCTA";
 import { usePageView } from "@/hooks/use-analytics";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Soni Consultancy Services",
+  "url": "https://soniconsultancyservices.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://soniconsultancyservices.com/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+};
 
 export default function Home() {
   usePageView("/");
   return (
     <div className="min-h-screen bg-background" data-testid="page-home">
+      <SeoHead
+        title="Custom SaaS & Mobile App Development"
+        description="Leading custom software development company offering SaaS application development, mobile app development, and enterprise software solutions. Serving USA, UK, UAE, Europe & Australia."
+        canonical="/"
+      />
+      <JsonLd data={websiteSchema} />
       <Header />
       <main>
         <Hero />

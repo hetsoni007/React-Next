@@ -10,6 +10,8 @@ import { useABTest, contactFormTest } from "@/hooks/use-ab-test";
 import { socialLinks } from "@/lib/data";
 import { LeadForm } from "@/forms/LeadForm";
 import { HireUsBadge } from "@/components/HireUsBadge";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
 
 export default function ContactPage() {
   usePageView("/contact");
@@ -18,8 +20,23 @@ export default function ContactPage() {
   const isMinimalForm = variantLoading || variantId === "minimal";
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://soniconsultancyservices.com/contact" }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="page-contact">
+      <SeoHead
+        title="Contact Us"
+        description="Get in touch for a free consultation. We're here to help with your custom software, SaaS, or mobile app project."
+        canonical="/contact"
+      />
+      <JsonLd data={breadcrumbSchema} />
       <Header />
 
       <main className="pt-24 lg:pt-32">

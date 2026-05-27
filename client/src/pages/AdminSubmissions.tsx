@@ -175,6 +175,12 @@ export default function AdminSubmissions() {
 
   return (
     <>
+      <SeoHead
+        title="Admin — Form Submissions"
+        description="Admin dashboard for managing inquiry submissions."
+        canonical="/admin/submissions"
+        noIndex
+      />
       <Header />
       <main className="min-h-screen bg-gray-50 dark:bg-gray-950 py-10">
         <div className="max-w-7xl mx-auto px-6">

@@ -7,6 +7,8 @@ import { Smartphone, Globe, Palette, LayoutTemplate, ArrowRight, CheckCircle2, C
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { usePageView } from "@/hooks/use-analytics";
 import { services } from "@/lib/data";
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HireUsBadge } from "@/components/HireUsBadge";
 
@@ -52,12 +54,27 @@ const serviceDetails: Record<string, string[]> = {
   ],
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://soniconsultancyservices.com/services" }
+  ]
+};
+
 export default function ServicesPage() {
   usePageView("/services");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-services">
+      <SeoHead
+        title="Custom Software Development Services"
+        description="End-to-end custom software development services: SaaS applications, mobile apps, enterprise software, booking platforms, and more."
+        canonical="/services"
+      />
+      <JsonLd data={breadcrumbSchema} />
       <Header />
       
       <main className="pt-24 lg:pt-32">

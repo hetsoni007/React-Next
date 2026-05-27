@@ -62,7 +62,10 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
 
-    <!-- Organization Schema -->
+    <!-- GSC verification placeholder — replace content with actual token from search.google.com/search-console -->
+    <meta name="google-site-verification" content="PASTE_GSC_TOKEN_HERE" />
+
+    <!-- Person Schema — Het Soni -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -129,6 +132,44 @@
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Retail Chain Management Software" } }
         ]
       }
+    }
+    </script>
+
+    <!-- WebSite Schema — Sitelinks search box -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Soni Consultancy Services",
+      "url": "https://soniconsultancyservices.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://soniconsultancyservices.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Person Schema — Het Soni -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Het Soni",
+      "jobTitle": "CEO & Founder",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Soni Consultancy Services"
+      },
+      "url": "https://soniconsultancyservices.com/journey",
+      "sameAs": [
+        "https://twitter.com/CodeMak_",
+        "https://linkedin.com/in/hetsoni",
+        "https://github.com/hetsoni"
+      ]
     }
     </script>
 

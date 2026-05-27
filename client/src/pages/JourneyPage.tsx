@@ -8,12 +8,44 @@ import { usePageView } from "@/hooks/use-analytics";
 import { careerMilestones } from "@/lib/data";
 import { Link } from "wouter";
 
+import { SeoHead } from "@/components/SeoHead";
+import { JsonLd } from "@/components/JsonLd";
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Het Soni",
+  "jobTitle": "CEO & Founder",
+  "worksFor": { "@type": "Organization", "name": "Soni Consultancy Services" },
+  "url": "https://soniconsultancyservices.com/journey",
+  "sameAs": [
+    "https://twitter.com/CodeMak_",
+    "https://linkedin.com/in/hetsoni",
+    "https://github.com/hetsoni"
+  ]
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://soniconsultancyservices.com" },
+    { "@type": "ListItem", "position": 2, "name": "Journey", "item": "https://soniconsultancyservices.com/journey" }
+  ]
+};
+
 export default function JourneyPage() {
   usePageView("/journey");
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation<HTMLDivElement>();
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-journey">
+      <SeoHead
+        title="Our Journey & Story"
+        description="How Soni Consultancy Services was built — from first projects to a global custom software development company. Meet Het Soni, CEO & Founder."
+        canonical="/journey"
+      />
+      <JsonLd data={[personSchema, breadcrumbSchema]} />
       <Header />
       
       <main className="pt-24 lg:pt-32">

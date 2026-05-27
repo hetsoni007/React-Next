@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
+import { HelmetProvider } from "react-helmet-async";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -21,6 +22,7 @@ import EstimatePage from "@/pages/EstimatePage";
 import FaqPage from "@/pages/FaqPage";
 import GeoLandingPage from "@/pages/GeoLandingPage";
 import AdminSubmissions from "@/pages/AdminSubmissions";
+import GscChecklistPage from "@/pages/GscChecklistPage";
 import NotFound from "@/pages/not-found";
 
 const PAGE_LABELS: Record<string, string> = {
@@ -75,6 +77,7 @@ function Router() {
       <Route path="/australia" component={GeoLandingPage} />
       <Route path="/admin/analytics" component={AnalyticsDashboard} />
       <Route path="/admin/submissions" component={AdminSubmissions} />
+      <Route path="/admin/gsc-checklist" component={GscChecklistPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -86,14 +89,16 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-        <GlobalPopups />
-        <ExitIntentPopup />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+          <GlobalPopups />
+          <ExitIntentPopup />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
