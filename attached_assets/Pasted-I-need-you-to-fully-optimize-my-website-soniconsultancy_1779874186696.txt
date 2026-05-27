@@ -1,0 +1,713 @@
+I need you to fully optimize my website (soniconsultancyservices.com) for SEO,
+organic traffic growth, and user engagement with interactive FAQs and inquiry 
+forms. This is a custom software development company (SaaS, mobile apps, 
+enterprise software) run by Het Soni, serving clients in USA, UK, UAE, 
+Europe, and Australia. Tech stack: React/Next.js (adjust if different).
+
+Apply ALL of the following changes:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 1 — TECHNICAL SEO FIXES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 1. Fix title tag (currently 89 chars — too long)
+Change to under 60 characters:
+"Custom SaaS & Mobile App Development | Soni Consultancy"
+
+## 2. Fix meta author & brand consistency
+- meta author → "Soni Consultancy Services"
+- og:site_name → "Soni Consultancy Services"
+- og:image:alt → "Soni Consultancy Services — Custom Software Development"
+- Keep "Het Soni" only in Person schema and the /about page
+
+## 3. Remove outdated meta keywords tag
+Delete: <meta name="keywords" content="...">
+
+## 4. Fix geo meta tags
+Change to:
+  <meta name="geo.region" content="IN-GJ">
+  <meta name="geo.placename" content="Ahmedabad, Gujarat, India">
+
+## 5. Fix canonical + www redirect
+Set canonical: <link rel="canonical" href="https://soniconsultancyservices.com/" />
+Add 301 redirect middleware (Express/Next.js) from www → non-www.
+
+## 6. Create /public/robots.txt
+  User-agent: *
+  Allow: /
+  Sitemap: https://soniconsultancyservices.com/sitemap.xml
+
+## 7. Create dynamic sitemap.xml
+Generate /public/sitemap.xml that auto-includes all pages:
+  - / → priority 1.0, changefreq: weekly
+  - /about → 0.8, monthly
+  - /services → 0.9, monthly
+  - /services/* → 0.8, monthly
+  - /blog/* → 0.7, weekly
+  - /contact → 0.6, monthly
+  - /faq → 0.8, monthly
+  - /[country] landing pages → 0.8, monthly
+
+## 8. Add JSON-LD Structured Data to homepage <head>
+Add a <script type="application/ld+json"> with:
+
+  A) Organization schema:
+  {
+    "@type": "Organization",
+    "name": "Soni Consultancy Services",
+    "url": "https://soniconsultancyservices.com",
+    "logo": "https://soniconsultancyservices.com/logo.png",
+    "founder": { "@type": "Person", "name": "Het Soni" },
+    "sameAs": [
+      "https://twitter.com/CodeMak_",
+      "https://linkedin.com/in/hetsoni",
+      "https://github.com/hetsoni"
+    ],
+    "areaServed": ["US", "GB", "AE", "AU", "IN"],
+    "serviceType": "Custom Software Development"
+  }
+
+  B) Person schema (Het Soni):
+  {
+    "@type": "Person",
+    "name": "Het Soni",
+    "jobTitle": "CEO & Founder",
+    "worksFor": { "@type": "Organization", 
+                  "name": "Soni Consultancy Services" },
+    "url": "https://soniconsultancyservices.com/about"
+  }
+
+  C) Service schema for each main service:
+  - Custom SaaS Application Development
+  - Mobile App Development (React Native / Flutter)
+  - Enterprise Software Development
+  - Cab / Chauffeur Booking App Development
+  - Influencer Marketing Platform Development
+  - Payroll Management Software
+  - Retail Chain Management Software
+
+  D) FAQPage schema — pulled from the FAQ sections below
+  (auto-generate from all FAQ content added in Part 6)
+
+## 9. Add hreflang tags for international targeting
+  <link rel="alternate" hreflang="en-us" 
+        href="https://soniconsultancyservices.com/usa"/>
+  <link rel="alternate" hreflang="en-gb" 
+        href="https://soniconsultancyservices.com/uk"/>
+  <link rel="alternate" hreflang="en-ae" 
+        href="https://soniconsultancyservices.com/uae"/>
+  <link rel="alternate" hreflang="en-au" 
+        href="https://soniconsultancyservices.com/australia"/>
+  <link rel="alternate" hreflang="x-default" 
+        href="https://soniconsultancyservices.com"/>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 2 — SERVICE PAGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create individual SEO-optimised service pages at these routes.
+Each page must have: unique H1, meta title (≤60 chars), meta description
+(≤160 chars), H2 subheadings, keyword-rich body copy (600+ words),
+CTA section, its own Service JSON-LD schema, a page-specific FAQ 
+accordion (8-10 questions), and a Quick Inquiry Form (see Part 6).
+
+Pages to create:
+  /services/saas-application-development
+  /services/mobile-app-development
+  /services/enterprise-software-development
+  /services/cab-booking-app-development
+  /services/chauffeur-app-development
+  /services/influencer-marketing-platform
+  /services/payroll-management-software
+  /services/retail-chain-management-software
+  /services/react-developer-for-hire
+  /services/flutter-developer-for-hire
+  /services/nodejs-developer-for-hire
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 3 — GEO LANDING PAGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create localised landing pages at:
+  /usa         → "software development company USA"
+  /uk          → "custom software development UK"
+  /uae         → "software development company Dubai UAE"
+  /australia   → "software development company Australia"
+
+Each page must include:
+  - Localised H1
+  - Timezone availability and local currency mentions
+  - 3 local-market pain points solved
+  - Testimonial placeholder marked [CLIENT NAME, COMPANY]
+  - LocalBusiness JSON-LD with addressCountry for that region
+  - Region-specific FAQ accordion (6-8 questions)
+  - Localised inquiry form with country pre-filled
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 4 — BLOG SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 10. Set up /blog with MDX or markdown support
+- /blog index page: title, date, excerpt, read time, tags
+- /blog/[slug]: renders each post with Article JSON-LD
+- Auto-generate og:image from post title on branded background
+- "Related posts" section at the bottom of each article
+
+## 11. Write 8 SEO blog posts (800–1200 words each)
+
+Post 1: /blog/how-to-build-a-saas-mvp
+  "How to Build a SaaS MVP in 90 Days (Step-by-Step Guide)"
+  Keyword: "how to build a SaaS MVP"
+
+Post 2: /blog/saas-vs-custom-software
+  "SaaS vs Custom Software: Which is Right for Your Business?"
+  Keyword: "SaaS vs custom software development"
+
+Post 3: /blog/cab-booking-app-development-cost
+  "How Much Does a Cab Booking App Cost to Build in 2025?"
+  Keyword: "cab booking app development cost"
+
+Post 4: /blog/react-native-vs-flutter
+  "React Native vs Flutter in 2025: Which Should You Pick?"
+  Keyword: "React Native vs Flutter 2025"
+
+Post 5: /blog/influencer-marketing-platform-features
+  "10 Must-Have Features for an Influencer Marketing Platform"
+  Keyword: "influencer marketing platform development"
+
+Post 6: /blog/hire-remote-developer-guide
+  "How to Hire a Remote Software Developer (Without Getting Burned)"
+  Keyword: "hire remote software developer"
+
+Post 7: /blog/enterprise-software-development-guide
+  "Enterprise Software Development: A Complete Guide for 2025"
+  Keyword: "enterprise software development"
+
+Post 8: /blog/payroll-software-features
+  "Must-Have Features in a Custom Payroll Management System"
+  Keyword: "custom payroll management software"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 5 — CONVERSION & CORE WEB VITALS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 12. Sticky CTA bar
+On every service page and blog post:
+  "Ready to build your product? → [Get a Free Consultation]"
+  Clicking opens the Full Project Inquiry Modal (see Part 6).
+
+## 13. Internal linking
+- Each blog post: 2 related service page cards ("You might also need →")
+- Each service page: 1-2 relevant blog posts under "Further reading"
+
+## 14. Breadcrumb navigation + BreadcrumbList schema
+  Home > Services > [Service Name]
+  Home > Blog > [Post Title]
+  Home > FAQ
+
+## 15. Core Web Vitals optimisations
+- Lazy load all below-fold images (loading="lazy")
+- Add width + height on all <img> tags (prevent CLS)
+- Preconnect to Google Fonts if used
+- Defer / async all non-critical scripts
+- Use next/image for automatic WebP + sizing (if Next.js)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 6 — INTERACTIVE FAQ SECTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build a reusable <FAQAccordion> component with these features:
+  - Smooth open/close animation (CSS transition, no JS library)
+  - Only one answer open at a time (accordion behaviour)
+  - Search/filter box above the FAQ list (filters questions in real-time 
+    as user types — no page reload)
+  - "Was this helpful? 👍 👎" micro-feedback buttons on each answer
+    (stores response in localStorage, shows "Thanks!" on click)
+  - If user clicks 👎, show a small inline prompt: 
+    "What were you looking for?" with a text input + Submit 
+    (sends to a feedback endpoint or logs to console for now)
+  - Highlight matching search text in yellow within answers
+  - Each FAQ item must have id="" so it can be deep-linked 
+    (e.g. /faq#how-long-does-it-take)
+  - FAQPage JSON-LD auto-generated from the questions array prop
+  - "Still have questions? → [Ask us directly]" CTA at the bottom
+    that scrolls to or opens the Quick Inquiry Form
+
+--- 
+
+Create a dedicated /faq page using this component with ALL of the 
+following questions organised into collapsible category sections:
+
+CATEGORY: Getting Started
+  Q: How do I get started with Soni Consultancy Services?
+  A: Start by filling out our free consultation form. We'll schedule a 
+     30-minute discovery call to understand your requirements, timeline, 
+     and budget. No commitment needed.
+
+  Q: Do you offer a free consultation?
+  A: Yes. We offer a free 30-minute consultation call for all new 
+     project inquiries. Use the form on this page to book yours.
+
+  Q: What information should I prepare before contacting you?
+  A: It helps to have a rough idea of: what problem you're solving, 
+     your target users, your expected timeline, and your budget range. 
+     Don't worry if these aren't finalised — we help you define them.
+
+  Q: Do you sign an NDA before discussing my project?
+  A: Absolutely. We sign a mutual NDA before any detailed project 
+     discussion. Your idea is safe with us.
+
+CATEGORY: Pricing & Budget
+  Q: How much does custom software development cost?
+  A: Costs vary by scope. A simple MVP starts from $5,000–$15,000. 
+     A full SaaS product typically ranges from $20,000–$80,000. 
+     An enterprise system can exceed $100,000. We provide a detailed 
+     quote after the discovery call at no charge.
+
+  Q: Do you charge hourly or by project?
+  A: We offer both. Fixed-price projects work well for well-defined 
+     scopes. Hourly/retainer models suit ongoing development, 
+     maintenance, or when requirements are evolving. We'll recommend 
+     the best model for your situation.
+
+  Q: What payment methods do you accept?
+  A: We accept bank transfers, PayPal, Wise, and Stripe. For 
+     international clients (USA, UK, UAE, Australia), we invoice in 
+     USD, GBP, AED, or AUD as preferred.
+
+  Q: Is there a minimum project size?
+  A: Our minimum engagement is $3,000. This ensures we can dedicate 
+     the proper time and resources to deliver quality work.
+
+  Q: Do you offer payment in instalments?
+  A: Yes. We typically structure payments as: 30% upfront, 40% at 
+     mid-project milestone, 30% on delivery. Custom schedules are 
+     available for larger projects.
+
+CATEGORY: Process & Timeline
+  Q: How long does it take to build a SaaS application?
+  A: An MVP typically takes 8–16 weeks. A full-featured SaaS product 
+     takes 4–9 months depending on complexity. We'll give you a 
+     specific estimate after reviewing your requirements.
+
+  Q: What does your development process look like?
+  A: We follow a 5-stage process: Discovery → Design → Development → 
+     QA & Testing → Launch & Handover. You receive progress updates 
+     every week and have access to a staging environment throughout.
+
+  Q: How do you handle changes to requirements mid-project?
+  A: We use a change request process. Minor changes are absorbed into 
+     the current sprint. Significant scope changes are scoped, priced 
+     transparently, and approved by you before work begins.
+
+  Q: Will I own the source code?
+  A: Yes. You receive 100% ownership of all source code, assets, and 
+     IP upon final payment. We can also transfer repositories directly 
+     to your GitHub/GitLab account.
+
+  Q: Do you work in different time zones?
+  A: Yes. Our team is based in India (IST, UTC+5:30) and we routinely 
+     collaborate with clients in USA (EST/PST), UK (GMT), UAE (GST), 
+     and Australia (AEST). We schedule overlap calls to suit your 
+     working hours.
+
+CATEGORY: Technology
+  Q: What technologies do you use for mobile app development?
+  A: We build cross-platform apps with React Native and Flutter, and 
+     native apps with Swift (iOS) and Kotlin (Android). We recommend 
+     Flutter or React Native for most projects as they cut cost and 
+     time by ~40% vs building two separate native apps.
+
+  Q: What backend technologies do you use?
+  A: Primarily Node.js, Express, and NestJS for APIs. We also work 
+     with Python (Django/FastAPI) for data-heavy or AI projects. 
+     Databases: PostgreSQL, MongoDB, MySQL, Firebase, Redis.
+
+  Q: Can you work with our existing codebase?
+  A: Yes. We regularly take over, audit, and extend existing projects. 
+     We'll do a code review first and give you an honest assessment 
+     before committing to the work.
+
+  Q: Do you build for iOS and Android both?
+  A: Yes. With React Native or Flutter we deliver a single codebase 
+     that runs on both platforms. We also handle App Store and 
+     Google Play submission.
+
+  Q: Do you provide cloud deployment and DevOps?
+  A: Yes. We deploy on AWS, GCP, or Azure, and set up CI/CD pipelines, 
+     Docker containers, and infrastructure-as-code (Terraform). 
+     Hosting setup is included in all full-project engagements.
+
+CATEGORY: Post-Launch & Support
+  Q: Do you provide post-launch maintenance and support?
+  A: Yes. We offer monthly maintenance retainers that include bug 
+     fixes, security updates, dependency upgrades, and minor feature 
+     additions. Plans start from $500/month.
+
+  Q: What happens if there are bugs after launch?
+  A: All projects include a 60-day post-launch warranty. Any bugs 
+     directly related to our code are fixed at no additional cost 
+     during this window.
+
+  Q: Can you help scale the application as we grow?
+  A: Absolutely. We design for scalability from day one (horizontal 
+     scaling, caching layers, optimised queries). We also offer 
+     performance audits and scaling engagements as your user base grows.
+
+  Q: Will you train our team to use the software you build?
+  A: Yes. Every project includes handover documentation and a 
+     training session. We also record walkthrough videos for your 
+     internal team.
+
+CATEGORY: Company & Trust
+  Q: How long has Soni Consultancy Services been operating?
+  A: We've been building software products since [YEAR]. Our portfolio 
+     includes SaaS platforms, booking apps, enterprise systems, and 
+     influencer marketing tools for clients across 10+ countries.
+
+  Q: Can I see examples of previous work?
+  A: Yes. Visit our /portfolio page or ask us to share relevant case 
+     studies during the discovery call. We keep some work confidential 
+     under client NDA but can share anonymised details.
+
+  Q: Are you a registered company?
+  A: Yes. Soni Consultancy Services is a registered business in India. 
+     We provide invoices with GST (for Indian clients) and equivalent 
+     tax documentation for international clients.
+
+  Q: Do you work with startups or only enterprises?
+  A: Both. About 60% of our clients are funded or bootstrapped startups 
+     building their first product. 40% are established businesses adding 
+     new software capabilities. We adapt our process to fit either.
+
+  Q: How do I know my project won't be outsourced or offshored?
+  A: All work is done in-house by our core team. We do not 
+     sub-contract to third parties. You'll meet the actual developers 
+     working on your project during the kickoff call.
+
+Also add a shorter FAQ accordion (5–6 most relevant questions) 
+at the bottom of EVERY service page and EVERY geo landing page,
+pulling from the above list based on relevance to that page's topic.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 7 — INTERACTIVE INQUIRY FORMS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build the following forms as reusable React components with:
+  - Client-side validation (required fields, email format, 
+    min/max length) with inline error messages
+  - Loading spinner on submit button while processing
+  - Success state: friendly confirmation message + confetti animation 
+    (use canvas-confetti from CDN) 
+  - Error state: "Something went wrong — please email us directly at 
+    hello@soniconsultancyservices.com"
+  - All forms submit via fetch() POST to /api/inquiry 
+    (create this API route)
+  - The API route should: validate server-side, send an email 
+    notification via Nodemailer or Resend SDK to 
+    hello@soniconsultancyservices.com, and return JSON
+  - Store each submission in a submissions.json file or a 
+    simple SQLite DB as backup
+  - Add honeypot field (hidden input named "website") for 
+    basic spam protection
+  - Add Google reCAPTCHA v3 integration (use placeholder 
+    site key — instruct user to replace)
+
+---
+
+FORM 1: Quick Inquiry Form (inline, compact — for service pages)
+Component name: <QuickInquiryForm>
+Place at: bottom of every service page and geo landing page, 
+          just above the FAQ section.
+
+Fields:
+  - Full Name* (text, placeholder: "Your name")
+  - Email Address* (email)
+  - Phone / WhatsApp (tel, optional, 
+    label: "Phone / WhatsApp (optional)")
+  - Service Interested In* (dropdown):
+      Options: SaaS Development, Mobile App, Enterprise Software,
+               Cab Booking App, Chauffeur App, Influencer Platform,
+               Payroll Software, Retail Management, Hire a Developer,
+               Other
+  - Brief Project Description* 
+    (textarea, 3 rows, max 500 chars, live char counter)
+  - How did you find us? (dropdown, optional):
+      Options: Google Search, LinkedIn, Twitter/X, Referral, 
+               Clutch/GoodFirms, Other
+  - [Get Free Quote →] submit button
+
+Design: 2-column grid on desktop, 1-column on mobile.
+        Subtle border, white background, no heavy shadows.
+
+---
+
+FORM 2: Full Project Inquiry Modal
+Component name: <ProjectInquiryModal>
+Triggered by: sticky CTA bar, hero CTA button, 
+              "Book a Free Call" buttons sitewide.
+Design: centred modal with dark overlay, close on Escape key 
+        or clicking outside, smooth slide-in animation.
+
+Use a multi-step form (3 steps with a progress bar at top):
+
+STEP 1 — "Tell us about your project" (header)
+  - Full Name* (text)
+  - Company / Startup Name (text, optional)
+  - Email Address* (email)
+  - Phone / WhatsApp* (tel)
+  - Country* (dropdown — pre-fill based on /usa /uk /uae /australia 
+    page if user came from one):
+      USA, UK, UAE, Australia, India, Other
+
+STEP 2 — "What are you building?" (header)
+  - Project Type* (radio cards with icons, pick one):
+      🚀 SaaS Product
+      📱 Mobile App
+      🏢 Enterprise System
+      🚕 Booking / Transport App
+      📊 Analytics / Dashboard
+      🔧 Other / Not sure
+  - Estimated Budget* (radio cards):
+      Under $5,000
+      $5,000 – $15,000
+      $15,000 – $50,000
+      $50,000 – $100,000
+      $100,000+
+      Not sure yet
+  - Timeline* (dropdown):
+      ASAP (under 1 month)
+      1–3 months
+      3–6 months
+      6–12 months
+      Flexible
+  - Describe your project* 
+    (textarea, 5 rows, placeholder: 
+     "What problem are you solving? Who are your users? 
+      What's the core feature you need first?",
+     max 1000 chars, live char counter)
+
+STEP 3 — "Almost there!" (header)
+  - Do you have designs/wireframes? (radio):
+      Yes — I have Figma/XD files
+      Partial — rough sketches only
+      No — I need design too
+  - Do you have an existing codebase? (radio):
+      Yes — needs to be extended
+      No — starting from scratch
+      Not sure
+  - Preferred communication channel* (checkbox, pick all that apply):
+      Email, WhatsApp, Zoom, Google Meet, Slack
+  - How did you hear about us? (dropdown, optional):
+      Google, LinkedIn, Twitter/X, Referral, Clutch, GoodFirms, Other
+  - Anything else you'd like us to know? 
+    (textarea, 3 rows, optional)
+
+Navigation: [Back] [Next →] buttons between steps.
+On Step 3: [Submit & Book Free Call →] button.
+Show step labels: "1. Contact  2. Project  3. Details"
+
+After submit success:
+  Show a full-screen success state inside the modal:
+  - Confetti animation
+  - "🎉 We've received your project brief!"
+  - "Het Soni will personally review this and reach out 
+     within 24 hours."
+  - [Book a Calendly Call] button → 
+    href="https://calendly.com/soniconsultancyservices" 
+    (placeholder — instruct user to replace)
+  - [Close] button
+
+---
+
+FORM 3: Blog Post Lead Magnet Form
+Component name: <LeadMagnetForm>
+Place at: middle of every blog post (after 3rd paragraph / 
+          50% scroll) as an inline banner.
+
+Design: full-width banner with soft background colour 
+        (use brand primary), left side has text, right side has form.
+
+Left text (customise per blog category):
+  For SaaS posts:     "Get our free SaaS MVP Planning Checklist →"
+  For mobile posts:   "Download our App Cost Calculator (free) →"
+  For hiring posts:   "Get our Remote Dev Interview Kit (free) →"
+  For enterprise:     "Download our Enterprise Software RFP Template →"
+  Default:            "Get a free project estimate in 24 hours →"
+
+Fields (compact, side by side):
+  - Email Address* (email, placeholder: "your@email.com")
+  - [Send Me the Free Resource →] button
+
+On submit: 
+  - Show "✓ Check your inbox! Sending now..." 
+  - POST to /api/lead-magnet (create this route)
+  - The route tags the submission with the blog post slug 
+    and the resource type for segmentation
+
+---
+
+FORM 4: Contact Page — Full Contact Form
+Route: /contact
+Page layout: left side = contact info + map embed placeholder, 
+             right side = form.
+
+Fields:
+  - Full Name* (text)
+  - Email Address* (email)
+  - Phone / WhatsApp (tel, optional)
+  - Subject* (text, placeholder: "e.g. SaaS development quote")
+  - Department (dropdown, optional):
+      General Enquiry
+      New Project / Quote
+      Existing Project Support
+      Partnership / Referral
+      Press / Media
+  - Message* (textarea, 6 rows, max 1500 chars, live char counter)
+  - Attach a file (file input, optional, accept PDF/doc/png/jpg, 
+    max 5MB, show selected filename)
+  - Preferred callback time (text, optional, 
+    placeholder: "e.g. Mon–Fri, 10am–12pm IST")
+  - I agree to the Privacy Policy* (checkbox with link)
+  - [Send Message →] submit button (full width)
+
+Below the form add:
+  Direct contact details section:
+  - 📧 hello@soniconsultancyservices.com
+  - 💬 WhatsApp: +91 [PHONE] (link to wa.me)
+  - 🕐 Response time: within 24 hours on business days
+  - 📅 [Book a Free Call on Calendly →] button
+
+---
+
+FORM 5: Exit-Intent Popup Form
+Component name: <ExitIntentPopup>
+Trigger: fires when mouse leaves viewport upward (desktop) 
+         or after 40 seconds on page (mobile).
+Show max once per session (use sessionStorage).
+Do NOT show on /contact or /thank-you pages.
+
+Design: small centred modal, dismissable with X button.
+
+Headline: "Wait — before you go!"
+Subtext: "Get a free, no-obligation project estimate 
+          sent to your inbox within 24 hours."
+
+Fields:
+  - Name* (text)
+  - Email* (email)
+  - What are you looking to build? 
+    (dropdown — same service options as Form 1)
+  - [Get My Free Estimate →] submit button
+  - Small text below: "No spam. Unsubscribe anytime."
+
+On success: replace form with 
+  "✓ Done! Expect an estimate from Het Soni within 24 hours."
+
+---
+
+FORM 6: Blog Comment / Question Form
+Component name: <BlogQuestionForm>
+Place at: bottom of every blog post, above Related Posts.
+Purpose: encourages engagement, generates user-generated content, 
+         signals active page to Google.
+
+Heading: "Have a question about this topic?"
+Subtext: "Ask below — Het Soni personally responds to every question."
+
+Fields:
+  - Name* (text)
+  - Email* (email, note: "Not published")
+  - Your Question* (textarea, 4 rows, 
+    placeholder: "e.g. How much would it cost to add X feature?")
+  - [Post Your Question →] submit button
+
+Display submitted questions (approved ones) below the form 
+as a public Q&A thread:
+  - Show: Name (first name + last initial), date, question, answer
+  - Answer section has a "Answered by Het Soni" badge
+  - Questions pending approval show "Your question is awaiting review"
+    only to the submitter (use localStorage to track their submission)
+  - Paginate if more than 5 questions (show 5, [Load more] button)
+
+---
+
+FORM 7: Newsletter / Updates Subscription Form
+Component name: <NewsletterSignup>
+Placement: footer of every page (compact, single line) 
+           and as a standalone section on the /blog index page.
+
+Footer version (one line):
+  [Email input] [Subscribe →] 
+  Below: "Monthly dev insights. No spam."
+
+Blog page version (full section):
+  Heading: "Get notified of new articles"
+  Subtext: "One email per month. Unsubscribe anytime."
+  Fields: Name + Email + [Subscribe] button
+  After submit: "✓ You're in! First issue arrives soon."
+
+API route: POST /api/newsletter
+  - Save to subscribers list (JSON file or SQLite)
+  - Tag subscriber with source (footer/blog/popup)
+  - Send welcome email via Nodemailer/Resend:
+    Subject: "Welcome — you're subscribed to Soni Consultancy updates"
+    Body: friendly HTML email welcoming them, 
+          linking to most recent 3 blog posts
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 8 — FORM ANALYTICS & TRACKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 16. Add conversion tracking events
+On every form submit success, fire:
+  - Google Analytics 4 event: 
+    gtag('event', 'form_submit', {
+      form_name: '[FORM_NAME]',
+      service_interest: '[SELECTED_SERVICE]',
+      source_page: window.location.pathname
+    })
+  - Facebook Pixel event (if FB pixel is added later):
+    fbq('track', 'Lead', { content_name: '[FORM_NAME]' })
+  Use a placeholder function if GA4 / Pixel not yet installed, 
+  so events fire silently without errors.
+
+## 17. Create a /admin/submissions page (basic, password-protected)
+  - Password protection via a simple env variable 
+    ADMIN_PASSWORD check (not full auth — just a quick gate)
+  - Table view of all form submissions: 
+    date, name, email, service, message preview
+  - Filter by form type and date range
+  - [Mark as Read] and [Archive] buttons per row
+  - [Export CSV] button for all submissions
+  - Show counts: total submissions, this week, unread
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINAL DELIVERABLES — show me all of these:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After completing all changes, provide:
+
+1.  Full updated <head> block for the homepage
+2.  Complete sitemap.xml content
+3.  All JSON-LD schema blocks (formatted and validated)
+4.  robots.txt content
+5.  List of every new file and component created with its route
+6.  List of every existing file modified
+7.  API routes created (/api/inquiry, /api/lead-magnet, 
+    /api/newsletter) with example request/response
+8.  Environment variables needed (list as .env.example)
+9.  NPM packages to install (exact install command)
+10. Post-deployment checklist:
+      ✓ Submit sitemap in Google Search Console
+      ✓ Submit to Bing Webmaster Tools
+      ✓ Set up Google Analytics 4
+      ✓ Replace reCAPTCHA placeholder key
+      ✓ Replace Calendly link
+      ✓ Set ADMIN_PASSWORD in environment variables
+      ✓ Configure Nodemailer/Resend with real email credentials
+      ✓ Create Google Business Profile
+      ✓ List on Clutch.co and GoodFirms
+      ✓ Test all 7 forms end-to-end
+      ✓ Validate all schema at search.google.com/test/rich-results
+      ✓ Run Lighthouse audit — target 90+ on all scores

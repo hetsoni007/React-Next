@@ -6,6 +6,7 @@ import {
   insertNewsletterSchema,
   insertAnalyticsEventSchema,
   insertProjectEstimateSchema,
+  insertInquirySchema,
   type BlogArticle,
 } from "@shared/schema";
 import Parser from "rss-parser";
@@ -47,6 +48,16 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // www → non-www redirect
+  app.use((req, res, next) => {
+    const host = req.headers.host || "";
+    if (host.startsWith("www.")) {
+      const nonWww = host.slice(4);
+      return res.redirect(301, `https://${nonWww}${req.url}`);
+    }
+    next();
+  });
+
   // POST /api/contact - Handle contact form submissions
   app.post("/api/contact", async (req, res) => {
     try {
@@ -473,6 +484,152 @@ export async function registerRoutes(
       return res
         .status(500)
         .json({ message: "Failed to analyze requirements. Please try again." });
+    }
+  });
+
+  // POST /api/inquiry — all inquiry forms (quick, modal, exit intent, blog question)
+  app.post("/api/inquiry", async (req, res) => {
+    try {
+      // Honeypot check
+      if (req.body.website) {
+        return res.status(200).json({ message: "OK" });
+      }
+
+      const result = insertInquirySchema.safeParse({
+        formType: req.body.formType || "quick",
+        fullName: req.body.fullName || req.body.name || undefined,
+        email: req.body.email,
+        phone: req.body.phone || undefined,
+        company: req.body.company || undefined,
+        country: req.body.country || undefined,
+        service: req.body.service || undefined,
+        description: req.body.description || req.body.question || undefined,
+        projectType: req.body.projectType || undefined,
+        budget: req.body.budget || undefined,
+        timeline: req.body.timeline || undefined,
+        hasDesigns: req.body.hasDesigns || undefined,
+        hasCodebase: req.body.hasCodebase || undefined,
+        commChannels: req.body.commChannels ? JSON.stringify(req.body.commChannels) : undefined,
+        howHeard: req.body.howHeard || req.body.source || undefined,
+        additionalInfo: req.body.additionalInfo || undefined,
+        postSlug: req.body.postSlug || undefined,
+        resourceType: req.body.resourceType || undefined,
+      });
+
+      if (!result.success) {
+        return res.status(400).json({ message: "Validation failed", errors: result.error.flatten().fieldErrors });
+      }
+
+      const inquiry = await storage.createInquiry(result.data);
+
+      // Send email notification (non-blocking)
+      const emailBody = `
+New ${result.data.formType} inquiry from ${result.data.fullName || "Anonymous"}
+
+Email: ${result.data.email}
+Phone: ${result.data.phone || "—"}
+Company: ${result.data.company || "—"}
+Country: ${result.data.country || "—"}
+Service: ${result.data.service || result.data.projectType || "—"}
+Budget: ${result.data.budget || "—"}
+Timeline: ${result.data.timeline || "—"}
+
+Message:
+${result.data.description || "—"}
+
+Source: ${result.data.howHeard || "—"}
+Form: ${result.data.formType}
+      `.trim();
+
+      import("./email").then(({ sendContactNotification }) => {
+        sendContactNotification({
+          name: result.data.fullName || result.data.email,
+          email: result.data.email,
+          projectType: result.data.service || result.data.projectType || result.data.formType,
+          message: emailBody,
+        }).catch((e: unknown) => console.error("Inquiry email failed:", e));
+      }).catch(() => {});
+
+      return res.status(201).json({ message: "Inquiry received. We'll be in touch within 24 hours.", id: inquiry.id });
+    } catch (error) {
+      console.error("Inquiry form error:", error);
+      return res.status(500).json({ message: "Something went wrong. Please try again." });
+    }
+  });
+
+  // POST /api/lead-magnet — blog lead magnet form
+  app.post("/api/lead-magnet", async (req, res) => {
+    try {
+      const { email, postSlug, resourceType } = req.body;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: "Valid email required" });
+      }
+
+      await storage.createInquiry({
+        formType: "lead_magnet",
+        email,
+        postSlug: postSlug || undefined,
+        resourceType: resourceType || "general",
+      });
+
+      return res.status(201).json({ message: "Subscribed" });
+    } catch (error) {
+      console.error("Lead magnet error:", error);
+      return res.status(500).json({ message: "Something went wrong." });
+    }
+  });
+
+  // POST /api/admin/verify — password gate
+  app.post("/api/admin/verify", (req, res) => {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      return res.status(500).json({ message: "ADMIN_PASSWORD not configured" });
+    }
+    if (password === adminPassword) {
+      return res.status(200).json({ ok: true });
+    }
+    return res.status(401).json({ message: "Incorrect password" });
+  });
+
+  // Admin auth middleware
+  const requireAdmin = (req: any, res: any, next: any) => {
+    const pw = req.headers["x-admin-password"];
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword || pw !== adminPassword) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    next();
+  };
+
+  // GET /api/admin/submissions — list all inquiry submissions
+  app.get("/api/admin/submissions", requireAdmin, async (_req, res) => {
+    try {
+      const submissions = await storage.getInquiries();
+      return res.json(submissions);
+    } catch (error) {
+      console.error("Admin submissions error:", error);
+      return res.status(500).json({ message: "Failed to fetch submissions" });
+    }
+  });
+
+  // PATCH /api/admin/submissions/:id/read
+  app.patch("/api/admin/submissions/:id/read", requireAdmin, async (req, res) => {
+    try {
+      await storage.updateInquiryStatus(req.params.id, "read");
+      return res.json({ ok: true });
+    } catch (error) {
+      return res.status(500).json({ message: "Update failed" });
+    }
+  });
+
+  // PATCH /api/admin/submissions/:id/archive
+  app.patch("/api/admin/submissions/:id/archive", requireAdmin, async (req, res) => {
+    try {
+      await storage.updateInquiryStatus(req.params.id, "archived");
+      return res.json({ ok: true });
+    } catch (error) {
+      return res.status(500).json({ message: "Update failed" });
     }
   });
 

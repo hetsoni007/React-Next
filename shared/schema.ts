@@ -208,6 +208,42 @@ export const insertProjectEstimateSchema = createInsertSchema(projectEstimates).
 export type InsertProjectEstimate = z.infer<typeof insertProjectEstimateSchema>;
 export type ProjectEstimate = typeof projectEstimates.$inferSelect;
 
+// Inquiry form submissions (Quick, Modal, Exit Intent, Blog Question, Lead Magnet)
+export const inquirySubmissions = pgTable("inquiry_submissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  formType: text("form_type").notNull(), // 'quick', 'full_inquiry', 'exit_intent', 'blog_question', 'lead_magnet'
+  fullName: text("full_name"),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  company: text("company"),
+  country: text("country"),
+  service: text("service"),
+  description: text("description"),
+  projectType: text("project_type"),
+  budget: text("budget"),
+  timeline: text("timeline"),
+  hasDesigns: text("has_designs"),
+  hasCodebase: text("has_codebase"),
+  commChannels: text("comm_channels"),
+  howHeard: text("how_heard"),
+  additionalInfo: text("additional_info"),
+  postSlug: text("post_slug"),
+  resourceType: text("resource_type"),
+  status: text("status").default("unread"), // 'unread', 'read', 'archived'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertInquirySchema = createInsertSchema(inquirySubmissions).omit({
+  id: true,
+  createdAt: true,
+  status: true,
+}).extend({
+  email: z.string().email("Valid email required"),
+});
+
+export type InsertInquiry = z.infer<typeof insertInquirySchema>;
+export type Inquiry = typeof inquirySubmissions.$inferSelect;
+
 // Estimation wizard types
 export type FeatureCategoryType = 
   | 'user_experience' 

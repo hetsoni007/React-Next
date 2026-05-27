@@ -7,11 +7,14 @@ import {
   type InsertAnalyticsEvent,
   type ProjectEstimate,
   type InsertProjectEstimate,
+  type Inquiry,
+  type InsertInquiry,
   users,
   contactSubmissions,
   blogDigestCursor,
   analyticsEvents,
   projectEstimates,
+  inquirySubmissions,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -32,6 +35,9 @@ export interface IStorage {
     estimate: InsertProjectEstimate
   ): Promise<ProjectEstimate>;
   getProjectEstimate(id: string): Promise<ProjectEstimate | undefined>;
+  createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
+  getInquiries(): Promise<Inquiry[]>;
+  updateInquiryStatus(id: string, status: string): Promise<void>;
 }
 
 export interface AnalyticsSummary {
@@ -209,6 +215,28 @@ export class DatabaseStorage implements IStorage {
       .from(projectEstimates)
       .where(eq(projectEstimates.id, id));
     return estimate || undefined;
+  }
+
+  async createInquiry(inquiry: InsertInquiry): Promise<Inquiry> {
+    const [row] = await db
+      .insert(inquirySubmissions)
+      .values({ ...inquiry, status: "unread" })
+      .returning();
+    return row;
+  }
+
+  async getInquiries(): Promise<Inquiry[]> {
+    return db
+      .select()
+      .from(inquirySubmissions)
+      .orderBy(desc(inquirySubmissions.createdAt));
+  }
+
+  async updateInquiryStatus(id: string, status: string): Promise<void> {
+    await db
+      .update(inquirySubmissions)
+      .set({ status })
+      .where(eq(inquirySubmissions.id, id));
   }
 }
 

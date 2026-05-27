@@ -709,7 +709,6 @@ export function GlobalPopups() {
   return (
     <>
       <ScrollEngagementPopup />
-      <ExitIntentPopup />
     </>
   );
 }
